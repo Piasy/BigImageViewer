@@ -1,0 +1,54 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.2'
+
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    userName = 'Piasy'
+    developer = [
+            id   : 'piasy',
+            name : 'piasy',
+            email: 'xz4215@gmail.com'
+    ]
+    license = [
+            id  : 'MIT',
+            name: 'The MIT License (MIT)',
+            url : 'http://opensource.org/licenses/MIT'
+    ]
+    groupName = 'com.github.piasy'
+    artifactName = 'FrescoBigImageViewer'
+    artifactDescription = 'Big image viewer using Fresco and Subsampling Scale Image View, ' +
+            'with very little memory usage.'
+    artifactLabels = ['Fresco', 'big', 'image', 'viewer']
+    releaseVersionCode = 1
+    releaseVersionName = '1.0.0'
+
+    androidCompileSdkVersion = 24
+    androidBuildToolsVersion = '25.0.0'
+    androidSupportSdkVersion = '25.0.0'
+    minSdkVersion = 16
+    targetSdkVersion = 24
+
+    frescoVersion = '0.14.1'
+    ssivVersion = '3.6.0'
+    commonsVersion = '2.5'
+}
