@@ -65,8 +65,11 @@ This library use Fresco to load image, and show them with Subsampling Scale Imag
 
 ## Performance
 
-\- | PhotoDraweeView | FrescoImageViewer | FrescoBigImageViewer
-4135*5134 | 80MB | 80MB | 2~14 MB
+Memory usage of different libraries:
+
+| \- | PhotoDraweeView | FrescoImageViewer | FrescoBigImageViewer |
+| ------| ------ | ------ | ------ |
+| 4135\*5134 | 80MB | 80MB | 2~14 MB |
 
 ## Todo
 
