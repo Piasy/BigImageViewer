@@ -6,7 +6,7 @@ Big image viewer using [Fresco](https://github.com/facebook/fresco) and [Subsamp
 
 ## Demo
 
-![demo](art/shaped_drawee_view_demo.png)
+![demo](art/fresco_big_image_viewer_demo.gif)
 
 ## Usage
 
