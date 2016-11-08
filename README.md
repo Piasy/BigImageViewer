@@ -1,10 +1,12 @@
-# FrescoBigImageViewer
+# BigImageViewer
 
-[ ![Download](https://api.bintray.com/packages/piasy/maven/FrescoBigImageViewer/images/download.svg) ](https://bintray.com/piasy/maven/FrescoBigImageViewer/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/piasy/maven/BigImageViewer/images/download.svg) ](https://bintray.com/piasy/maven/BigImageViewer/_latestVersion)
 
-Big image viewer using [Fresco](https://github.com/facebook/fresco) and [Subsampling Scale Image View](https://github.com/davemorrissey/subsampling-scale-image-view), support pan and zoom, with very little memory usage.
+Big image viewer supporting pan and zoom, with very little memory usage and full featured image loading choices. Powered by [Subsampling Scale Image View](https://github.com/davemorrissey/subsampling-scale-image-view), [Fresco](https://github.com/facebook/fresco), [Glide](https://github.com/bumptech/glide), and [Picasso](https://github.com/square/picasso).
 
 ## Demo
+
+![memory usage](art/android_studio_memory_monitor.png)
 
 ![demo](art/fresco_big_image_viewer_demo.gif)
 
@@ -19,21 +21,24 @@ allprojects {
     }
 }
 
-compile 'com.github.piasy:FrescoBigImageViewer:1.0.0'
+// NOTE that the artifact id has been changed!
+compile 'com.github.piasy:BigImageViewer:1.1.0'
+compile 'com.github.piasy:FrescoImageLoader:1.1.0'
 ```
 
 ### initialize
 
 ``` java
-FrescoBigImageViewer.initialize(context);
+// MUST use app context to avoid memory leak!
+BigImageViewer.initialize(FrescoImageLoader.with(appContext));
 ```
 
-**Note that** if you've already used Fresco in your project, please change `Fresco.initialize` into `FrescoBigImageViewer.initialize`.
+**Note that** if you've already used Fresco in your project, please change `Fresco.initialize` into `BigImageViewer.initialize`.
 
 ### Layout
 
 ``` xml
-<com.github.piasy.fresco.bigimageviewer.BigImageView
+<com.github.piasy.biv.BigImageView
         android:id="@+id/mBigImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -52,7 +57,7 @@ bigImageView.showImage(Uri.parse("http://code2png.babits.top/images/code_1477885
 You can prefetch images in advance, so it could be shown immediately when user want to see it.
 
 ``` java
-FrescoBigImageViewer.prefetch(uris);
+BigImageViewer.prefetch(uris);
 ```
 
 ## Why another big image viewer?
@@ -61,7 +66,7 @@ There are several big image viewer libraries, [PhotoDraweeView](https://github.c
 
 They both support pan and zoom. PhotoDraweeView and FrescoImageViewer both use Fresco to load image, which will cause extremely large memory usage when showing big images. Subsampling Scale Image View uses very little memory, but it can only show local image file.
 
-This library use Fresco to load image, and show them with Subsampling Scale Image View, so it keeps both features of easy to use and low memory usage.
+This library show big image with Subsampling Scale Image View, so it only uses very little memory. And this library support using different image load libraries, so it's full featured!
 
 ## Performance
 
@@ -69,12 +74,15 @@ Memory usage of different libraries:
 
 | \- | PhotoDraweeView | FrescoImageViewer | FrescoBigImageViewer |
 | ------| ------ | ------ | ------ |
-| 4135\*5134 | 80MB | 80MB | 2~14 MB |
+| 4135\*5134 | 80MB | 80MB | 2~20 MB |
 
 ## Todo
 
++ [ ] GlideImageLoader
++ [ ] PicassoImageLoader
++ [ ] Save image file to gallery
 + [ ] Loading animation
 + [ ] Fail image
 + [ ] Retry when fail
 
-Those features are offered by Fresco, and they should be easy to implement, but I don't have enough time currently. So your contributions are welcome!
+Those features are offered by image load libraries, and they should be easy to implement, but I don't have enough time currently. So your contributions are welcome!

@@ -35,12 +35,13 @@ ext {
             url : 'http://opensource.org/licenses/MIT'
     ]
     groupName = 'com.github.piasy'
-    artifactName = 'FrescoBigImageViewer'
-    artifactDescription = 'Big image viewer using Fresco and Subsampling Scale Image View, ' +
-            'with very little memory usage.'
-    artifactLabels = ['Fresco', 'big', 'image', 'viewer']
-    releaseVersionCode = 1
-    releaseVersionName = '1.0.0'
+    artifactName = 'BigImageViewer'
+    artifactDescription = 'Big image viewer supporting pan and zoom, with very little memory ' +
+            'usage and full featured image loading choices. Powered by Subsampling Scale ' +
+            'Image View, Fresco, Glide, and Picasso.'
+    artifactLabels = ['big', 'image', 'viewer', 'Fresco', 'Glide', 'Picasso']
+    releaseVersionCode = 2
+    releaseVersionName = '1.1.0'
 
     androidCompileSdkVersion = 24
     androidBuildToolsVersion = '25.0.0'

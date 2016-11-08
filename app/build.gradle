@@ -10,7 +10,7 @@ android {
         versionCode rootProject.ext.releaseVersionCode
         versionName rootProject.ext.releaseVersionName
 
-        applicationId "com.github.piasy.fresco.bigimageviewer.example"
+        applicationId "com.github.piasy.biv.example"
     }
     buildTypes {
         release {
@@ -23,5 +23,6 @@ android {
 dependencies {
     compile "com.android.support:appcompat-v7:${rootProject.ext.androidSupportSdkVersion}"
 
-    compile project(':FrescoBigImageViewer')
+    compile project(':BigImageViewer')
+    compile project(':FrescoImageLoader')
 }

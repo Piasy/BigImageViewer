@@ -5,7 +5,7 @@
         android:layout_height="match_parent"
         >
 
-    <com.github.piasy.fresco.bigimageviewer.BigImageView
+    <com.github.piasy.biv.view.BigImageView
             android:id="@+id/mBigImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
