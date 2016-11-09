@@ -22,8 +22,10 @@ android {
 }
 
 dependencies {
+    compile "com.android.support:support-v4:$rootProject.ext.androidSupportSdkVersion"
+
     compile project(':BigImageViewer')
 
-    compile "com.facebook.fresco:fresco:$rootProject.ext.frescoVersion"
+    compile "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
     compile "commons-io:commons-io:$rootProject.ext.commonsVersion"
 }

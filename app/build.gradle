@@ -21,8 +21,9 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:${rootProject.ext.androidSupportSdkVersion}"
+    compile "com.android.support:appcompat-v7:$rootProject.ext.androidSupportSdkVersion"
 
     compile project(':BigImageViewer')
     compile project(':FrescoImageLoader')
+    compile project(':GlideImageLoader')
 }

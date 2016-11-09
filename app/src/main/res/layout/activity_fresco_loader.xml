@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         >
+    <com.github.piasy.biv.view.BigImageView
+            android:id="@+id/mBigImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
     <Button
-            android:id="@+id/mFresco"
+            android:id="@+id/mBtnLoad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="fresco loader"
+            android:text="load"
             />
-    <Button
-            android:id="@+id/mGlide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="glide loader"
-            />
-</LinearLayout>
+</FrameLayout>

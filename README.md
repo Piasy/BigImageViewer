@@ -22,15 +22,24 @@ allprojects {
 }
 
 // NOTE that the artifact id has been changed!
-compile 'com.github.piasy:BigImageViewer:1.1.0'
-compile 'com.github.piasy:FrescoImageLoader:1.1.0'
+compile 'com.github.piasy:BigImageViewer:1.1.1'
+
+// load with fresco
+compile 'com.github.piasy:FrescoImageLoader:1.1.1'
+
+// load with glide
+compile 'com.github.piasy:GlideImageLoader:1.1.1'
 ```
 
 ### initialize
 
 ``` java
 // MUST use app context to avoid memory leak!
+// load with fresco
 BigImageViewer.initialize(FrescoImageLoader.with(appContext));
+
+// or load with glide
+BigImageViewer.initialize(GlideImageLoader.with(appContext));
 ```
 
 **Note that** if you've already used Fresco in your project, please change `Fresco.initialize` into `BigImageViewer.initialize`.
@@ -78,7 +87,7 @@ Memory usage of different libraries:
 
 ## Todo
 
-+ [ ] GlideImageLoader
++ [x] GlideImageLoader
 + [ ] PicassoImageLoader
 + [ ] Save image file to gallery
 + [ ] Loading animation

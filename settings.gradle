@@ -1,1 +1,1 @@
-include ':app', ':BigImageViewer', ':FrescoImageLoader'
+include ':app', ':BigImageViewer', ':FrescoImageLoader', ':GlideImageLoader'
