@@ -22,13 +22,13 @@ allprojects {
 }
 
 // NOTE that the artifact id has been changed!
-compile 'com.github.piasy:BigImageViewer:1.1.1'
+compile 'com.github.piasy:BigImageViewer:1.1.2'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.1.1'
+compile 'com.github.piasy:FrescoImageLoader:1.1.2'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.1.1'
+compile 'com.github.piasy:GlideImageLoader:1.1.2'
 ```
 
 ### initialize
@@ -67,6 +67,29 @@ You can prefetch images in advance, so it could be shown immediately when user w
 
 ``` java
 BigImageViewer.prefetch(uris);
+```
+
+### Save image into gallery
+
+``` java
+bigImageView.setImageSaveCallback(new ImageSaveCallback() {
+    @Override
+    public void onSuccess(String uri) {
+        Toast.makeText(LongImageActivity.this,
+                "Success",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFail(Throwable t) {
+        t.printStackTrace();
+        Toast.makeText(LongImageActivity.this,
+                "Fail",
+                Toast.LENGTH_SHORT).show();
+    }
+});
+
+bigImageView.saveImageIntoGallery();
 ```
 
 ## Why another big image viewer?
