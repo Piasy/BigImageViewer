@@ -10,6 +10,8 @@ Big image viewer supporting pan and zoom, with very little memory usage and full
 
 ![demo](art/fresco_big_image_viewer_demo.gif)
 
+![long image support](art/fresco_big_image_viewer_long_image.gif)
+
 ## Usage
 
 ### Dependency
@@ -22,13 +24,13 @@ allprojects {
 }
 
 // NOTE that the artifact id has been changed!
-compile 'com.github.piasy:BigImageViewer:1.1.2'
+compile 'com.github.piasy:BigImageViewer:1.1.3'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.1.2'
+compile 'com.github.piasy:FrescoImageLoader:1.1.3'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.1.2'
+compile 'com.github.piasy:GlideImageLoader:1.1.3'
 ```
 
 ### initialize
