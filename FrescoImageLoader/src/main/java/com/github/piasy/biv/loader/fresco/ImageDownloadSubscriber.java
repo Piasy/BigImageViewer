@@ -54,6 +54,8 @@ public abstract class ImageDownloadSubscriber
             return;
         }
 
+        // if we try to retrieve image file by cache key, it will return null
+        // so we need to create a temp file, little bit hack :(
         PooledByteBufferInputStream inputStream = null;
         FileOutputStream outputStream = null;
         try {

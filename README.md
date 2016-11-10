@@ -88,12 +88,13 @@ Memory usage of different libraries:
 ## Todo
 
 + [x] GlideImageLoader
-+ [ ] Save image file to gallery
-+ [ ] Optimize long image showing effect
-+ [ ] Optimize "double tap to zoom" effect
-+ [ ] PicassoImageLoader, track [this issue](https://github.com/square/picasso/issues/1527)
++ [x] Save image file to gallery
++ [x] Optimize long image showing effect, thanks for [razerdp](https://github.com/razerdp)
++ [x] Optimize "double tap to zoom" effect, thanks for [razerdp](https://github.com/razerdp)
++ [ ] PicassoImageLoader, track [this issue](https://github.com/square/picasso/issues/506)
 + [ ] Loading animation
 + [ ] Downloading progress
++ [ ] Thumbnail support
 + [ ] Fail image
 + [ ] Retry when fail
 

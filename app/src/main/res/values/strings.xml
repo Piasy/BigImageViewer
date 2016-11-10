@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">BigImageViewer</string>
+
+    <string name="scan_qr_code">recognize qr code</string>
+    <string name="save_image">save to gallery</string>
+    <string-array name="big_image_ops">
+        <item>@string/scan_qr_code</item>
+        <item>@string/save_image</item>
+    </string-array>
 </resources>

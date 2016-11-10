@@ -24,10 +24,14 @@
 
 package com.github.piasy.biv.view;
 
+import android.Manifest;
 import android.content.Context;
+import android.graphics.PointF;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -36,7 +40,10 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.loader.ImageLoader;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import io.reactivex.functions.Consumer;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +59,84 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private final ImageLoader mImageLoader;
 
     private final List<File> mTempImages;
+    // credit: https://github.com/Piasy/BigImageViewer/issues/2
+    private final SubsamplingScaleImageView.OnImageEventListener mEventListener
+            = new SubsamplingScaleImageView.OnImageEventListener() {
+        @Override
+        public void onReady() {
+            float result = 0.5f;
+            int imageWidth = mImageView.getSWidth();
+            int imageHeight = mImageView.getSHeight();
+            int viewWidth = mImageView.getWidth();
+            int viewHeight = mImageView.getHeight();
+
+            boolean hasZeroValue = false;
+            if (imageWidth == 0 || imageHeight == 0 || viewWidth == 0 || viewHeight == 0) {
+                result = 0.5f;
+                hasZeroValue = true;
+            }
+
+            if (!hasZeroValue) {
+                if (imageWidth <= imageHeight) {
+                    result = (float) viewWidth / imageWidth;
+                } else {
+                    result = (float) viewHeight / imageHeight;
+                }
+            }
+
+            if (!hasZeroValue) {
+                if ((float) imageHeight / imageWidth > 1.5f) {
+                    // scale at top
+                    mImageView
+                            .animateScaleAndCenter(result, new PointF(imageWidth / 2, 0))
+                            .withEasing(SubsamplingScaleImageView.EASE_OUT_QUAD)
+                            .start();
+                } else {
+                    // scale at center
+                    mImageView
+                            .animateScaleAndCenter(result,
+                                    new PointF(viewWidth / 2, viewHeight / 2))
+                            .withEasing(SubsamplingScaleImageView.EASE_OUT_QUAD)
+                            .start();
+                }
+            }
+
+            // `对结果进行放大裁定，防止计算结果跟双击放大结果过于相近`
+            if (Math.abs(result - 0.1) < 0.2f) {
+                result += 0.2f;
+            }
+
+            mImageView.setDoubleTapZoomScale(result);
+        }
+
+        @Override
+        public void onImageLoaded() {
+
+        }
+
+        @Override
+        public void onPreviewLoadError(Exception e) {
+
+        }
+
+        @Override
+        public void onImageLoadError(Exception e) {
+
+        }
+
+        @Override
+        public void onTileLoadError(Exception e) {
+
+        }
+
+        @Override
+        public void onPreviewReleased() {
+
+        }
+    };
+
+    private ImageSaveCallback mImageSaveCallback;
+    private File mCurrentImageFile;
 
     public BigImageView(Context context) {
         this(context, null);
@@ -70,10 +155,76 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 ViewGroup.LayoutParams.MATCH_PARENT);
         mImageView.setLayoutParams(params);
         mImageView.setMinimumTileDpi(160);
+        mImageView.setOnImageEventListener(mEventListener);
 
         mImageLoader = BigImageViewer.imageLoader();
 
         mTempImages = new ArrayList<>();
+    }
+
+    @Override
+    public void setOnClickListener(OnClickListener listener) {
+        mImageView.setOnClickListener(listener);
+    }
+
+    @Override
+    public void setOnLongClickListener(OnLongClickListener listener) {
+        mImageView.setOnLongClickListener(listener);
+    }
+
+    public void setImageSaveCallback(ImageSaveCallback imageSaveCallback) {
+        mImageSaveCallback = imageSaveCallback;
+    }
+
+    public void saveImageIntoGallery() {
+        if (mCurrentImageFile == null) {
+            if (mImageSaveCallback != null) {
+                mImageSaveCallback.onFail(new IllegalStateException("image not downloaded yet"));
+            }
+
+            return;
+        }
+
+        RxPermissions.getInstance(getContext())
+                .request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean grant) throws Exception {
+                        if (grant) {
+                            doSaveImageIntoGallery();
+                        } else {
+                            if (mImageSaveCallback != null) {
+                                mImageSaveCallback.onFail(
+                                        new RuntimeException("Permission denied"));
+                            }
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        if (mImageSaveCallback != null) {
+                            mImageSaveCallback.onFail(throwable);
+                        }
+                    }
+                });
+    }
+
+    private void doSaveImageIntoGallery() {
+        try {
+            String result = MediaStore.Images.Media.insertImage(getContext().getContentResolver(),
+                    mCurrentImageFile.getAbsolutePath(), mCurrentImageFile.getName(), "");
+            if (mImageSaveCallback != null) {
+                if (!TextUtils.isEmpty(result)) {
+                    mImageSaveCallback.onSuccess(result);
+                } else {
+                    mImageSaveCallback.onFail(new RuntimeException("saveImageIntoGallery fail"));
+                }
+            }
+        } catch (FileNotFoundException e) {
+            if (mImageSaveCallback != null) {
+                mImageSaveCallback.onFail(e);
+            }
+        }
     }
 
     @Override
@@ -97,6 +248,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void onCacheHit(File image) {
         Log.d("BigImageView", "onCacheHit " + image);
 
+        mCurrentImageFile = image;
         doShowImage(image);
     }
 
@@ -105,6 +257,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void onCacheMiss(final File image) {
         Log.d("BigImageView", "onCacheMiss " + image);
 
+        mCurrentImageFile = image;
         mTempImages.add(image);
         post(new Runnable() {
             @Override
