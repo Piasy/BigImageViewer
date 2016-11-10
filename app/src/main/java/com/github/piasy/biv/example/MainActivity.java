@@ -25,5 +25,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, GlideLoaderActivity.class));
             }
         });
+        findViewById(R.id.mLongImage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, LongImageActivity.class));
+            }
+        });
     }
 }

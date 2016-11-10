@@ -19,6 +19,8 @@
         </activity>
         <activity android:name=".GlideLoaderActivity">
         </activity>
+        <activity android:name=".LongImageActivity">
+        </activity>
     </application>
 
 </manifest>

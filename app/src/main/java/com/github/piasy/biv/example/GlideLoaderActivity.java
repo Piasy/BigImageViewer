@@ -15,7 +15,7 @@ public class GlideLoaderActivity extends AppCompatActivity {
         BigImageViewer.initialize(GlideImageLoader.with(getApplicationContext()));
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_glide_loader);
+        setContentView(R.layout.activity_big_image);
 
         findViewById(R.id.mBtnLoad).setOnClickListener(new View.OnClickListener() {
             @Override
