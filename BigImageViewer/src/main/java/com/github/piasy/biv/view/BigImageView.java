@@ -54,6 +54,8 @@ import java.util.List;
  */
 
 public class BigImageView extends FrameLayout implements ImageLoader.Callback {
+    private static final int LONG_IMAGE_SIZE_RATIO = 2;
+
     private final SubsamplingScaleImageView mImageView;
 
     private final ImageLoader mImageLoader;
@@ -84,21 +86,12 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 }
             }
 
-            if (!hasZeroValue) {
-                if ((float) imageHeight / imageWidth > 1.5f) {
-                    // scale at top
-                    mImageView
-                            .animateScaleAndCenter(result, new PointF(imageWidth / 2, 0))
-                            .withEasing(SubsamplingScaleImageView.EASE_OUT_QUAD)
-                            .start();
-                } else {
-                    // scale at center
-                    mImageView
-                            .animateScaleAndCenter(result,
-                                    new PointF(viewWidth / 2, viewHeight / 2))
-                            .withEasing(SubsamplingScaleImageView.EASE_OUT_QUAD)
-                            .start();
-                }
+            if (!hasZeroValue && (float) imageHeight / imageWidth > LONG_IMAGE_SIZE_RATIO) {
+                // scale at top
+                mImageView
+                        .animateScaleAndCenter(result, new PointF(imageWidth / 2, 0))
+                        .withEasing(SubsamplingScaleImageView.EASE_OUT_QUAD)
+                        .start();
             }
 
             // `对结果进行放大裁定，防止计算结果跟双击放大结果过于相近`
