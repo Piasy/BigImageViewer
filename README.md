@@ -10,8 +10,6 @@ Big image viewer supporting pan and zoom, with very little memory usage and full
 
 ![demo](art/fresco_big_image_viewer_demo.gif)
 
-![long image support](art/fresco_big_image_viewer_long_image.gif)
-
 ## Usage
 
 ### Dependency
@@ -106,7 +104,7 @@ This library show big image with Subsampling Scale Image View, so it only uses v
 
 Memory usage of different libraries:
 
-| \- | PhotoDraweeView | FrescoImageViewer | FrescoBigImageViewer |
+| \- | PhotoDraweeView | FrescoImageViewer | BigImageViewer |
 | ------| ------ | ------ | ------ |
 | 4135\*5134 | 80MB | 80MB | 2~20 MB |
 
@@ -116,11 +114,11 @@ Memory usage of different libraries:
 + [x] Save image file to gallery
 + [x] Optimize long image showing effect, thanks for [razerdp](https://github.com/razerdp)
 + [x] Optimize "double tap to zoom" effect, thanks for [razerdp](https://github.com/razerdp)
-+ [ ] PicassoImageLoader, track [this issue](https://github.com/square/picasso/issues/506)
-+ [ ] Loading animation
-+ [ ] Downloading progress
-+ [ ] Thumbnail support
++ [x] Loading animation
++ [x] Downloading progress
++ [x] Thumbnail support
 + [ ] Fail image
 + [ ] Retry when fail
++ [ ] PicassoImageLoader, track [this issue](https://github.com/square/picasso/issues/506)
 
 Those features are offered by image load libraries, and they should be easy to implement, but I don't have enough time currently. So your contributions are welcome!

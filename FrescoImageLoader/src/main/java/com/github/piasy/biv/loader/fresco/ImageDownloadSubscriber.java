@@ -44,8 +44,17 @@ public abstract class ImageDownloadSubscriber
         extends BaseDataSubscriber<CloseableReference<PooledByteBuffer>> {
     private final File mTempFile;
 
+    private volatile boolean mFinished;
+
     public ImageDownloadSubscriber(Context context) {
         mTempFile = new File(context.getCacheDir(), "" + System.currentTimeMillis() + ".png");
+    }
+
+    @Override
+    public void onProgressUpdate(DataSource<CloseableReference<PooledByteBuffer>> dataSource) {
+        if (!mFinished) {
+            onProgress((int) (dataSource.getProgress() * 100));
+        }
     }
 
     @Override
@@ -63,6 +72,7 @@ public abstract class ImageDownloadSubscriber
             outputStream = new FileOutputStream(mTempFile);
             IOUtils.copy(inputStream, outputStream);
 
+            mFinished = true;
             onSuccess(mTempFile);
         } catch (IOException e) {
             onFail(e);
@@ -74,8 +84,12 @@ public abstract class ImageDownloadSubscriber
 
     @Override
     protected void onFailureImpl(DataSource<CloseableReference<PooledByteBuffer>> dataSource) {
+        mFinished = true;
         onFail(new RuntimeException("onFailureImpl"));
     }
+
+    @WorkerThread
+    protected abstract void onProgress(int progress);
 
     @WorkerThread
     protected abstract void onSuccess(File image);
