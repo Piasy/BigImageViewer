@@ -58,8 +58,19 @@ BigImageViewer.initialize(GlideImageLoader.with(appContext));
 
 ``` java
 BigImageView bigImageView = (BigImageView) findViewById(R.id.mBigImage);
-bigImageView.showImage(Uri.parse("http://code2png.babits.top/images/code_1477885912.cpp.png"));
+bigImageView.showImage(Uri.parse(url));
+
+// you can show thumbnail before the big image is loaded
+bigImageView.showImage(Uri.parse(thumbnail), Uri.parse(url));
 ```
+
+### Downloading progress
+
+``` java
+bigImageView.setProgressIndicator(new ProgressPieIndicator());
+```
+
+There is one built-in indicator, `ProgressPieIndicator`, you can implement your own indicator easily, [learn by example](/ProgressPieIndicator).
 
 ### Prefetch
 
