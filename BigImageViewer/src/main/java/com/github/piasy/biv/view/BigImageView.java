@@ -26,7 +26,6 @@ package com.github.piasy.biv.view;
 
 import android.Manifest;
 import android.content.Context;
-import android.graphics.PointF;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.UiThread;
@@ -34,13 +33,16 @@ import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.BigImageViewer;
+import com.github.piasy.biv.indicator.ProgressIndicator;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -54,82 +56,30 @@ import java.util.List;
  */
 
 public class BigImageView extends FrameLayout implements ImageLoader.Callback {
-    private static final int LONG_IMAGE_SIZE_RATIO = 2;
-
     private final SubsamplingScaleImageView mImageView;
 
     private final ImageLoader mImageLoader;
-
     private final List<File> mTempImages;
-    // credit: https://github.com/Piasy/BigImageViewer/issues/2
-    private final SubsamplingScaleImageView.OnImageEventListener mEventListener
-            = new SubsamplingScaleImageView.OnImageEventListener() {
-        @Override
-        public void onReady() {
-            float result = 0.5f;
-            int imageWidth = mImageView.getSWidth();
-            int imageHeight = mImageView.getSHeight();
-            int viewWidth = mImageView.getWidth();
-            int viewHeight = mImageView.getHeight();
 
-            boolean hasZeroValue = false;
-            if (imageWidth == 0 || imageHeight == 0 || viewWidth == 0 || viewHeight == 0) {
-                result = 0.5f;
-                hasZeroValue = true;
-            }
+    private View mProgressIndicatorView;
+    private View mThumbnailView;
 
-            if (!hasZeroValue) {
-                if (imageWidth <= imageHeight) {
-                    result = (float) viewWidth / imageWidth;
-                } else {
-                    result = (float) viewHeight / imageHeight;
-                }
-            }
-
-            if (!hasZeroValue && (float) imageHeight / imageWidth > LONG_IMAGE_SIZE_RATIO) {
-                // scale at top
-                mImageView
-                        .animateScaleAndCenter(result, new PointF(imageWidth / 2, 0))
-                        .withEasing(SubsamplingScaleImageView.EASE_OUT_QUAD)
-                        .start();
-            }
-
-            // `对结果进行放大裁定，防止计算结果跟双击放大结果过于相近`
-            if (Math.abs(result - 0.1) < 0.2f) {
-                result += 0.2f;
-            }
-
-            mImageView.setDoubleTapZoomScale(result);
-        }
-
-        @Override
-        public void onImageLoaded() {
-
-        }
-
-        @Override
-        public void onPreviewLoadError(Exception e) {
-
-        }
-
-        @Override
-        public void onImageLoadError(Exception e) {
-
-        }
-
-        @Override
-        public void onTileLoadError(Exception e) {
-
-        }
-
-        @Override
-        public void onPreviewReleased() {
-
-        }
-    };
-
+    private Disposable mPermissionRequest;
     private ImageSaveCallback mImageSaveCallback;
     private File mCurrentImageFile;
+    private Uri mThumbnail;
+
+    private ProgressIndicator mProgressIndicator;
+    private final ProgressNotifyRunnable mProgressNotifyRunnable
+            = new ProgressNotifyRunnable() {
+        @Override
+        public void run() {
+            if (mProgressIndicator != null) {
+                mProgressIndicator.onProgress(mProgress);
+                notified();
+            }
+        }
+    };
 
     public BigImageView(Context context) {
         this(context, null);
@@ -148,7 +98,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 ViewGroup.LayoutParams.MATCH_PARENT);
         mImageView.setLayoutParams(params);
         mImageView.setMinimumTileDpi(160);
-        mImageView.setOnImageEventListener(mEventListener);
+        mImageView.setOnImageEventListener(new DisplayOptimizeListener(mImageView));
 
         mImageLoader = BigImageViewer.imageLoader();
 
@@ -169,6 +119,14 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mImageSaveCallback = imageSaveCallback;
     }
 
+    public void setProgressIndicator(ProgressIndicator progressIndicator) {
+        mProgressIndicator = progressIndicator;
+    }
+
+    public String currentImageFile() {
+        return mCurrentImageFile == null ? "" : mCurrentImageFile.getAbsolutePath();
+    }
+
     public void saveImageIntoGallery() {
         if (mCurrentImageFile == null) {
             if (mImageSaveCallback != null) {
@@ -178,8 +136,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             return;
         }
 
-        RxPermissions.getInstance(getContext())
-                .request(Manifest.permission.READ_EXTERNAL_STORAGE)
+        disposePermissionRequest();
+        mPermissionRequest = RxPermissions.getInstance(getContext())
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean grant) throws Exception {
@@ -220,6 +179,13 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         }
     }
 
+    private void disposePermissionRequest() {
+        if (mPermissionRequest != null && !mPermissionRequest.isDisposed()) {
+            mPermissionRequest.dispose();
+            mPermissionRequest = null;
+        }
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -228,11 +194,20 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             mTempImages.get(i).delete();
         }
         mTempImages.clear();
+        disposePermissionRequest();
     }
 
     public void showImage(Uri uri) {
         Log.d("BigImageView", "showImage " + uri);
 
+        mThumbnail = Uri.EMPTY;
+        mImageLoader.loadImage(uri, this);
+    }
+
+    public void showImage(Uri thumbnail, Uri uri) {
+        Log.d("BigImageView", "showImage with thumbnail " + thumbnail + ", " + uri);
+
+        mThumbnail = thumbnail;
         mImageLoader.loadImage(uri, this);
     }
 
@@ -256,6 +231,52 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             @Override
             public void run() {
                 doShowImage(image);
+            }
+        });
+    }
+
+    @WorkerThread
+    @Override
+    public void onStart() {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if (mThumbnail != Uri.EMPTY) {
+                    mThumbnailView = mImageLoader.showThumbnail(BigImageView.this, mThumbnail);
+                    addView(mThumbnailView);
+                }
+
+                if (mProgressIndicator != null) {
+                    mProgressIndicatorView = mProgressIndicator.getView(BigImageView.this);
+                    addView(mProgressIndicatorView);
+                    mProgressIndicator.onStart();
+                }
+            }
+        });
+    }
+
+    @WorkerThread
+    @Override
+    public void onProgress(final int progress) {
+        if (mProgressIndicator != null && mProgressNotifyRunnable.update(progress)) {
+            post(mProgressNotifyRunnable);
+        }
+    }
+
+    @WorkerThread
+    @Override
+    public void onFinish() {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if (mThumbnail != Uri.EMPTY) {
+                    mThumbnailView.setVisibility(GONE);
+                }
+
+                if (mProgressIndicator != null) {
+                    mProgressIndicator.onFinish();
+                    mProgressIndicatorView.setVisibility(GONE);
+                }
             }
         });
     }
