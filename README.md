@@ -50,7 +50,7 @@ BigImageViewer.initialize(GlideImageLoader.with(appContext));
 ### Layout
 
 ``` xml
-<com.github.piasy.biv.BigImageView
+<com.github.piasy.biv.view.BigImageView
         android:id="@+id/mBigImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
