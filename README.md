@@ -120,6 +120,8 @@ They both support pan and zoom. PhotoDraweeView and FrescoImageViewer both use F
 
 This library show big image with Subsampling Scale Image View, so it only uses very little memory. And this library support using different image load libraries, so it's full featured!
 
+If you are interested in how does this library work, you can refer to [this issue](https://github.com/Piasy/BigImageViewer/issues/8), and [Subsampling Scale Image View](https://github.com/davemorrissey/subsampling-scale-image-view).
+
 ## Performance
 
 Memory usage of different libraries:
