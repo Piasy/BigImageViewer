@@ -106,6 +106,12 @@ bigImageView.setImageSaveCallback(new ImageSaveCallback() {
 bigImageView.saveImageIntoGallery();
 ```
 
+### Get current image file
+
+``` java
+String path = bigImageView.currentImageFile(); // only valid when image file is downloaded.
+```
+
 ## Why another big image viewer?
 
 There are several big image viewer libraries, [PhotoDraweeView](https://github.com/ongakuer/PhotoDraweeView), [FrescoImageViewer](https://github.com/stfalcon-studio/FrescoImageViewer), and [Subsampling Scale Image View](https://github.com/davemorrissey/subsampling-scale-image-view).
