@@ -17,7 +17,9 @@ Big image viewer supporting pan and zoom, with very little memory usage and full
 ``` gradle
 allprojects {
     repositories {
-        jcenter()
+        maven {
+            url  "http://dl.bintray.com/piasy/maven"
+        }
     }
 }
 
