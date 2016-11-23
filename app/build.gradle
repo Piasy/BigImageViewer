@@ -46,8 +46,14 @@ android {
 
 dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.ext.androidSupportSdkVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.ext.androidSupportSdkVersion"
 
-    compile 'com.afollestad.material-dialogs:core:0.9.0.2'
+    compile('com.afollestad.material-dialogs:core:0.9.0.2') {
+        exclude module: 'support-v4'
+        exclude module: 'appcompat-v7'
+        exclude module: 'recyclerview-v7'
+        exclude module: 'support-annotations'
+    }
 
     compile project(':BigImageViewer')
     compile project(':FrescoImageLoader')
