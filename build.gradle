@@ -70,8 +70,8 @@ ext {
     androidCompileSdkVersion = 24
     androidBuildToolsVersion = '25.0.0'
     androidSupportSdkVersion = '25.0.0'
-    minSdkVersion = 16
-    targetSdkVersion = 24
+    minSdkVersion = 14
+    targetSdkVersion = 25
 
     frescoVersion = '0.14.1'
     glideVersion = '3.7.0'
