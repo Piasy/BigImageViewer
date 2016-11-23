@@ -269,12 +269,15 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         post(new Runnable() {
             @Override
             public void run() {
-                if (mThumbnail != Uri.EMPTY) {
+                if (mThumbnailView != null) {
                     mThumbnailView.setVisibility(GONE);
                 }
 
                 if (mProgressIndicator != null) {
                     mProgressIndicator.onFinish();
+                }
+
+                if (mProgressIndicatorView != null) {
                     mProgressIndicatorView.setVisibility(GONE);
                 }
             }
