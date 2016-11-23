@@ -1,5 +1,7 @@
 # Change log
 
++ v1.2.2
+  - Fix #16
 + v1.2.1
   - Change minSdkVersion to 10
 + v1.2.0
