@@ -87,6 +87,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         }
     };
     private DisplayOptimizeListener mDisplayOptimizeListener;
+    private int mInitScaleType;
 
     public BigImageView(Context context) {
         this(context, null);
@@ -101,7 +102,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         TypedArray array = context.getTheme()
                 .obtainStyledAttributes(attrs, R.styleable.BigImageView, defStyleAttr, 0);
-        int initScaleType = array.getInteger(R.styleable.BigImageView_initScaleType,
+        mInitScaleType = array.getInteger(R.styleable.BigImageView_initScaleType,
                 INIT_SCALE_TYPE_CENTER_INSIDE);
         array.recycle();
 
@@ -115,7 +116,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mDisplayOptimizeListener = new DisplayOptimizeListener(mImageView);
         mImageView.setOnImageEventListener(mDisplayOptimizeListener);
 
-        setInitScaleType(initScaleType);
+        setInitScaleType(mInitScaleType);
 
         mImageLoader = BigImageViewer.imageLoader();
 
@@ -133,6 +134,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     public void setInitScaleType(int initScaleType) {
+        mInitScaleType = initScaleType;
         switch (initScaleType) {
             case INIT_SCALE_TYPE_CENTER_CROP:
                 mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
@@ -276,7 +278,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             public void run() {
                 // why show thumbnail in onStart? because we may not need download it from internet
                 if (mThumbnail != Uri.EMPTY) {
-                    mThumbnailView = mImageLoader.showThumbnail(BigImageView.this, mThumbnail);
+                    mThumbnailView = mImageLoader.showThumbnail(BigImageView.this, mThumbnail,
+                            mInitScaleType);
                     addView(mThumbnailView);
                 }
 

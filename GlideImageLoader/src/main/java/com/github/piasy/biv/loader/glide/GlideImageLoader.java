@@ -88,9 +88,18 @@ public final class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public View showThumbnail(BigImageView parent, Uri thumbnail) {
+    public View showThumbnail(BigImageView parent, Uri thumbnail, int scaleType) {
         ImageView thumbnailView = (ImageView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.ui_glide_thumbnail, parent, false);
+        switch (scaleType) {
+            case BigImageView.INIT_SCALE_TYPE_CENTER_CROP:
+                thumbnailView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                break;
+            case BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE:
+                thumbnailView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            default:
+                break;
+        }
         mRequestManager
                 .load(thumbnail)
                 .into(thumbnailView);

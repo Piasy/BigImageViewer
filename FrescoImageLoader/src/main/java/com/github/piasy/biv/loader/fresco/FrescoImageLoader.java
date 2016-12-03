@@ -35,6 +35,8 @@ import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.DraweeConfig;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
 import com.facebook.imagepipeline.core.DefaultExecutorSupplier;
@@ -113,10 +115,24 @@ public final class FrescoImageLoader implements ImageLoader {
     }
 
     @Override
-    public View showThumbnail(BigImageView parent, Uri thumbnail) {
+    public View showThumbnail(BigImageView parent, Uri thumbnail, int scaleType) {
         SimpleDraweeView thumbnailView = (SimpleDraweeView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.ui_fresco_thumbnail, parent, false);
-        thumbnailView.setImageURI(thumbnail);
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(thumbnail)
+                .build();
+        switch (scaleType) {
+            case BigImageView.INIT_SCALE_TYPE_CENTER_CROP:
+                thumbnailView.getHierarchy()
+                        .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
+                break;
+            case BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE:
+                thumbnailView.getHierarchy()
+                        .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_INSIDE);
+            default:
+                break;
+        }
+        thumbnailView.setController(controller);
         return thumbnailView;
     }
 

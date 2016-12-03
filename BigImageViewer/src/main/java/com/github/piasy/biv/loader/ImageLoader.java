@@ -39,7 +39,7 @@ public interface ImageLoader {
 
     void loadImage(Uri uri, Callback callback);
 
-    View showThumbnail(BigImageView parent, Uri thumbnail);
+    View showThumbnail(BigImageView parent, Uri thumbnail, int scaleType);
 
     void prefetch(Uri uri);
 
