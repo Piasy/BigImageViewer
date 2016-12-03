@@ -31,9 +31,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
-import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 import com.github.piasy.biv.view.ImageSaveCallback;
 
@@ -41,8 +39,6 @@ public class LongImageActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        BigImageViewer.initialize(FrescoImageLoader.with(getApplicationContext()));
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_big_image);
 

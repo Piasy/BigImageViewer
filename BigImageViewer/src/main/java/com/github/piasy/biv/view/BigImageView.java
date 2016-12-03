@@ -26,6 +26,7 @@ package com.github.piasy.biv.view;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.UiThread;
@@ -39,6 +40,7 @@ import android.widget.FrameLayout;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.BigImageViewer;
+import com.github.piasy.biv.R;
 import com.github.piasy.biv.indicator.ProgressIndicator;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -56,6 +58,10 @@ import java.util.List;
  */
 
 public class BigImageView extends FrameLayout implements ImageLoader.Callback {
+    public static final int INIT_SCALE_TYPE_CENTER_INSIDE = 1;
+    public static final int INIT_SCALE_TYPE_CENTER_CROP = 2;
+    public static final int INIT_SCALE_TYPE_AUTO = 3;
+
     private final SubsamplingScaleImageView mImageView;
 
     private final ImageLoader mImageLoader;
@@ -80,6 +86,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             }
         }
     };
+    private DisplayOptimizeListener mDisplayOptimizeListener;
 
     public BigImageView(Context context) {
         this(context, null);
@@ -92,13 +99,23 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public BigImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
+        TypedArray array = context.getTheme()
+                .obtainStyledAttributes(attrs, R.styleable.BigImageView, defStyleAttr, 0);
+        int initScaleType = array.getInteger(R.styleable.BigImageView_initScaleType,
+                INIT_SCALE_TYPE_CENTER_INSIDE);
+        array.recycle();
+
         mImageView = new SubsamplingScaleImageView(context, attrs);
         addView(mImageView);
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         mImageView.setLayoutParams(params);
         mImageView.setMinimumTileDpi(160);
-        mImageView.setOnImageEventListener(new DisplayOptimizeListener(mImageView));
+
+        mDisplayOptimizeListener = new DisplayOptimizeListener(mImageView);
+        mImageView.setOnImageEventListener(mDisplayOptimizeListener);
+
+        setInitScaleType(initScaleType);
 
         mImageLoader = BigImageViewer.imageLoader();
 
@@ -113,6 +130,22 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     @Override
     public void setOnLongClickListener(OnLongClickListener listener) {
         mImageView.setOnLongClickListener(listener);
+    }
+
+    public void setInitScaleType(int initScaleType) {
+        switch (initScaleType) {
+            case INIT_SCALE_TYPE_CENTER_CROP:
+                mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
+                break;
+            case INIT_SCALE_TYPE_AUTO:
+                mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
+                break;
+            case INIT_SCALE_TYPE_CENTER_INSIDE:
+            default:
+                mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE);
+                break;
+        }
+        mDisplayOptimizeListener.setInitScaleType(initScaleType);
     }
 
     public void setImageSaveCallback(ImageSaveCallback imageSaveCallback) {
@@ -241,6 +274,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         post(new Runnable() {
             @Override
             public void run() {
+                // why show thumbnail in onStart? because we may not need download it from internet
                 if (mThumbnail != Uri.EMPTY) {
                     mThumbnailView = mImageLoader.showThumbnail(BigImageView.this, mThumbnail);
                     addView(mThumbnailView);

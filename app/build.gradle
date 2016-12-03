@@ -29,16 +29,37 @@ android {
     buildToolsVersion rootProject.ext.androidBuildToolsVersion
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 14
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.releaseVersionCode
         versionName rootProject.ext.releaseVersionName
 
         applicationId "com.github.piasy.biv.example"
+
+        vectorDrawables.useSupportLibrary = true
     }
+
+    signingConfigs {
+        develop {
+            storeFile file('OpenKey.jks')
+            storePassword '123456'
+            keyAlias '123456'
+            keyPassword '123456'
+        }
+    }
+
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
+            debuggable true
+            signingConfig signingConfigs.develop
+        }
+
+        release {
+            minifyEnabled true
+            debuggable false
+            shrinkResources true
+            signingConfig signingConfigs.develop
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

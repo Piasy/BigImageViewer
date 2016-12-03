@@ -1,5 +1,7 @@
 # Change log
 
++ v1.2.3
+  - add initScaleType
 + v1.2.2
   - Fix #16
 + v1.2.1

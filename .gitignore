@@ -6,3 +6,10 @@ bintray.properties
 .DS_Store
 **/build
 /captures
+
+.buckd
+.okbuck
+buck-out
+.buckconfig
+.buckconfig.local
+**/BUCK

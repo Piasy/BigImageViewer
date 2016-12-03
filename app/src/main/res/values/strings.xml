@@ -7,4 +7,22 @@
         <item>@string/scan_qr_code</item>
         <item>@string/save_image</item>
     </string-array>
+
+    <string name="scale_center_crop">centerCrop</string>
+    <string name="scale_center_inside">centerInside</string>
+    <string name="scale_auto">auto</string>
+    <string-array name="init_scale_type">
+        <item>@string/scale_center_crop</item>
+        <item>@string/scale_center_inside</item>
+        <item>@string/scale_auto</item>
+    </string-array>
+
+    <string name="size_small">small</string>
+    <string name="size_medium">medium</string>
+    <string name="size_big">big</string>
+    <string-array name="image_size">
+        <item>@string/size_small</item>
+        <item>@string/size_medium</item>
+        <item>@string/size_big</item>
+    </string-array>
 </resources>

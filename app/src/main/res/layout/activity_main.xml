@@ -24,4 +24,10 @@
             android:layout_height="wrap_content"
             android:text="long image"
             />
+    <Button
+            android:id="@+id/mScaleType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="scale type"
+            />
 </LinearLayout>

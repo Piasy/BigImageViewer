@@ -114,6 +114,28 @@ bigImageView.saveImageIntoGallery();
 String path = bigImageView.currentImageFile(); // only valid when image file is downloaded.
 ```
 
+### Init scale type
+
+``` xml
+<com.github.piasy.biv.view.BigImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:initScaleType="centerInside"
+        />
+```
+
+``` java
+mBigImageView.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_CROP);
+```
+
+| value | effect |
+| ------| ------ |
+| centerInside | default, Scale the image so that both dimensions of the image will be equal to or less than the corresponding dimension of the view. The image is then centered in the view. This is the default behaviour and best for galleries. |
+| centerCrop | Scale the image uniformly so that both dimensions of the image will be equal to or larger than the corresponding dimension of the view. The image is then centered in the view. |
+| auto | determine the max scale and min scale by image size and view size, fit the image to screen and centered when loaded. |
+
+You can try the example to checkout the differences! https://fir.im/BIV . Thanks for fir.im!
+
 ## Why another big image viewer?
 
 There are several big image viewer libraries, [PhotoDraweeView](https://github.com/ongakuer/PhotoDraweeView), [FrescoImageViewer](https://github.com/stfalcon-studio/FrescoImageViewer), and [Subsampling Scale Image View](https://github.com/davemorrissey/subsampling-scale-image-view).

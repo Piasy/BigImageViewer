@@ -33,6 +33,7 @@ buildscript {
 
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.uber:okbuck:0.10.2'
     }
 }
 
@@ -64,8 +65,8 @@ ext {
             'usage and full featured image loading choices. Powered by Subsampling Scale ' +
             'Image View, Fresco, Glide, and Picasso.'
     artifactLabels = ['big', 'image', 'viewer', 'Fresco', 'Glide', 'Picasso']
-    releaseVersionCode = 8
-    releaseVersionName = '1.2.2'
+    releaseVersionCode = 9
+    releaseVersionName = '1.2.3'
 
     androidCompileSdkVersion = 24
     androidBuildToolsVersion = '25.0.0'
@@ -78,3 +79,5 @@ ext {
     ssivVersion = '3.6.0'
     commonsVersion = '2.5'
 }
+
+apply plugin: 'com.uber.okbuck'
