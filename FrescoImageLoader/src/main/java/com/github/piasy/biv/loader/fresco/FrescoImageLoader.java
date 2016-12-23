@@ -24,10 +24,6 @@
 
 package com.github.piasy.biv.loader.fresco;
 
-import android.content.Context;
-import android.net.Uri;
-import android.view.LayoutInflater;
-import android.view.View;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
 import com.facebook.cache.disk.FileCache;
@@ -47,6 +43,12 @@ import com.facebook.imagepipeline.memory.PooledByteBuffer;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.view.BigImageView;
+
+import android.content.Context;
+import android.net.Uri;
+import android.view.LayoutInflater;
+import android.view.View;
+
 import java.io.File;
 
 /**
@@ -151,7 +153,8 @@ public final class FrescoImageLoader implements ImageLoader {
                 .getInstance()
                 .getEncodedCacheKey(request, false); // we don't need context, but avoid null
         File cacheFile = request.getSourceFile();
-        if (mainFileCache.hasKey(cacheKey)) {
+        // http://crashes.to/s/ee10638fb31
+        if (mainFileCache.hasKey(cacheKey) && mainFileCache.getResource(cacheKey) != null) {
             cacheFile = ((FileBinaryResource) mainFileCache.getResource(cacheKey)).getFile();
         }
         return cacheFile;
