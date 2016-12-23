@@ -1,5 +1,7 @@
 # Change log
 
++ v1.2.4
+  - fix crash, thanks YOLO
 + v1.2.3
   - add initScaleType
 + v1.2.2

@@ -23,17 +23,16 @@ allprojects {
     }
 }
 
-// NOTE that the artifact id has been changed!
-compile 'com.github.piasy:BigImageViewer:1.2.3'
+compile 'com.github.piasy:BigImageViewer:1.2.4'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.2.3'
+compile 'com.github.piasy:FrescoImageLoader:1.2.4'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.2.3'
+compile 'com.github.piasy:GlideImageLoader:1.2.4'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.2.3'
+compile 'com.github.piasy:ProgressPieIndicator:1.2.4'
 ```
 
 ### initialize
