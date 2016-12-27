@@ -24,6 +24,7 @@
 
 package com.github.piasy.biv.example;
 
+import android.Manifest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -34,23 +35,29 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
 import com.github.piasy.biv.view.BigImageView;
 import com.github.piasy.biv.view.ImageSaveCallback;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 public class LongImageActivity extends AppCompatActivity {
+
+    private BigImageView mBigImageView;
+    private Disposable mPermissionRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_big_image);
 
-        final BigImageView bigImageView = (BigImageView) findViewById(R.id.mBigImage);
-        bigImageView.setOnClickListener(new View.OnClickListener() {
+        mBigImageView = (BigImageView) findViewById(R.id.mBigImage);
+        mBigImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
 
-        bigImageView.setOnLongClickListener(new View.OnLongClickListener() {
+        mBigImageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 new MaterialDialog.Builder(LongImageActivity.this)
@@ -60,12 +67,12 @@ public class LongImageActivity extends AppCompatActivity {
                             public void onSelection(MaterialDialog dialog, View itemView,
                                     int position, CharSequence text) {
                                 if (TextUtils.equals(text, getString(R.string.save_image))) {
-                                    bigImageView.saveImageIntoGallery();
+                                    saveImage();
                                 } else if (TextUtils.equals(text,
                                         getString(R.string.scan_qr_code))) {
                                     Toast.makeText(LongImageActivity.this,
                                             "TODO: 10/11/2016 open source RxQrCode "
-                                            + bigImageView.currentImageFile(),
+                                            + mBigImageView.currentImageFile(),
                                             Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -75,7 +82,7 @@ public class LongImageActivity extends AppCompatActivity {
             }
         });
 
-        bigImageView.setImageSaveCallback(new ImageSaveCallback() {
+        mBigImageView.setImageSaveCallback(new ImageSaveCallback() {
             @Override
             public void onSuccess(String uri) {
                 Toast.makeText(LongImageActivity.this,
@@ -92,14 +99,47 @@ public class LongImageActivity extends AppCompatActivity {
             }
         });
 
-        bigImageView.setProgressIndicator(new ProgressPieIndicator());
+        mBigImageView.setProgressIndicator(new ProgressPieIndicator());
 
         findViewById(R.id.mBtnLoad).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bigImageView.showImage(Uri.parse(
+                mBigImageView.showImage(Uri.parse(
                         "http://ww1.sinaimg.cn/mw690/005Fj2RDgw1f9mvl4pivvj30c82ougw3.jpg"));
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        disposePermissionRequest();
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void saveImage() {
+        disposePermissionRequest();
+        mPermissionRequest = new RxPermissions(this)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean granted) throws Exception {
+                        if (granted) {
+                            mBigImageView.saveImageIntoGallery();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
+    }
+
+    private void disposePermissionRequest() {
+        if (mPermissionRequest != null) {
+            mPermissionRequest.dispose();
+        }
     }
 }

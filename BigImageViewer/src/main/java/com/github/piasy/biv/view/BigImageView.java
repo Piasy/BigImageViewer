@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
@@ -43,9 +44,6 @@ import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.R;
 import com.github.piasy.biv.indicator.ProgressIndicator;
 import com.github.piasy.biv.loader.ImageLoader;
-import com.tbruyelle.rxpermissions2.RxPermissions;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -70,7 +68,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private View mProgressIndicatorView;
     private View mThumbnailView;
 
-    private Disposable mPermissionRequest;
     private ImageSaveCallback mImageSaveCallback;
     private File mCurrentImageFile;
     private Uri mThumbnail;
@@ -162,6 +159,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         return mCurrentImageFile == null ? "" : mCurrentImageFile.getAbsolutePath();
     }
 
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void saveImageIntoGallery() {
         if (mCurrentImageFile == null) {
             if (mImageSaveCallback != null) {
@@ -171,32 +169,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             return;
         }
 
-        disposePermissionRequest();
-        mPermissionRequest = RxPermissions.getInstance(getContext())
-                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean grant) throws Exception {
-                        if (grant) {
-                            doSaveImageIntoGallery();
-                        } else {
-                            if (mImageSaveCallback != null) {
-                                mImageSaveCallback.onFail(
-                                        new RuntimeException("Permission denied"));
-                            }
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        if (mImageSaveCallback != null) {
-                            mImageSaveCallback.onFail(throwable);
-                        }
-                    }
-                });
-    }
-
-    private void doSaveImageIntoGallery() {
         try {
             String result = MediaStore.Images.Media.insertImage(getContext().getContentResolver(),
                     mCurrentImageFile.getAbsolutePath(), mCurrentImageFile.getName(), "");
@@ -214,13 +186,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         }
     }
 
-    private void disposePermissionRequest() {
-        if (mPermissionRequest != null && !mPermissionRequest.isDisposed()) {
-            mPermissionRequest.dispose();
-            mPermissionRequest = null;
-        }
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -229,7 +194,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             mTempImages.get(i).delete();
         }
         mTempImages.clear();
-        disposePermissionRequest();
     }
 
     public void showImage(Uri uri) {

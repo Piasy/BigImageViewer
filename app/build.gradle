@@ -23,13 +23,14 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.ofg.uptodate'
 
 android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion
     buildToolsVersion rootProject.ext.androidBuildToolsVersion
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.releaseVersionCode
         versionName rootProject.ext.releaseVersionName
@@ -69,12 +70,17 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.ext.androidSupportSdkVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.ext.androidSupportSdkVersion"
 
-    compile('com.afollestad.material-dialogs:core:0.9.0.2') {
+    compile('com.afollestad.material-dialogs:core:0.9.1.0') {
         exclude module: 'support-v4'
         exclude module: 'appcompat-v7'
         exclude module: 'recyclerview-v7'
         exclude module: 'support-annotations'
     }
+
+    compile('com.tbruyelle.rxpermissions2:rxpermissions:0.9.1') {
+        exclude module: 'rxjava'
+    }
+    compile 'io.reactivex.rxjava2:rxjava:2.0.3'
 
     compile project(':BigImageViewer')
     compile project(':FrescoImageLoader')
