@@ -35,14 +35,20 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
 import com.github.piasy.biv.view.BigImageView;
 import com.github.piasy.biv.view.ImageSaveCallback;
+import com.github.piasy.rxqrcode.RxQrCode;
+import com.google.zxing.Result;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import hu.akarnokd.rxjava.interop.RxJavaInterop;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class LongImageActivity extends AppCompatActivity {
 
     private BigImageView mBigImageView;
     private Disposable mPermissionRequest;
+    private Disposable mQrCodeDecode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +76,7 @@ public class LongImageActivity extends AppCompatActivity {
                                     saveImage();
                                 } else if (TextUtils.equals(text,
                                         getString(R.string.scan_qr_code))) {
-                                    Toast.makeText(LongImageActivity.this,
-                                            "TODO: 10/11/2016 open source RxQrCode "
-                                            + mBigImageView.currentImageFile(),
-                                            Toast.LENGTH_SHORT).show();
+                                    decodeQrCode();
                                 }
                             }
                         })
@@ -115,6 +118,30 @@ public class LongImageActivity extends AppCompatActivity {
         super.onDestroy();
 
         disposePermissionRequest();
+        disposeQrCodeDecode();
+    }
+
+    private void decodeQrCode() {
+        disposeQrCodeDecode();
+        mQrCodeDecode = RxJavaInterop
+                .toV2Observable(RxQrCode.scanFromPicture(mBigImageView.currentImageFile()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Result>() {
+                    @Override
+                    public void accept(Result result) throws Exception {
+                        Toast.makeText(LongImageActivity.this,
+                                "Found " + result.getText(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Toast.makeText(LongImageActivity.this,
+                                "Not found",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @SuppressWarnings("MissingPermission")
@@ -140,6 +167,12 @@ public class LongImageActivity extends AppCompatActivity {
     private void disposePermissionRequest() {
         if (mPermissionRequest != null) {
             mPermissionRequest.dispose();
+        }
+    }
+
+    private void disposeQrCodeDecode() {
+        if (mQrCodeDecode != null) {
+            mQrCodeDecode.dispose();
         }
     }
 }
