@@ -1,5 +1,8 @@
 # Change log
 
++ v1.2.5
+  - let users handle permission check
+  - animate to hide thumbnail image
 + v1.2.4
   - fix crash, thanks YOLO
 + v1.2.3
