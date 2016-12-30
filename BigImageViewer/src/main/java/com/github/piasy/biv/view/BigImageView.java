@@ -37,6 +37,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.widget.FrameLayout;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
@@ -270,8 +273,13 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         post(new Runnable() {
             @Override
             public void run() {
+                AnimationSet set = new AnimationSet(true);
+                AlphaAnimation animation = new AlphaAnimation(1, 0);
+                animation.setDuration(500);
+                animation.setFillAfter(true);
+                set.addAnimation(animation);
                 if (mThumbnailView != null) {
-                    mThumbnailView.setVisibility(GONE);
+                    mThumbnailView.setAnimation(set);
                 }
 
                 if (mProgressIndicator != null) {
@@ -279,8 +287,28 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 }
 
                 if (mProgressIndicatorView != null) {
-                    mProgressIndicatorView.setVisibility(GONE);
+                    mProgressIndicatorView.setAnimation(set);
                 }
+
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        if (mThumbnailView != null) {
+                            mThumbnailView.setVisibility(GONE);
+                        }
+                        if (mProgressIndicatorView != null) {
+                            mProgressIndicatorView.setVisibility(GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
             }
         });
     }
