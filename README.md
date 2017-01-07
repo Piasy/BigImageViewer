@@ -135,6 +135,11 @@ mBigImageView.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_CROP);
 
 You can try the example to checkout the differences! https://fir.im/BIV . Thanks for fir.im!
 
+## Caveats
+
++ Handle permission when you want to save image into gallery.
++ When you want load local image file, you can create the Uri via `Uri.fromFile`, but the path will be url encoded, and may cause the image loader fail to load it, consider using `Uri.parse("file://" + file.getAbsolutePath())`.
+
 ## Why another big image viewer?
 
 There are several big image viewer libraries, [PhotoDraweeView](https://github.com/ongakuer/PhotoDraweeView), [FrescoImageViewer](https://github.com/stfalcon-studio/FrescoImageViewer), and [Subsampling Scale Image View](https://github.com/davemorrissey/subsampling-scale-image-view).
@@ -162,6 +167,7 @@ Memory usage of different libraries:
 + [x] Loading animation
 + [x] Downloading progress
 + [x] Thumbnail support
++ [ ] Component to display image list, with memory optimization
 + [ ] Fail image
 + [ ] Retry when fail
 + [ ] PicassoImageLoader, track [this issue](https://github.com/square/picasso/issues/506)
