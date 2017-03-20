@@ -1,5 +1,9 @@
 # Change log
 
++ v1.2.7
+  - Allow disable display optimization, #35, #38
++ v1.2.6
+  - Fix #37
 + v1.2.5
   - let users handle permission check
   - animate to hide thumbnail image
