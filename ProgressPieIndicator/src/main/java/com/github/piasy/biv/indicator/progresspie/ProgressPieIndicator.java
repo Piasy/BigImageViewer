@@ -52,7 +52,7 @@ public class ProgressPieIndicator implements ProgressIndicator {
 
     @Override
     public void onProgress(int progress) {
-        if (progress < 0 || progress > 100) {
+        if (progress < 0 || progress > 100 || mProgressPieView == null) {
             return;
         }
         mProgressPieView.setProgress(progress);
