@@ -30,5 +30,6 @@
             <enum name="centerCrop" value="2"/>
             <enum name="auto" value="3"/>
         </attr>
+        <attr format="boolean" name="optimizeDisplay"/>
     </declare-styleable>
 </resources>

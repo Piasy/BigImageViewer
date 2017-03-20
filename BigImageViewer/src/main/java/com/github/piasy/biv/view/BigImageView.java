@@ -88,6 +88,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     };
     private DisplayOptimizeListener mDisplayOptimizeListener;
     private int mInitScaleType;
+    private boolean mOptimizeDisplay;
 
     public BigImageView(Context context) {
         this(context, null);
@@ -104,6 +105,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 .obtainStyledAttributes(attrs, R.styleable.BigImageView, defStyleAttr, 0);
         mInitScaleType = array.getInteger(R.styleable.BigImageView_initScaleType,
                 INIT_SCALE_TYPE_CENTER_INSIDE);
+        mOptimizeDisplay = array.getBoolean(R.styleable.BigImageView_optimizeDisplay, true);
         array.recycle();
 
         mImageView = new SubsamplingScaleImageView(context, attrs);
@@ -113,9 +115,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mImageView.setLayoutParams(params);
         mImageView.setMinimumTileDpi(160);
 
-        mDisplayOptimizeListener = new DisplayOptimizeListener(mImageView);
-        mImageView.setOnImageEventListener(mDisplayOptimizeListener);
-
+        setOptimizeDisplay(mOptimizeDisplay);
         setInitScaleType(mInitScaleType);
 
         mImageLoader = BigImageViewer.imageLoader();
@@ -147,7 +147,20 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE);
                 break;
         }
-        mDisplayOptimizeListener.setInitScaleType(initScaleType);
+        if (mDisplayOptimizeListener != null) {
+            mDisplayOptimizeListener.setInitScaleType(initScaleType);
+        }
+    }
+
+    public void setOptimizeDisplay(boolean optimizeDisplay) {
+        mOptimizeDisplay = optimizeDisplay;
+        if (mOptimizeDisplay) {
+            mDisplayOptimizeListener = new DisplayOptimizeListener(mImageView);
+            mImageView.setOnImageEventListener(mDisplayOptimizeListener);
+        } else {
+            mDisplayOptimizeListener = null;
+            mImageView.setOnImageEventListener(null);
+        }
     }
 
     public void setImageSaveCallback(ImageSaveCallback imageSaveCallback) {
@@ -200,10 +213,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     public void showImage(Uri uri) {
-        Log.d("BigImageView", "showImage " + uri);
-
-        mThumbnail = Uri.EMPTY;
-        mImageLoader.loadImage(uri, this);
+        showImage(Uri.EMPTY, uri);
     }
 
     public void showImage(Uri thumbnail, Uri uri) {
