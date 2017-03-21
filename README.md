@@ -55,8 +55,11 @@ BigImageViewer.initialize(GlideImageLoader.with(appContext));
         android:id="@+id/mBigImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:optimizeDisplay="false"
         />
 ```
+
+You can disable display optimization using `optimizeDisplay` attribute, or `BigImageView.setOptimizeDisplay(false)`. Which will disable animation for long image, and the switch between thumbnail and origin image.
 
 ### Java
 
