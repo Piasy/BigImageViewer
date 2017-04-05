@@ -26,11 +26,11 @@ package com.github.piasy.biv.loader.fresco;
 
 import android.content.Context;
 import android.support.annotation.WorkerThread;
+import com.facebook.common.memory.PooledByteBuffer;
+import com.facebook.common.memory.PooledByteBufferInputStream;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.BaseDataSubscriber;
 import com.facebook.datasource.DataSource;
-import com.facebook.imagepipeline.memory.PooledByteBuffer;
-import com.facebook.imagepipeline.memory.PooledByteBufferInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

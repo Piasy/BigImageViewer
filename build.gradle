@@ -29,12 +29,12 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.android.tools.build:gradle:2.3.1'
 
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
 
-        classpath 'com.ofg:uptodate-gradle-plugin:1.6.2'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.14.0'
     }
 }
 
@@ -78,7 +78,7 @@ ext {
     minSdkVersion = 10
     targetSdkVersion = 25
 
-    frescoVersion = '1.1.0'
+    frescoVersion = '1.2.0'
     glideVersion = '3.7.0'
     ssivVersion = '3.6.0'
     commonsVersion = '2.5'
