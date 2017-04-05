@@ -23,16 +23,16 @@ allprojects {
     }
 }
 
-compile 'com.github.piasy:BigImageViewer:1.2.7'
+compile 'com.github.piasy:BigImageViewer:1.2.8'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.2.7'
+compile 'com.github.piasy:FrescoImageLoader:1.2.8'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.2.7'
+compile 'com.github.piasy:GlideImageLoader:1.2.8'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.2.7'
+compile 'com.github.piasy:ProgressPieIndicator:1.2.8'
 ```
 
 ### initialize
