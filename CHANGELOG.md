@@ -1,5 +1,7 @@
 # Change log
 
++ v1.2.9
+  - Add access to the internal SSIV, #42
 + v1.2.8
   - Update fresco to v1.2.0, #41
 + v1.2.7

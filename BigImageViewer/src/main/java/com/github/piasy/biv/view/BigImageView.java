@@ -223,6 +223,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mImageLoader.loadImage(uri, this);
     }
 
+    public SubsamplingScaleImageView getSSIV() {
+        return mImageView;
+    }
+
     @UiThread
     @Override
     public void onCacheHit(File image) {

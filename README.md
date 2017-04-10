@@ -23,16 +23,16 @@ allprojects {
     }
 }
 
-compile 'com.github.piasy:BigImageViewer:1.2.8'
+compile 'com.github.piasy:BigImageViewer:1.2.9'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.2.8'
+compile 'com.github.piasy:FrescoImageLoader:1.2.9'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.2.8'
+compile 'com.github.piasy:GlideImageLoader:1.2.9'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.2.8'
+compile 'com.github.piasy:ProgressPieIndicator:1.2.9'
 ```
 
 ### initialize
@@ -135,6 +135,18 @@ mBigImageView.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_CROP);
 | centerInside | default, Scale the image so that both dimensions of the image will be equal to or less than the corresponding dimension of the view. The image is then centered in the view. This is the default behaviour and best for galleries. |
 | centerCrop | Scale the image uniformly so that both dimensions of the image will be equal to or larger than the corresponding dimension of the view. The image is then centered in the view. |
 | auto | determine the max scale and min scale by image size and view size, fit the image to screen and centered when loaded. |
+
+### Full customization
+
+You can get the SSIV instance through the method below:
+
+``` java
+public SubsamplingScaleImageView getSSIV() {
+    return mImageView;
+}
+```
+
+Then you can do anything you can imagine about SSIV :)
 
 You can try the example to checkout the differences! https://fir.im/BIV . Thanks for fir.im!
 
