@@ -27,6 +27,7 @@ package com.github.piasy.biv.example;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
 import com.github.piasy.biv.view.BigImageView;
@@ -49,5 +50,15 @@ public class GlideLoaderActivity extends AppCompatActivity {
                 );
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        long start = System.nanoTime();
+        App.fixLeakCanary696(getApplicationContext());
+        long end = System.nanoTime();
+        Log.w(App.TAG, "fixLeakCanary696: " + (end - start));
     }
 }
