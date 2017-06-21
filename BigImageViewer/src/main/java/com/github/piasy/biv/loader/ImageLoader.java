@@ -48,6 +48,9 @@ public interface ImageLoader {
         void onCacheHit(File image);
 
         @WorkerThread
+        void onFail();
+
+        @WorkerThread
         void onCacheMiss(File image);
 
         @WorkerThread

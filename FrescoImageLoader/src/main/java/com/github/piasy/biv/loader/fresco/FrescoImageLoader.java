@@ -108,6 +108,8 @@ public final class FrescoImageLoader implements ImageLoader {
                 @Override
                 protected void onFail(Throwable t) {
                     // TODO: 12/11/2016 fail
+                    // TODO: 21/06/2017 Use fail image
+                    callback.onFail();
                     t.printStackTrace();
                 }
             }, mExecutorSupplier.forBackgroundTasks());

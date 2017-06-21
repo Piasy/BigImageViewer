@@ -25,6 +25,7 @@
 package com.github.piasy.biv.loader.glide;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +69,11 @@ public final class GlideImageLoader implements ImageLoader {
                             GlideAnimation<? super File> glideAnimation) {
                         // we don't need delete this image file, so it behaves live cache hit
                         callback.onCacheHit(image);
+                    }
+
+                    @Override
+                    public void onLoadFailed(final Exception e, final Drawable errorDrawable) {
+                        callback.onFail();
                     }
 
                     @Override
