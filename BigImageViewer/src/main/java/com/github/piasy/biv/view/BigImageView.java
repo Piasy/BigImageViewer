@@ -160,7 +160,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mImageView.setOnLongClickListener(listener);
     }
 
-    public void setFailureImageScaleType(ImageView.ScaleType scaleType) {
+    public void setFailureImageInitScaleType(ImageView.ScaleType scaleType) {
         mFailureImageScaleType = scaleType;
     }
 
