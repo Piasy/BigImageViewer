@@ -63,6 +63,6 @@ public interface ImageLoader {
         void onSuccess(File image);
 
         @UiThread
-        void onFail();
+        void onFail(Exception error);
     }
 }

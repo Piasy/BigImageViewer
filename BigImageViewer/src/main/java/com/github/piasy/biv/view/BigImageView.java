@@ -319,12 +319,12 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     @UiThread
     @Override
-    public void onFail() {
+    public void onFail(Exception error) {
         Log.d("BigImageView", "onFail: Setting fail image if there is one");
         showFailImage();
 
         if (mImageLoaderCallback != null) {
-            mImageLoaderCallback.onFail();
+            mImageLoaderCallback.onFail(error);
         }
     }
 

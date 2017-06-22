@@ -65,14 +65,14 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
                 bigImageView.setProgressIndicator(new ProgressPieIndicator());
                 bigImageView.setImageLoaderCallback(new ImageLoader.Callback() {
                     @Override
-                    public void onCacheHit(final File image) {
+                    public void onCacheHit(File image) {
                         final String message = "onCacheHit callback called, cached image " + image.getName();
                         Log.i("onCacheHit", message);
                         showToast(message);
                     }
 
                     @Override
-                    public void onCacheMiss(final File image) {
+                    public void onCacheMiss(File image) {
                         final String message = "onCacheMiss callback called, fetching image " + image.getName();
                         Log.i("onCacheMiss", message);
                         showToastOnUiThread(message);
@@ -87,7 +87,7 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onProgress(final int progress) {
+                    public void onProgress(int progress) {
                         final String message = "onProgress callback called, progress is " + progress;
                         Log.i("onProgress", message);
                     }
@@ -100,14 +100,14 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onSuccess(final File image) {
+                    public void onSuccess(File image) {
                         final String message = "onSuccess callback called";
                         Log.i("onSuccess", message);
                         showToast(message);
                     }
 
                     @Override
-                    public void onFail() {
+                    public void onFail(Exception e) {
                         final String message = "onFail callback called";
                         Log.i("onFail", message);
                         showToast(message);

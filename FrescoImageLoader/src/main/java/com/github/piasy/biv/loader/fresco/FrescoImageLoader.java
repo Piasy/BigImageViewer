@@ -119,13 +119,13 @@ public final class FrescoImageLoader implements ImageLoader {
                 }
 
                 @Override
-                protected void onFail(Throwable t) {
+                protected void onFail(final Throwable t) {
                     t.printStackTrace();
                     // Run on UI Thread
                     mAppHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callback.onFail();
+                            callback.onFail((Exception) t);
                         }
                     });
                 }

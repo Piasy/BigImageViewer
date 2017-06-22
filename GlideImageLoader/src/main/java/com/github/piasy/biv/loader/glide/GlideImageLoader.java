@@ -74,7 +74,7 @@ public final class GlideImageLoader implements ImageLoader {
 
                     @Override
                     public void onLoadFailed(final Exception e, final Drawable errorDrawable) {
-                        callback.onFail();
+                        callback.onFail(e);
                     }
 
                     @Override
