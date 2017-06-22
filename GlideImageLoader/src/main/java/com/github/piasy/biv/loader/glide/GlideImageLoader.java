@@ -69,6 +69,7 @@ public final class GlideImageLoader implements ImageLoader {
                             GlideAnimation<? super File> glideAnimation) {
                         // we don't need delete this image file, so it behaves live cache hit
                         callback.onCacheHit(image);
+                        callback.onSuccess(image);
                     }
 
                     @Override

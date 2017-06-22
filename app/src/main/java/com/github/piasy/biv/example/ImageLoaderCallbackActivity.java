@@ -39,14 +39,18 @@ import java.io.File;
 
 public class ImageLoaderCallbackActivity extends AppCompatActivity {
 
-    private void showToast(final String message) {
+    private void showToastOnUiThread(final String message) {
         runOnUiThread(new Runnable() {
             public void run() {
-                Toast.makeText(ImageLoaderCallbackActivity.this,
-                        message,
-                        Toast.LENGTH_SHORT).show();
+                showToast(message);
             }
         });
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(ImageLoaderCallbackActivity.this,
+                message,
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -71,14 +75,14 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
                     public void onCacheMiss(final File image) {
                         final String message = "onCacheMiss callback called, fetching image " + image.getName();
                         Log.i("onCacheMiss", message);
-                        showToast(message);
+                        showToastOnUiThread(message);
                     }
 
                     @Override
                     public void onStart() {
                         final String message = "onStart callback called";
                         Log.i("onStart", message);
-                        showToast(message);
+                        showToastOnUiThread(message);
 
                     }
 
@@ -92,6 +96,13 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
                     public void onFinish() {
                         final String message = "onFinish callback called";
                         Log.i("onFinish", message);
+                        showToastOnUiThread(message);
+                    }
+
+                    @Override
+                    public void onSuccess(final File image) {
+                        final String message = "onSuccess callback called";
+                        Log.i("onSuccess", message);
                         showToast(message);
                     }
 
@@ -102,6 +113,7 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
                         showToast(message);
                     }
                 });
+
                 bigImageView.showImage(
                         Uri.parse("https://images.unsplash.com/photo-1497613913923-e07e0f465b12?dpr=2&auto=compress,format&fit=crop&w=376"),
                         Uri.parse("https://images.unsplash.com/photo-1497613913923-e07e0f465b12")

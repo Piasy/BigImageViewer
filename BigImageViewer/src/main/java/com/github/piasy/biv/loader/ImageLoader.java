@@ -59,7 +59,10 @@ public interface ImageLoader {
         @WorkerThread
         void onFinish();
 
-        @WorkerThread
+        @UiThread
+        void onSuccess(File image);
+
+        @UiThread
         void onFail();
     }
 }
