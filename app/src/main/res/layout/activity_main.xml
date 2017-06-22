@@ -30,4 +30,10 @@
             android:layout_height="wrap_content"
             android:text="scale type"
             />
+    <Button
+        android:id="@+id/mImageLoaderCallback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="image loader callback"
+        />
 </LinearLayout>

@@ -60,5 +60,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ScaleTypeActivity.class));
             }
         });
+        findViewById(R.id.mImageLoaderCallback).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ImageLoaderCallbackActivity.class));
+            }
+        });
     }
 }
