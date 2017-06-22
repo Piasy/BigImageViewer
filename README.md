@@ -15,11 +15,12 @@ View](https://github.com/davemorrissey/subsampling-scale-image-view),
 ![memory usage](art/android_studio_memory_monitor.png)
 
 ![demo](art/fresco_big_image_viewer_demo.gif)
+<br />
 
 
-## Get started
+## Getting started
 
-### Add dependencies
+### Add the dependencies
 
 ``` gradle
 allprojects {
