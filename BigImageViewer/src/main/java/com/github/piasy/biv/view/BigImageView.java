@@ -165,7 +165,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     public void setFailureImage(Drawable failureImage) {
         // Failure image is not set
-        if (failureImage == null) return;
+        if (failureImage == null) {
+            return;
+        }
 
         if (mFailureImageView == null) {
             // Init failure image
@@ -428,7 +430,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     @UiThread
     private void showFailImage() {
         // Failure image is not set
-        if (mFailureImageView == null) return;
+        if (mFailureImageView == null) {
+            return;
+        }
 
         mFailureImageView.setVisibility(VISIBLE);
         mImageView.setVisibility(GONE);
