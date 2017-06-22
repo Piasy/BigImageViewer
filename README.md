@@ -9,15 +9,17 @@ View](https://github.com/davemorrissey/subsampling-scale-image-view),
 [Glide](https://github.com/bumptech/glide), and
 [Picasso](https://github.com/square/picasso).
 
+
 ## Demo
 
 ![memory usage](art/android_studio_memory_monitor.png)
 
 ![demo](art/fresco_big_image_viewer_demo.gif)
 
-## Usage
 
-### Dependency
+## Get started
+
+### Add dependencies
 
 ``` gradle
 allprojects {
@@ -40,7 +42,7 @@ compile 'com.github.piasy:GlideImageLoader:1.2.9'
 compile 'com.github.piasy:ProgressPieIndicator:1.2.9'
 ```
 
-### initialize
+### Initialize
 
 ``` java
 // MUST use app context to avoid memory leak!
@@ -54,7 +56,7 @@ BigImageViewer.initialize(GlideImageLoader.with(appContext));
 **Note that** if you've already used Fresco in your project, please change
 `Fresco.initialize` into `BigImageViewer.initialize`.
 
-### Layout
+### Add the BigImageView to your layout
 
 ``` xml
 <com.github.piasy.biv.view.BigImageView
@@ -71,17 +73,20 @@ You can disable display optimization using `optimizeDisplay` attribute, or
 `BigImageView.setOptimizeDisplay(false)`. Which will disable animation for long
 image, and the switch between thumbnail and origin image.
 
-### Java
+### Show the image
 
 ``` java
 BigImageView bigImageView = (BigImageView) findViewById(R.id.mBigImage);
 bigImageView.showImage(Uri.parse(url));
 
-// you can show thumbnail before the big image is loaded
+// Or show a thumbnail before the big image is loaded
 bigImageView.showImage(Uri.parse(thumbnail), Uri.parse(url));
 ```
 
-### Downloading progress
+
+## Usage
+
+### Download progress indicator
 
 ``` java
 bigImageView.setProgressIndicator(new ProgressPieIndicator());
@@ -183,6 +188,65 @@ Any valid [ImageView.ScaleType](https://developer.android.com/reference/android/
 Set to `ImageView.ScaleType.FIT_CENTER` by default. Ignored if there is no
 failure image set.
 
+### Image load callback
+
+You can handle the image load response by creating a new `ImageLoader.Callback`
+and overriding the key callbacks
+
+```java
+ImageLoader.Callback myImageLoaderCallback = new ImageLoader.Callback() {
+    @Override
+    public void onCacheHit(File image) {
+      // Image was found in the cache
+    }
+
+    @Override
+    public void onCacheMiss(File image) {
+      // Image was downloaded from the network
+    }
+
+    @Override
+    public void onStart() {
+      // Image download has started
+    }
+
+    @Override
+    public void onProgress(int progress) {
+      // Image download progress has changed
+    }
+
+    @Override
+    public void onFinish() {
+      // Image download has finished
+    }
+
+    @Override
+    public void onSuccess(File image) {
+      // Image was retrieved successfully (either from cache or network)
+    }
+
+    @Override
+    public void onFail(Exception error) {
+      // Image download failed
+    }
+}
+```
+
+Then setting it as the image load callback
+
+```java
+mBigImageView.setImageLoaderCallback(myImageLoaderCallback);
+```
+
+The `onSuccess(File image)` is always called after the image was  retrieved
+successfully whether from the cache or the network.
+
+**Note that** only `onSuccess(File image)` and `onFail(Exception error)` as well
+as `onCacheHit(File image)` callbacks run on the UI thread. All other callbacks
+run on a background (worker) thread.
+
+For an example see ImageLoaderCallbackActivity.java
+
 ### Full customization
 
 You can get the SSIV instance through the method below:
@@ -198,12 +262,14 @@ Then you can do anything you can imagine about SSIV :)
 You can try the example to checkout the differences! https://fir.im/BIV . Thanks
 for fir.im!
 
+
 ## Caveats
 
 + Handle permission when you want to save image into gallery.
 + When you want load local image file, you can create the Uri via
 `Uri.fromFile`, but the path will be url encoded, and may cause the image loader
 fail to load it, consider using `Uri.parse("file://" + file.getAbsolutePath())`.
+
 
 ## Why another big image viewer?
 
@@ -226,6 +292,7 @@ If you are interested in how does this library work, you can refer to [this
 issue](https://github.com/Piasy/BigImageViewer/issues/8), and [Subsampling Scale
 Image View](https://github.com/davemorrissey/subsampling-scale-image-view).
 
+
 ## Performance
 
 Memory usage of different libraries:
@@ -233,6 +300,7 @@ Memory usage of different libraries:
 | \- | PhotoDraweeView | FrescoImageViewer | BigImageViewer |
 | ------| ------ | ------ | ------ |
 | 4135\*5134 | 80MB | 80MB | 2~20 MB |
+
 
 ## Todo
 
