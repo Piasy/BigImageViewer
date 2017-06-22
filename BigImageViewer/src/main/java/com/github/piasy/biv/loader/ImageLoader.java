@@ -48,9 +48,6 @@ public interface ImageLoader {
         void onCacheHit(File image);
 
         @WorkerThread
-        void onFail();
-
-        @WorkerThread
         void onCacheMiss(File image);
 
         @WorkerThread
@@ -61,5 +58,8 @@ public interface ImageLoader {
 
         @WorkerThread
         void onFinish();
+
+        @WorkerThread
+        void onFail();
     }
 }

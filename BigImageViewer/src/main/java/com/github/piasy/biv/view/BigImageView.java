@@ -88,6 +88,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private ImageView mFailureImageView;
 
     private ImageSaveCallback mImageSaveCallback;
+    private ImageLoader.Callback mImageLoaderCallback;
     private File mCurrentImageFile;
     private Uri mThumbnail;
 
@@ -222,6 +223,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mProgressIndicator = progressIndicator;
     }
 
+    public void setImageLoaderCallback(ImageLoader.Callback imageLoaderCallback) {
+        mImageLoaderCallback = imageLoaderCallback;
+    }
+
     public String currentImageFile() {
         return mCurrentImageFile == null ? "" : mCurrentImageFile.getAbsolutePath();
     }
@@ -298,6 +303,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         mCurrentImageFile = image;
         doShowImage(image);
+
+        if (mImageLoaderCallback != null) {
+            mImageLoaderCallback.onCacheHit(image);
+        }
     }
 
     @WorkerThread
@@ -310,6 +319,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 showFailImage();
             }
         });
+
+        if (mImageLoaderCallback != null) {
+            mImageLoaderCallback.onFail();
+        }
     }
 
     @WorkerThread
@@ -325,6 +338,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 doShowImage(image);
             }
         });
+
+        if (mImageLoaderCallback != null) {
+            mImageLoaderCallback.onCacheMiss(image);
+        }
     }
 
     @WorkerThread
@@ -347,6 +364,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 }
             }
         });
+
+        if (mImageLoaderCallback != null) {
+            mImageLoaderCallback.onStart();
+        }
     }
 
     @WorkerThread
@@ -354,6 +375,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void onProgress(final int progress) {
         if (mProgressIndicator != null && mProgressNotifyRunnable.update(progress)) {
             post(mProgressNotifyRunnable);
+
+            if (mImageLoaderCallback != null) {
+                mImageLoaderCallback.onProgress(progress);
+            }
         }
     }
 
@@ -366,6 +391,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 doOnFinish();
             }
         });
+        if (mImageLoaderCallback != null) {
+            mImageLoaderCallback.onFinish();
+        }
     }
 
     @UiThread
