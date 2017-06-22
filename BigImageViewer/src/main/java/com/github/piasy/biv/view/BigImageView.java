@@ -58,7 +58,7 @@ import java.util.List;
 
 /**
  * Created by Piasy{github.com/Piasy} on 06/11/2016.
- *
+ * <p>
  * Use FrameLayout for extensibility.
  */
 
@@ -164,7 +164,11 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     public void setFailureImage(Drawable failureImage) {
+        // Failure image is not set
+        if (failureImage == null) return;
+
         if (mFailureImageView == null) {
+            // Init failure image
             mFailureImageView = new ImageView(getContext());
             mFailureImageView.setVisibility(GONE);
 
@@ -261,11 +265,24 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         showImage(Uri.EMPTY, uri);
     }
 
-    public void showImage(Uri thumbnail, Uri uri) {
+    public void showImage(final Uri thumbnail, final Uri uri) {
         Log.d("BigImageView", "showImage with thumbnail " + thumbnail + ", " + uri);
 
         mThumbnail = thumbnail;
         mImageLoader.loadImage(uri, this);
+
+        if (mFailureImageView != null) {
+            mFailureImageView.setVisibility(GONE);
+
+            mFailureImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    // Retry loading when failure image is clicked
+                    showImage(thumbnail, uri);
+                }
+            });
+        }
+
     }
 
     public SubsamplingScaleImageView getSSIV() {
@@ -410,10 +427,13 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     @UiThread
     private void showFailImage() {
+        // Failure image is not set
+        if (mFailureImageView == null) return;
+
         mFailureImageView.setVisibility(VISIBLE);
+        mImageView.setVisibility(GONE);
         if (mProgressIndicatorView != null) {
             mProgressIndicatorView.setVisibility(GONE);
         }
-        mImageView.setVisibility(GONE);
     }
 }
