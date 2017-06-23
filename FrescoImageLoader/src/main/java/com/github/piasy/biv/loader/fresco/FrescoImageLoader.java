@@ -26,10 +26,8 @@ package com.github.piasy.biv.loader.fresco;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
-
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
 import com.facebook.cache.disk.FileCache;
@@ -49,7 +47,6 @@ import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.view.BigImageView;
-
 import java.io.File;
 
 /**
@@ -59,12 +56,10 @@ import java.io.File;
 public final class FrescoImageLoader implements ImageLoader {
 
     private final Context mAppContext;
-    private final Handler mAppHandler;
     private final DefaultExecutorSupplier mExecutorSupplier;
 
     private FrescoImageLoader(Context appContext) {
         mAppContext = appContext;
-        mAppHandler = new Handler(appContext.getMainLooper());
         mExecutorSupplier = new DefaultExecutorSupplier(Runtime.getRuntime().availableProcessors());
     }
 
@@ -108,26 +103,13 @@ public final class FrescoImageLoader implements ImageLoader {
                 protected void onSuccess(final File image) {
                     callback.onFinish();
                     callback.onCacheMiss(image);
-                    // Run on UI Thread
-                    mAppHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onSuccess(image);
-                        }
-                    });
-
+                    callback.onSuccess(image);
                 }
 
                 @Override
                 protected void onFail(final Throwable t) {
                     t.printStackTrace();
-                    // Run on UI Thread
-                    mAppHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onFail((Exception) t);
-                        }
-                    });
+                    callback.onFail((Exception) t);
                 }
             }, mExecutorSupplier.forBackgroundTasks());
         }

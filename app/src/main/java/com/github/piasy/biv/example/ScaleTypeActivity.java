@@ -30,6 +30,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Spinner;
+import com.github.piasy.biv.BigImageViewer;
+import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 
 public class ScaleTypeActivity extends AppCompatActivity {
@@ -48,6 +50,9 @@ public class ScaleTypeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        BigImageViewer.initialize(FrescoImageLoader.with(getApplicationContext()));
+
         setContentView(R.layout.activity_scale_type);
 
         mScaleType = (Spinner) findViewById(R.id.mScaleType);

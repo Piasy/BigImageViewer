@@ -31,8 +31,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
 import com.github.piasy.biv.loader.ImageLoader;
+import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 
 import java.io.File;
@@ -56,6 +58,9 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        BigImageViewer.initialize(FrescoImageLoader.with(getApplicationContext()));
+
         setContentView(R.layout.activity_big_image);
 
         findViewById(R.id.mBtnLoad).setOnClickListener(new View.OnClickListener() {

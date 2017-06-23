@@ -15,3 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn java.lang.invoke.**
+-dontwarn com.github.piasy.cameracompat.**
+-dontwarn rx.**
+-dontwarn sun.misc.Unsafe

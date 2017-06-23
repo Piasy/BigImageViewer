@@ -1,5 +1,9 @@
 # Change log
 
++ v1.3.0
+  - Add events callback for library user
+  - Support failure image, and tap-to-reload
+  - `currentImageFile` -> `getCurrentImageFile`
 + v1.2.9
   - Add access to the internal SSIV, #42
 + v1.2.8

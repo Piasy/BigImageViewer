@@ -28,8 +28,6 @@ import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
-import com.github.piasy.biv.BigImageViewer;
-import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
 import com.squareup.leakcanary.LeakCanary;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -97,7 +95,5 @@ public class App extends Application {
             return;
         }
         LeakCanary.install(this);
-
-        BigImageViewer.initialize(FrescoImageLoader.with(this));
     }
 }

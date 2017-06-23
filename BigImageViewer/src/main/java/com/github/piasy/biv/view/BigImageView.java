@@ -32,7 +32,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -43,14 +42,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.R;
 import com.github.piasy.biv.indicator.ProgressIndicator;
 import com.github.piasy.biv.loader.ImageLoader;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -82,27 +79,18 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     private final ImageLoader mImageLoader;
     private final List<File> mTempImages;
+    private final ImageLoader.Callback mInternalCallback;
 
     private View mProgressIndicatorView;
     private View mThumbnailView;
     private ImageView mFailureImageView;
 
     private ImageSaveCallback mImageSaveCallback;
-    private ImageLoader.Callback mImageLoaderCallback;
+    private ImageLoader.Callback mUserCallback;
     private File mCurrentImageFile;
     private Uri mThumbnail;
 
     private ProgressIndicator mProgressIndicator;
-    private final ProgressNotifyRunnable mProgressNotifyRunnable
-            = new ProgressNotifyRunnable() {
-        @Override
-        public void run() {
-            if (mProgressIndicator != null) {
-                mProgressIndicator.onProgress(mProgress);
-                notified();
-            }
-        }
-    };
     private DisplayOptimizeListener mDisplayOptimizeListener;
     private int mInitScaleType;
     private ImageView.ScaleType mFailureImageScaleType;
@@ -125,10 +113,12 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 INIT_SCALE_TYPE_CENTER_INSIDE);
 
         if (array.hasValue(R.styleable.BigImageView_failureImage)) {
-            int scaleTypeIndex = array.getInteger(R.styleable.BigImageView_failureImageInitScaleType,
+            int scaleTypeIndex = array.getInteger(
+                    R.styleable.BigImageView_failureImageInitScaleType,
                     IMAGE_SCALE_TYPE_FIT_CENTER);
             mFailureImageScaleType = IMAGE_SCALE_TYPES[scaleTypeIndex];
-            Drawable mFailureImageDrawable = array.getDrawable(R.styleable.BigImageView_failureImage);
+            Drawable mFailureImageDrawable = array.getDrawable(
+                    R.styleable.BigImageView_failureImage);
             setFailureImage(mFailureImageDrawable);
         }
 
@@ -146,6 +136,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         setInitScaleType(mInitScaleType);
 
         mImageLoader = BigImageViewer.imageLoader();
+        mInternalCallback = ThreadedCallbacks.create(ImageLoader.Callback.class, this);
 
         mTempImages = new ArrayList<>();
     }
@@ -224,7 +215,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     public void setImageLoaderCallback(ImageLoader.Callback imageLoaderCallback) {
-        mImageLoaderCallback = imageLoaderCallback;
+        mUserCallback = imageLoaderCallback;
     }
 
     public File getCurrentImageFile() {
@@ -276,7 +267,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         Log.d("BigImageView", "showImage with thumbnail " + thumbnail + ", " + uri);
 
         mThumbnail = thumbnail;
-        mImageLoader.loadImage(uri, this);
+        mImageLoader.loadImage(uri, mInternalCallback);
 
         if (mFailureImageView != null) {
             mFailureImageView.setVisibility(GONE);
@@ -289,14 +280,12 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 }
             });
         }
-
     }
 
     public SubsamplingScaleImageView getSSIV() {
         return mImageView;
     }
 
-    @UiThread
     @Override
     public void onCacheHit(File image) {
         Log.d("BigImageView", "onCacheHit " + image);
@@ -304,98 +293,76 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mCurrentImageFile = image;
         doShowImage(image);
 
-        if (mImageLoaderCallback != null) {
-            mImageLoaderCallback.onCacheHit(image);
+        if (mUserCallback != null) {
+            mUserCallback.onCacheHit(image);
         }
     }
 
-    @UiThread
-    @Override
-    public void onSuccess(final File image) {
-        if (mImageLoaderCallback != null) {
-            mImageLoaderCallback.onSuccess(image);
-        }
-    }
-
-    @UiThread
-    @Override
-    public void onFail(Exception error) {
-        Log.d("BigImageView", "onFail: Setting fail image if there is one");
-        showFailImage();
-
-        if (mImageLoaderCallback != null) {
-            mImageLoaderCallback.onFail(error);
-        }
-    }
-
-    @WorkerThread
     @Override
     public void onCacheMiss(final File image) {
         Log.d("BigImageView", "onCacheMiss " + image);
 
         mCurrentImageFile = image;
         mTempImages.add(image);
-        post(new Runnable() {
-            @Override
-            public void run() {
-                doShowImage(image);
-            }
-        });
+        doShowImage(image);
 
-        if (mImageLoaderCallback != null) {
-            mImageLoaderCallback.onCacheMiss(image);
+        if (mUserCallback != null) {
+            mUserCallback.onCacheMiss(image);
         }
     }
 
-    @WorkerThread
     @Override
     public void onStart() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                // why show thumbnail in onStart? because we may not need download it from internet
-                if (mThumbnail != Uri.EMPTY) {
-                    mThumbnailView = mImageLoader.showThumbnail(BigImageView.this, mThumbnail,
-                            mInitScaleType);
-                    addView(mThumbnailView);
-                }
+        // why show thumbnail in onStart? because we may not need download it from internet
+        if (mThumbnail != Uri.EMPTY) {
+            mThumbnailView = mImageLoader.showThumbnail(BigImageView.this, mThumbnail,
+                    mInitScaleType);
+            addView(mThumbnailView);
+        }
 
-                if (mProgressIndicator != null) {
-                    mProgressIndicatorView = mProgressIndicator.getView(BigImageView.this);
-                    addView(mProgressIndicatorView);
-                    mProgressIndicator.onStart();
-                }
-            }
-        });
+        if (mProgressIndicator != null) {
+            mProgressIndicatorView = mProgressIndicator.getView(BigImageView.this);
+            addView(mProgressIndicatorView);
+            mProgressIndicator.onStart();
+        }
 
-        if (mImageLoaderCallback != null) {
-            mImageLoaderCallback.onStart();
+        if (mUserCallback != null) {
+            mUserCallback.onStart();
         }
     }
 
-    @WorkerThread
     @Override
     public void onProgress(final int progress) {
-        if (mProgressIndicator != null && mProgressNotifyRunnable.update(progress)) {
-            post(mProgressNotifyRunnable);
-
-            if (mImageLoaderCallback != null) {
-                mImageLoaderCallback.onProgress(progress);
-            }
+        if (mProgressIndicator != null) {
+            mProgressIndicator.onProgress(progress);
+        }
+        if (mUserCallback != null) {
+            mUserCallback.onProgress(progress);
         }
     }
 
-    @WorkerThread
     @Override
     public void onFinish() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                doOnFinish();
-            }
-        });
-        if (mImageLoaderCallback != null) {
-            mImageLoaderCallback.onFinish();
+        doOnFinish();
+        if (mUserCallback != null) {
+            mUserCallback.onFinish();
+        }
+    }
+
+    @Override
+    public void onSuccess(final File image) {
+        if (mUserCallback != null) {
+            mUserCallback.onSuccess(image);
+        }
+    }
+
+    @Override
+    public void onFail(Exception error) {
+        Log.d("BigImageView", "onFail: Setting fail image if there is one");
+        showFailImage();
+
+        if (mUserCallback != null) {
+            mUserCallback.onFail(error);
         }
     }
 

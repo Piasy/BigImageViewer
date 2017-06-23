@@ -30,16 +30,16 @@ allprojects {
     }
 }
 
-compile 'com.github.piasy:BigImageViewer:1.2.9'
+compile 'com.github.piasy:BigImageViewer:1.3.0'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.2.9'
+compile 'com.github.piasy:FrescoImageLoader:1.3.0'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.2.9'
+compile 'com.github.piasy:GlideImageLoader:1.3.0'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.2.9'
+compile 'com.github.piasy:ProgressPieIndicator:1.3.0'
 ```
 
 ### Initialize
@@ -131,7 +131,7 @@ bigImageView.saveImageIntoGallery();
 
 ``` java
 // only valid when image file is downloaded.
-String path = bigImageView.getCurrentImageFile();
+File path = bigImageView.getCurrentImageFile();
 ```
 
 ### Image init scale type
@@ -312,8 +312,8 @@ Memory usage of different libraries:
 + [x] Downloading progress
 + [x] Thumbnail support
 + [ ] Component to display image list, with memory optimization
-+ [ ] Fail image
-+ [ ] Retry when fail
++ [x] Fail image
++ [x] Retry when fail
 + [ ] PicassoImageLoader, track [this issue](https://github.com/square/picasso/issues/506)
 
 Those features are offered by image load libraries, and they should be easy to

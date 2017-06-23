@@ -32,7 +32,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
+import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 import com.github.piasy.biv.view.ImageSaveCallback;
 import com.github.piasy.rxqrcode.RxQrCode;
@@ -53,6 +55,9 @@ public class LongImageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        BigImageViewer.initialize(FrescoImageLoader.with(getApplicationContext()));
+
         setContentView(R.layout.activity_big_image);
 
         mBigImageView = (BigImageView) findViewById(R.id.mBigImage);
@@ -122,9 +127,13 @@ public class LongImageActivity extends AppCompatActivity {
     }
 
     private void decodeQrCode() {
+        if (mBigImageView.getCurrentImageFile() == null) {
+            return;
+        }
         disposeQrCodeDecode();
         mQrCodeDecode = RxJavaInterop
-                .toV2Observable(RxQrCode.scanFromPicture(mBigImageView.currentImageFile()))
+                .toV2Observable(RxQrCode.scanFromPicture(
+                        mBigImageView.getCurrentImageFile().getAbsolutePath()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Result>() {

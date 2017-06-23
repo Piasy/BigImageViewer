@@ -26,7 +26,6 @@ package com.github.piasy.biv.loader;
 
 import android.net.Uri;
 import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
 import android.view.View;
 import com.github.piasy.biv.view.BigImageView;
 import java.io.File;
@@ -43,26 +42,20 @@ public interface ImageLoader {
 
     void prefetch(Uri uri);
 
+    @UiThread
     interface Callback {
-        @UiThread
         void onCacheHit(File image);
 
-        @WorkerThread
         void onCacheMiss(File image);
 
-        @WorkerThread
         void onStart();
 
-        @WorkerThread
         void onProgress(int progress);
 
-        @WorkerThread
         void onFinish();
 
-        @UiThread
         void onSuccess(File image);
 
-        @UiThread
         void onFail(Exception error);
     }
 }
