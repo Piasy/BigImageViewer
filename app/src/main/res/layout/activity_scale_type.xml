@@ -11,6 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:initScaleType="centerInside"
+            app:failureImage="@drawable/ic_cloud_off_white"
             />
 
     <android.support.v7.widget.AppCompatSpinner

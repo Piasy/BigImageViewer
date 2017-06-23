@@ -11,6 +11,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:optimizeDisplay="false"
+            app:failureImage="@drawable/ic_cloud_off_white"
+            app:failureImageInitScaleType="center"
             />
 
     <Button

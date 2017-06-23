@@ -27,6 +27,7 @@ package com.github.piasy.biv.view;
 import android.Manifest;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresPermission;
@@ -41,12 +42,15 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.R;
 import com.github.piasy.biv.indicator.ProgressIndicator;
 import com.github.piasy.biv.loader.ImageLoader;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -54,7 +58,7 @@ import java.util.List;
 
 /**
  * Created by Piasy{github.com/Piasy} on 06/11/2016.
- *
+ * <p>
  * Use FrameLayout for extensibility.
  */
 
@@ -63,6 +67,17 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public static final int INIT_SCALE_TYPE_CENTER_CROP = 2;
     public static final int INIT_SCALE_TYPE_AUTO = 3;
 
+    public static final int IMAGE_SCALE_TYPE_FIT_CENTER = 2;
+    public static final ImageView.ScaleType[] IMAGE_SCALE_TYPES = {
+            ImageView.ScaleType.FIT_XY,
+            ImageView.ScaleType.FIT_START,
+            ImageView.ScaleType.FIT_CENTER,
+            ImageView.ScaleType.FIT_END,
+            ImageView.ScaleType.CENTER,
+            ImageView.ScaleType.CENTER_INSIDE,
+            ImageView.ScaleType.CENTER_CROP
+    };
+
     private final SubsamplingScaleImageView mImageView;
 
     private final ImageLoader mImageLoader;
@@ -70,8 +85,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     private View mProgressIndicatorView;
     private View mThumbnailView;
+    private ImageView mFailureImageView;
 
     private ImageSaveCallback mImageSaveCallback;
+    private ImageLoader.Callback mImageLoaderCallback;
     private File mCurrentImageFile;
     private Uri mThumbnail;
 
@@ -88,6 +105,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     };
     private DisplayOptimizeListener mDisplayOptimizeListener;
     private int mInitScaleType;
+    private ImageView.ScaleType mFailureImageScaleType;
     private boolean mOptimizeDisplay;
 
     public BigImageView(Context context) {
@@ -105,6 +123,15 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 .obtainStyledAttributes(attrs, R.styleable.BigImageView, defStyleAttr, 0);
         mInitScaleType = array.getInteger(R.styleable.BigImageView_initScaleType,
                 INIT_SCALE_TYPE_CENTER_INSIDE);
+
+        if (array.hasValue(R.styleable.BigImageView_failureImage)) {
+            int scaleTypeIndex = array.getInteger(R.styleable.BigImageView_failureImageInitScaleType,
+                    IMAGE_SCALE_TYPE_FIT_CENTER);
+            mFailureImageScaleType = IMAGE_SCALE_TYPES[scaleTypeIndex];
+            Drawable mFailureImageDrawable = array.getDrawable(R.styleable.BigImageView_failureImage);
+            setFailureImage(mFailureImageDrawable);
+        }
+
         mOptimizeDisplay = array.getBoolean(R.styleable.BigImageView_optimizeDisplay, true);
         array.recycle();
 
@@ -131,6 +158,31 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     @Override
     public void setOnLongClickListener(OnLongClickListener listener) {
         mImageView.setOnLongClickListener(listener);
+    }
+
+    public void setFailureImageInitScaleType(ImageView.ScaleType scaleType) {
+        mFailureImageScaleType = scaleType;
+    }
+
+    public void setFailureImage(Drawable failureImage) {
+        // Failure image is not set
+        if (failureImage == null) {
+            return;
+        }
+
+        if (mFailureImageView == null) {
+            // Init failure image
+            mFailureImageView = new ImageView(getContext());
+            mFailureImageView.setVisibility(GONE);
+
+            if (mFailureImageScaleType != null) {
+                mFailureImageView.setScaleType(mFailureImageScaleType);
+            }
+
+            addView(mFailureImageView);
+        }
+
+        mFailureImageView.setImageDrawable(failureImage);
     }
 
     public void setInitScaleType(int initScaleType) {
@@ -171,8 +223,12 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mProgressIndicator = progressIndicator;
     }
 
-    public String currentImageFile() {
-        return mCurrentImageFile == null ? "" : mCurrentImageFile.getAbsolutePath();
+    public void setImageLoaderCallback(ImageLoader.Callback imageLoaderCallback) {
+        mImageLoaderCallback = imageLoaderCallback;
+    }
+
+    public File getCurrentImageFile() {
+        return mCurrentImageFile;
     }
 
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -216,11 +272,24 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         showImage(Uri.EMPTY, uri);
     }
 
-    public void showImage(Uri thumbnail, Uri uri) {
+    public void showImage(final Uri thumbnail, final Uri uri) {
         Log.d("BigImageView", "showImage with thumbnail " + thumbnail + ", " + uri);
 
         mThumbnail = thumbnail;
         mImageLoader.loadImage(uri, this);
+
+        if (mFailureImageView != null) {
+            mFailureImageView.setVisibility(GONE);
+
+            mFailureImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    // Retry loading when failure image is clicked
+                    showImage(thumbnail, uri);
+                }
+            });
+        }
+
     }
 
     public SubsamplingScaleImageView getSSIV() {
@@ -234,6 +303,29 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         mCurrentImageFile = image;
         doShowImage(image);
+
+        if (mImageLoaderCallback != null) {
+            mImageLoaderCallback.onCacheHit(image);
+        }
+    }
+
+    @UiThread
+    @Override
+    public void onSuccess(final File image) {
+        if (mImageLoaderCallback != null) {
+            mImageLoaderCallback.onSuccess(image);
+        }
+    }
+
+    @UiThread
+    @Override
+    public void onFail(Exception error) {
+        Log.d("BigImageView", "onFail: Setting fail image if there is one");
+        showFailImage();
+
+        if (mImageLoaderCallback != null) {
+            mImageLoaderCallback.onFail(error);
+        }
     }
 
     @WorkerThread
@@ -249,6 +341,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 doShowImage(image);
             }
         });
+
+        if (mImageLoaderCallback != null) {
+            mImageLoaderCallback.onCacheMiss(image);
+        }
     }
 
     @WorkerThread
@@ -271,6 +367,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 }
             }
         });
+
+        if (mImageLoaderCallback != null) {
+            mImageLoaderCallback.onStart();
+        }
     }
 
     @WorkerThread
@@ -278,6 +378,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void onProgress(final int progress) {
         if (mProgressIndicator != null && mProgressNotifyRunnable.update(progress)) {
             post(mProgressNotifyRunnable);
+
+            if (mImageLoaderCallback != null) {
+                mImageLoaderCallback.onProgress(progress);
+            }
         }
     }
 
@@ -290,6 +394,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 doOnFinish();
             }
         });
+        if (mImageLoaderCallback != null) {
+            mImageLoaderCallback.onFinish();
+        }
     }
 
     @UiThread
@@ -347,5 +454,21 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     @UiThread
     private void doShowImage(File image) {
         mImageView.setImage(ImageSource.uri(Uri.fromFile(image)));
+        mFailureImageView.setVisibility(GONE);
+        mImageView.setVisibility(VISIBLE);
+    }
+
+    @UiThread
+    private void showFailImage() {
+        // Failure image is not set
+        if (mFailureImageView == null) {
+            return;
+        }
+
+        mFailureImageView.setVisibility(VISIBLE);
+        mImageView.setVisibility(GONE);
+        if (mProgressIndicatorView != null) {
+            mProgressIndicatorView.setVisibility(GONE);
+        }
     }
 }

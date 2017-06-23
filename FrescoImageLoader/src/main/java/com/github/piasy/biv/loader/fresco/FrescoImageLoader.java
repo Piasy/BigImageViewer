@@ -26,8 +26,10 @@ package com.github.piasy.biv.loader.fresco;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
+
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
 import com.facebook.cache.disk.FileCache;
@@ -47,6 +49,7 @@ import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.view.BigImageView;
+
 import java.io.File;
 
 /**
@@ -56,11 +59,12 @@ import java.io.File;
 public final class FrescoImageLoader implements ImageLoader {
 
     private final Context mAppContext;
+    private final Handler mAppHandler;
     private final DefaultExecutorSupplier mExecutorSupplier;
 
     private FrescoImageLoader(Context appContext) {
         mAppContext = appContext;
-
+        mAppHandler = new Handler(appContext.getMainLooper());
         mExecutorSupplier = new DefaultExecutorSupplier(Runtime.getRuntime().availableProcessors());
     }
 
@@ -86,6 +90,7 @@ public final class FrescoImageLoader implements ImageLoader {
         File localCache = getCacheFile(request);
         if (localCache.exists()) {
             callback.onCacheHit(localCache);
+            callback.onSuccess(localCache);
         } else {
             callback.onStart(); // ensure `onStart` is called before `onProgress` and `onFinish`
             callback.onProgress(0); // show 0 progress immediately
@@ -100,15 +105,29 @@ public final class FrescoImageLoader implements ImageLoader {
                 }
 
                 @Override
-                protected void onSuccess(File image) {
+                protected void onSuccess(final File image) {
                     callback.onFinish();
                     callback.onCacheMiss(image);
+                    // Run on UI Thread
+                    mAppHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onSuccess(image);
+                        }
+                    });
+
                 }
 
                 @Override
-                protected void onFail(Throwable t) {
-                    // TODO: 12/11/2016 fail
+                protected void onFail(final Throwable t) {
                     t.printStackTrace();
+                    // Run on UI Thread
+                    mAppHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onFail((Exception) t);
+                        }
+                    });
                 }
             }, mExecutorSupplier.forBackgroundTasks());
         }

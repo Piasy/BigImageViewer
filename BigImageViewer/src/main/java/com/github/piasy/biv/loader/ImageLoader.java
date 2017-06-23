@@ -58,5 +58,11 @@ public interface ImageLoader {
 
         @WorkerThread
         void onFinish();
+
+        @UiThread
+        void onSuccess(File image);
+
+        @UiThread
+        void onFail(Exception error);
     }
 }

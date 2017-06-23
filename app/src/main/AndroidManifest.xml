@@ -47,6 +47,8 @@
         </activity>
         <activity android:name=".ScaleTypeActivity">
         </activity>
+        <activity android:name=".ImageLoaderCallbackActivity">
+        </activity>
     </application>
 
 </manifest>
