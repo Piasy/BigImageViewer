@@ -231,6 +231,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         return mCurrentImageFile == null ? "" : mCurrentImageFile.getAbsolutePath();
     }
 
+    public File getCurrentImageFile() {
+        return mCurrentImageFile;
+    }
+
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void saveImageIntoGallery() {
         if (mCurrentImageFile == null) {
