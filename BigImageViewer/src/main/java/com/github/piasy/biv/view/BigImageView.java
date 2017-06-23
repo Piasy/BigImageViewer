@@ -227,10 +227,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mImageLoaderCallback = imageLoaderCallback;
     }
 
-    public String getCurrentImageFilePath() {
-        return mCurrentImageFile == null ? "" : mCurrentImageFile.getAbsolutePath();
-    }
-
     public File getCurrentImageFile() {
         return mCurrentImageFile;
     }

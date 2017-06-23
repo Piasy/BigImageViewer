@@ -131,7 +131,7 @@ bigImageView.saveImageIntoGallery();
 
 ``` java
 // only valid when image file is downloaded.
-String path = bigImageView.getCurrentImageFilePath();
+String path = bigImageView.getCurrentImageFile();
 ```
 
 ### Image init scale type
