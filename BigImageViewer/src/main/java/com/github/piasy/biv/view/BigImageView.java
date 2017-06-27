@@ -421,7 +421,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     @UiThread
     private void doShowImage(File image) {
         mImageView.setImage(ImageSource.uri(Uri.fromFile(image)));
-        mFailureImageView.setVisibility(GONE);
+        if (mFailureImageView != null) {
+            mFailureImageView.setVisibility(GONE);
+        }
         mImageView.setVisibility(VISIBLE);
     }
 
