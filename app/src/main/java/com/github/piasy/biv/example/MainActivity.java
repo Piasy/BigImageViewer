@@ -66,5 +66,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ImageLoaderCallbackActivity.class));
             }
         });
+        findViewById(R.id.mCustomSSIV).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CustomSSIVActivity.class));
+            }
+        });
     }
 }
