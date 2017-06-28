@@ -42,5 +42,6 @@
             <enum name="centerInside" value="5" />
             <enum name="centerCrop" value="6" />
         </attr>
+        <attr name="customSsivId" format="reference"/>
     </declare-styleable>
 </resources>

@@ -1,5 +1,8 @@
 # Change log
 
++ v1.3.1
+  - Fix NPE when no failure image specified
+  - Support custom SSIV
 + v1.3.0
   - Add events callback for library user
   - Support failure image, and tap-to-reload

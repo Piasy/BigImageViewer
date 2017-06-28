@@ -75,11 +75,11 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             ImageView.ScaleType.CENTER_CROP
     };
 
-    private final SubsamplingScaleImageView mImageView;
-
     private final ImageLoader mImageLoader;
     private final List<File> mTempImages;
     private final ImageLoader.Callback mInternalCallback;
+
+    private SubsamplingScaleImageView mImageView;
 
     private View mProgressIndicatorView;
     private View mThumbnailView;
@@ -95,6 +95,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private int mInitScaleType;
     private ImageView.ScaleType mFailureImageScaleType;
     private boolean mOptimizeDisplay;
+    private int mCustomSsivId;
 
     public BigImageView(Context context) {
         this(context, null);
@@ -123,10 +124,28 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         }
 
         mOptimizeDisplay = array.getBoolean(R.styleable.BigImageView_optimizeDisplay, true);
+        mCustomSsivId = array.getResourceId(R.styleable.BigImageView_customSsivId, 0);
+
         array.recycle();
 
-        mImageView = new SubsamplingScaleImageView(context, attrs);
-        addView(mImageView);
+        if (mCustomSsivId == 0) {
+            mImageView = new SubsamplingScaleImageView(context, attrs);
+            addView(mImageView);
+        }
+
+        mImageLoader = BigImageViewer.imageLoader();
+        mInternalCallback = ThreadedCallbacks.create(ImageLoader.Callback.class, this);
+
+        mTempImages = new ArrayList<>();
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        if (mImageView == null) {
+            mImageView = (SubsamplingScaleImageView) findViewById(mCustomSsivId);
+        }
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         mImageView.setLayoutParams(params);
@@ -134,11 +153,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         setOptimizeDisplay(mOptimizeDisplay);
         setInitScaleType(mInitScaleType);
-
-        mImageLoader = BigImageViewer.imageLoader();
-        mInternalCallback = ThreadedCallbacks.create(ImageLoader.Callback.class, this);
-
-        mTempImages = new ArrayList<>();
     }
 
     @Override
