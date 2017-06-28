@@ -30,16 +30,16 @@ allprojects {
     }
 }
 
-compile 'com.github.piasy:BigImageViewer:1.3.0'
+compile 'com.github.piasy:BigImageViewer:1.3.1'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.3.0'
+compile 'com.github.piasy:FrescoImageLoader:1.3.1'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.3.0'
+compile 'com.github.piasy:GlideImageLoader:1.3.1'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.3.0'
+compile 'com.github.piasy:ProgressPieIndicator:1.3.1'
 ```
 
 ### Initialize
@@ -258,6 +258,29 @@ public SubsamplingScaleImageView getSSIV() {
 ```
 
 Then you can do anything you can imagine about SSIV :)
+
+### Custom SSIV support
+
+You can even use your own custom SSIV, by declaring it in layout file:
+
+``` xml
+<com.github.piasy.biv.view.BigImageView
+        android:id="@+id/mBigImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:customSsivId="@+id/mSSIV"
+        >
+    <com.github.piasy.biv.example.MySSIV
+            android:id="@+id/mSSIV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+</com.github.piasy.biv.view.BigImageView>
+```
+
+BIV look up custom SSIV through `customSsivId`, don't forget that.
+
+### Runnable demo
 
 You can try the example to checkout the differences! https://fir.im/BIV . Thanks
 for fir.im!
