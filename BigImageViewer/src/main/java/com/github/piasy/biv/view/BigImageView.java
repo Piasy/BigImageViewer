@@ -42,12 +42,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.R;
 import com.github.piasy.biv.indicator.ProgressIndicator;
 import com.github.piasy.biv.loader.ImageLoader;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -133,7 +135,11 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             addView(mImageView);
         }
 
-        mImageLoader = BigImageViewer.imageLoader();
+        if (isInEditMode()) {
+            mImageLoader = new DummyImageLoader();
+        } else {
+            mImageLoader = BigImageViewer.imageLoader();
+        }
         mInternalCallback = ThreadedCallbacks.create(ImageLoader.Callback.class, this);
 
         mTempImages = new ArrayList<>();
