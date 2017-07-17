@@ -133,7 +133,11 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             addView(mImageView);
         }
 
-        mImageLoader = BigImageViewer.imageLoader();
+        if (isInEditMode()) {
+            mImageLoader = null;
+        } else {
+            mImageLoader = BigImageViewer.imageLoader();
+        }
         mInternalCallback = ThreadedCallbacks.create(ImageLoader.Callback.class, this);
 
         mTempImages = new ArrayList<>();
