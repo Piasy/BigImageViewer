@@ -1,5 +1,7 @@
 # Change log
 
++ v1.3.2
+  - Fix Android Studio preview issue.
 + v1.3.1
   - Fix NPE when no failure image specified
   - Support custom SSIV
