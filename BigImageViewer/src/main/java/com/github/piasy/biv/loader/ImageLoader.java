@@ -56,6 +56,6 @@ public interface ImageLoader {
 
         void onSuccess(File image);
 
-        void onFail(Exception error);
+        void onFail(Object ...objects);
     }
 }
