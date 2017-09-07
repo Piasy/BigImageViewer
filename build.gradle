@@ -41,6 +41,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        google()
         maven {
             url  "http://dl.bintray.com/piasy/maven"
         }
@@ -72,14 +73,14 @@ ext {
     releaseVersionCode = 18
     releaseVersionName = '1.3.2'
 
-    androidCompileSdkVersion = 25
+    androidCompileSdkVersion = 26
     androidBuildToolsVersion = '26.0.0'
-    androidSupportSdkVersion = '25.3.1'
-    minSdkVersion = 10
-    targetSdkVersion = 25
+    androidSupportSdkVersion = '26.0.2'
+    minSdkVersion = 14
+    targetSdkVersion = 26
 
     frescoVersion = '1.3.0'
-    glideVersion = '3.8.0'
+    glideVersion = '4.1.1'
     ssivVersion = '3.6.0'
     commonsVersion = '2.5'
 }

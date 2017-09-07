@@ -32,8 +32,8 @@ import android.view.View;
 import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 import java.io.File;
@@ -64,17 +64,16 @@ public final class GlideImageLoader implements ImageLoader {
         mRequestManager
                 .load(uri)
                 .downloadOnly(new ImageDownloadTarget(uri.toString()) {
-                    @Override
-                    public void onResourceReady(File image,
-                            GlideAnimation<? super File> glideAnimation) {
-                        // we don't need delete this image file, so it behaves live cache hit
-                        callback.onCacheHit(image);
-                        callback.onSuccess(image);
-                    }
+                  @Override
+                  public void onResourceReady(File resource, Transition<? super File> transition) {
+                    // we don't need delete this image file, so it behaves live cache hit
+                    callback.onCacheHit(resource);
+                    callback.onSuccess(resource);
+                  }
 
                     @Override
-                    public void onLoadFailed(final Exception e, final Drawable errorDrawable) {
-                        callback.onFail(e);
+                    public void onLoadFailed(final Drawable errorDrawable) {
+                        callback.onFail(errorDrawable);
                     }
 
                     @Override
@@ -118,11 +117,10 @@ public final class GlideImageLoader implements ImageLoader {
         mRequestManager
                 .load(uri)
                 .downloadOnly(new SimpleTarget<File>() {
-                    @Override
-                    public void onResourceReady(File resource,
-                            GlideAnimation<? super File> glideAnimation) {
-                        // not interested in result
-                    }
+                  @Override
+                  public void onResourceReady(File resource, Transition<? super File> transition) {
+                    // not interested in result
+                  }
                 });
     }
 }

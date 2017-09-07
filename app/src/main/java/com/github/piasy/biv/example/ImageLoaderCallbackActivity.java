@@ -112,7 +112,7 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFail(Exception e) {
+                    public void onFail(Object ...objects) {
                         final String message = "onFail callback called";
                         Log.i("onFail", message);
                         showToast(message);

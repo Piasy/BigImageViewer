@@ -53,8 +53,8 @@ public abstract class ImageDownloadTarget extends SimpleTarget<File> implements
     }
 
     @Override
-    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-        super.onLoadFailed(e, errorDrawable);
+    public void onLoadFailed(Drawable errorDrawable) {
+        super.onLoadFailed(errorDrawable);
         GlideProgressSupport.forget(mUrl);
     }
 }
