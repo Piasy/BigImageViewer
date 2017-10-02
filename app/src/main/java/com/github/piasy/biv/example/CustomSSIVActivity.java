@@ -46,7 +46,7 @@ public class CustomSSIVActivity extends AppCompatActivity {
         findViewById(R.id.mBtnLoad).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BigImageView bigImageView = (BigImageView) findViewById(R.id.mBigImage);
+                BigImageView bigImageView = findViewById(R.id.mBigImage);
                 bigImageView.setProgressIndicator(new ProgressPieIndicator());
                 bigImageView.showImage(
                         Uri.parse("https://images.unsplash.com/photo-1497240299146-17ff4089466a?dpr=2&auto=compress,format&fit=crop&w=376"),

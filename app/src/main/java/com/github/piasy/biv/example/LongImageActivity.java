@@ -60,7 +60,7 @@ public class LongImageActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_big_image);
 
-        mBigImageView = (BigImageView) findViewById(R.id.mBigImage);
+        mBigImageView = findViewById(R.id.mBigImage);
         mBigImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

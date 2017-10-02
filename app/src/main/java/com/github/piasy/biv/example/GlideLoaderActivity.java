@@ -48,7 +48,7 @@ public class GlideLoaderActivity extends AppCompatActivity {
         findViewById(R.id.mBtnLoad).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BigImageView bigImageView = (BigImageView) findViewById(R.id.mBigImage);
+                BigImageView bigImageView = findViewById(R.id.mBigImage);
                 bigImageView.setProgressIndicator(new ProgressPieIndicator());
                 bigImageView.showImage(
                         Uri.parse("http://img1.imgtn.bdimg.com/it/u=1520386803,778399414&fm=21&gp=0.jpg"),

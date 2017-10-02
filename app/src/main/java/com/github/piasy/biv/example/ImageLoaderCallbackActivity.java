@@ -66,7 +66,7 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
         findViewById(R.id.mBtnLoad).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BigImageView bigImageView = (BigImageView) findViewById(R.id.mBigImage);
+                BigImageView bigImageView = findViewById(R.id.mBigImage);
                 bigImageView.setProgressIndicator(new ProgressPieIndicator());
                 bigImageView.setImageLoaderCallback(new ImageLoader.Callback() {
                     @Override
