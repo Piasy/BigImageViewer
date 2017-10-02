@@ -1,5 +1,8 @@
 # Change log
 
++ v1.4.0
+  - Upgrade to Glide 4.x;
+  - Update min sdk version to 14 according to Glide 4.x;
 + v1.3.2
   - Fix Android Studio preview issue.
 + v1.3.1
