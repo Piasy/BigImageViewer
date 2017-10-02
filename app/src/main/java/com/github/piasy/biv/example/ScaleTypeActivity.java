@@ -55,9 +55,9 @@ public class ScaleTypeActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_scale_type);
 
-        mScaleType = (Spinner) findViewById(R.id.mScaleType);
-        mImageSize = (Spinner) findViewById(R.id.mImageSize);
-        mBigImageView = (BigImageView) findViewById(R.id.mBigImage);
+        mScaleType = findViewById(R.id.mScaleType);
+        mImageSize = findViewById(R.id.mImageSize);
+        mBigImageView = findViewById(R.id.mBigImage);
 
         findViewById(R.id.mBtnLoad).setOnClickListener(new View.OnClickListener() {
             @Override

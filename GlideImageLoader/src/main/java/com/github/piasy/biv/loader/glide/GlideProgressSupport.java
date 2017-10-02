@@ -73,7 +73,7 @@ public class GlideProgressSupport {
             builder = new OkHttpClient.Builder();
         }
         builder.addNetworkInterceptor(createInterceptor(new DispatchingProgressListener()));
-        glide.register(GlideUrl.class, InputStream.class,
+        glide.getRegistry().replace(GlideUrl.class, InputStream.class,
                 new OkHttpUrlLoader.Factory(builder.build()));
     }
 

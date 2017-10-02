@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Piasy
+ * Copyright (c) 2017 Piasy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,39 +22,15 @@
  * SOFTWARE.
  */
 
-package com.github.piasy.biv.loader.glide;
+package com.github.piasy.biv.example;
 
-import android.graphics.drawable.Drawable;
-import com.bumptech.glide.request.target.SimpleTarget;
-import java.io.File;
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
 
 /**
- * Created by Piasy{github.com/Piasy} on 12/11/2016.
+ * Created by Piasy{github.com/Piasy} on 03/10/2017.
  */
 
-public abstract class ImageDownloadTarget extends SimpleTarget<File> implements
-        GlideProgressSupport.ProgressListener {
-    private final String mUrl;
-
-    protected ImageDownloadTarget(String url) {
-        mUrl = url;
-    }
-
-    @Override
-    public void onLoadCleared(Drawable placeholder) {
-        super.onLoadCleared(placeholder);
-        GlideProgressSupport.forget(mUrl);
-    }
-
-    @Override
-    public void onLoadStarted(Drawable placeholder) {
-        super.onLoadStarted(placeholder);
-        GlideProgressSupport.expect(mUrl, this);
-    }
-
-    @Override
-    public void onLoadFailed(Drawable errorDrawable) {
-        super.onLoadFailed(errorDrawable);
-        GlideProgressSupport.forget(mUrl);
-    }
+@GlideModule
+public class BivDemoGlideModule extends AppGlideModule {
 }

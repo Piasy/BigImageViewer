@@ -93,6 +93,7 @@ dependencies {
     compile project(':BigImageViewer')
     compile project(':FrescoImageLoader')
     compile project(':GlideImageLoader')
+    annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.ext.glideVersion"
 
     compile project(':ProgressPieIndicator')
 }
