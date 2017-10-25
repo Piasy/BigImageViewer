@@ -128,7 +128,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         array.recycle();
 
         if (mCustomSsivId == 0) {
-            mImageView = new SubsamplingScaleImageView(context, attrs);
+            mImageView = new SubsamplingScaleImageView(context);
             addView(mImageView);
         }
 
