@@ -1,5 +1,8 @@
 # Change log
 
++ v1.4.1
+  - Remove logging;
+  - Update dependencies;
 + v1.4.0
   - Upgrade to Glide 4.x;
   - Update min sdk version to 14 according to Glide 4.x;

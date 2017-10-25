@@ -23,7 +23,9 @@
   ~ SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.github.piasy.biv.example">
+        xmlns:tools="http://schemas.android.com/tools"
+        package="com.github.piasy.biv.example"
+        >
 
     <application
             android:name=".App"
@@ -31,7 +33,15 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            >
+
+        <meta-data
+                android:name="android.support.VERSION"
+                android:value="${ANDROID_SUPPORT_SDK_VERSION}"
+                tools:replace="android:value"
+                />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
