@@ -34,7 +34,6 @@ import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -282,8 +281,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     public void showImage(final Uri thumbnail, final Uri uri) {
-        Log.d("BigImageView", "showImage with thumbnail " + thumbnail + ", " + uri);
-
         mThumbnail = thumbnail;
         mImageLoader.loadImage(uri, mInternalCallback);
 
@@ -306,8 +303,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     @Override
     public void onCacheHit(File image) {
-        Log.d("BigImageView", "onCacheHit " + image);
-
         mCurrentImageFile = image;
         doShowImage(image);
 
@@ -318,8 +313,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     @Override
     public void onCacheMiss(final File image) {
-        Log.d("BigImageView", "onCacheMiss " + image);
-
         mCurrentImageFile = image;
         mTempImages.add(image);
         doShowImage(image);
@@ -376,7 +369,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     @Override
     public void onFail(Exception error) {
-        Log.d("BigImageView", "onFail: Setting fail image if there is one");
         showFailImage();
 
         if (mUserCallback != null) {
