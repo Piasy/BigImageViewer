@@ -1,5 +1,7 @@
 # Change log
 
++ v1.4.2
+  - Fix crash when pass attr to SSIV in some case;
 + v1.4.1
   - Remove logging;
   - Update dependencies;
