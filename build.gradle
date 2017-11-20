@@ -29,12 +29,12 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.0'
 
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
 
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.15.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
     }
 }
 
@@ -73,14 +73,14 @@ ext {
     releaseVersionCode = 21
     releaseVersionName = '1.4.2'
 
-    androidCompileSdkVersion = 26
-    androidBuildToolsVersion = '26.0.2'
-    androidSupportSdkVersion = '26.1.0'
+    androidCompileSdkVersion = 27
+    androidBuildToolsVersion = '27.0.1'
+    androidSupportSdkVersion = '27.0.1'
     minSdkVersion = 14
-    targetSdkVersion = 26
+    targetSdkVersion = 27
 
     frescoVersion = '1.5.0'
-    glideVersion = '4.2.0'
-    ssivVersion = '3.7.0'
-    commonsVersion = '2.5'
+    glideVersion = '4.3.1'
+    ssivVersion = '3.8.0'
+    commonsVersion = '2.6'
 }

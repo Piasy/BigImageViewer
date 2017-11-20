@@ -87,6 +87,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private ImageSaveCallback mImageSaveCallback;
     private ImageLoader.Callback mUserCallback;
     private File mCurrentImageFile;
+    private Uri mUri;
     private Uri mThumbnail;
 
     private ProgressIndicator mProgressIndicator;
@@ -95,6 +96,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private ImageView.ScaleType mFailureImageScaleType;
     private boolean mOptimizeDisplay;
     private int mCustomSsivId;
+    private boolean mTapToRetry;
 
     public BigImageView(Context context) {
         this(context, null);
@@ -124,6 +126,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         mOptimizeDisplay = array.getBoolean(R.styleable.BigImageView_optimizeDisplay, true);
         mCustomSsivId = array.getResourceId(R.styleable.BigImageView_customSsivId, 0);
+        mTapToRetry = array.getBoolean(R.styleable.BigImageView_tapToRetry, true);
 
         array.recycle();
 
@@ -147,7 +150,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         super.onFinishInflate();
 
         if (mImageView == null) {
-            mImageView = (SubsamplingScaleImageView) findViewById(mCustomSsivId);
+            mImageView = findViewById(mCustomSsivId);
         }
         LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -159,8 +162,20 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     @Override
-    public void setOnClickListener(OnClickListener listener) {
+    public void setOnClickListener(final OnClickListener listener) {
         mImageView.setOnClickListener(listener);
+        if (mFailureImageView != null) {
+            mFailureImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    // Retry loading when failure image is clicked
+                    if (mTapToRetry) {
+                        showImage(mThumbnail, mUri);
+                    }
+                    listener.onClick(v);
+                }
+            });
+        }
     }
 
     @Override
@@ -223,6 +238,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         }
     }
 
+    public void setTapToRetry(boolean tapToRetry) {
+        mTapToRetry = tapToRetry;
+    }
+
     public void setImageSaveCallback(ImageSaveCallback imageSaveCallback) {
         mImageSaveCallback = imageSaveCallback;
     }
@@ -282,18 +301,11 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     public void showImage(final Uri thumbnail, final Uri uri) {
         mThumbnail = thumbnail;
+        mUri = uri;
         mImageLoader.loadImage(uri, mInternalCallback);
 
         if (mFailureImageView != null) {
             mFailureImageView.setVisibility(GONE);
-
-            mFailureImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    // Retry loading when failure image is clicked
-                    showImage(thumbnail, uri);
-                }
-            });
         }
     }
 

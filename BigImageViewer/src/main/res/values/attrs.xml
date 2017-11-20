@@ -30,6 +30,7 @@
             <enum name="centerCrop" value="2"/>
             <enum name="auto" value="3"/>
         </attr>
+        <attr format="boolean" name="tapToRetry"/>
         <attr format="boolean" name="optimizeDisplay"/>
         <!-- A drawable to be be used as a failure image. -->
         <attr name="failureImage" format="reference"/>
