@@ -41,13 +41,16 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.R;
 import com.github.piasy.biv.indicator.ProgressIndicator;
 import com.github.piasy.biv.loader.ImageLoader;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +86,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private View mProgressIndicatorView;
     private View mThumbnailView;
     private ImageView mFailureImageView;
+    private GifImageView mGifImageView;
 
     private ImageSaveCallback mImageSaveCallback;
     private ImageLoader.Callback mUserCallback;
@@ -97,6 +101,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private boolean mOptimizeDisplay;
     private int mCustomSsivId;
     private boolean mTapToRetry;
+
+    private OnClickListener mClickListener;
+    private OnLongClickListener mLongClickListener;
 
     public BigImageView(Context context) {
         this(context, null);
@@ -163,24 +170,12 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     @Override
     public void setOnClickListener(final OnClickListener listener) {
-        mImageView.setOnClickListener(listener);
-        if (mFailureImageView != null) {
-            mFailureImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    // Retry loading when failure image is clicked
-                    if (mTapToRetry) {
-                        showImage(mThumbnail, mUri);
-                    }
-                    listener.onClick(v);
-                }
-            });
-        }
+        mClickListener = listener;
     }
 
     @Override
     public void setOnLongClickListener(OnLongClickListener listener) {
-        mImageView.setOnLongClickListener(listener);
+        mLongClickListener = listener;
     }
 
     public void setFailureImageInitScaleType(ImageView.ScaleType scaleType) {
@@ -442,11 +437,33 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     @UiThread
     private void doShowImage(File image) {
-        mImageView.setImage(ImageSource.uri(Uri.fromFile(image)));
+        if (isGif(image)) {
+            if (mGifImageView == null) {
+                mGifImageView = mImageLoader.createGifImageView(this, mInitScaleType);
+            }
+            mGifImageView.showGifImageView(Uri.fromFile(image));
+            mGifImageView.setGifImageViewVisibility(View.VISIBLE);
+            if (mClickListener != null) {
+                mGifImageView.setOnClickListener(mClickListener);
+            }
+            if (mLongClickListener != null) {
+                mGifImageView.setOnLongClickListener(mLongClickListener);
+            }
+
+        } else {
+            mImageView.setImage(ImageSource.uri(Uri.fromFile(image)));
+            mImageView.setVisibility(VISIBLE);
+            if (mClickListener != null) {
+                mImageView.setOnClickListener(mClickListener);
+            }
+            if (mLongClickListener != null) {
+                mImageView.setOnLongClickListener(mLongClickListener);
+            }
+        }
+
         if (mFailureImageView != null) {
             mFailureImageView.setVisibility(GONE);
         }
-        mImageView.setVisibility(VISIBLE);
     }
 
     @UiThread
@@ -457,9 +474,46 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         }
 
         mFailureImageView.setVisibility(VISIBLE);
+        mFailureImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                // Retry loading when failure image is clicked
+                if (mTapToRetry) {
+                    showImage(mThumbnail, mUri);
+                }
+            }
+        });
+
         mImageView.setVisibility(GONE);
+        if (mGifImageView != null) {
+            mGifImageView.setGifImageViewVisibility(GONE);
+        }
         if (mProgressIndicatorView != null) {
             mProgressIndicatorView.setVisibility(GONE);
+        }
+    }
+
+    private boolean isGif(File file) {
+        byte[] data = getFileHeader(file);
+        return data != null && data[0] == 'G' && data[1] == 'I' && data[2] == 'F';
+    }
+
+    public static byte[] getFileHeader(File file) {
+        if (!file.exists() || file.length() < 3) {
+            return null;
+        }
+        try {
+            byte[] buf = new byte[3];
+            FileInputStream is = new FileInputStream(file);
+            if (is.read(buf, 0, buf.length) == -1) {
+                is.close();
+                return null;
+            }
+            is.close();
+            return buf;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

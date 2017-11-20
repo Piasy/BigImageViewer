@@ -36,6 +36,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.view.BigImageView;
+import com.github.piasy.biv.view.GifImageView;
 import java.io.File;
 import okhttp3.OkHttpClient;
 
@@ -98,7 +99,7 @@ public final class GlideImageLoader implements ImageLoader {
     @Override
     public View showThumbnail(BigImageView parent, Uri thumbnail, int scaleType) {
         ImageView thumbnailView = (ImageView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.ui_glide_thumbnail, parent, false);
+                .inflate(R.layout.ui_glide_image, parent, false);
         switch (scaleType) {
             case BigImageView.INIT_SCALE_TYPE_CENTER_CROP:
                 thumbnailView.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -112,6 +113,11 @@ public final class GlideImageLoader implements ImageLoader {
                 .load(thumbnail)
                 .into(thumbnailView);
         return thumbnailView;
+    }
+
+    @Override
+    public GifImageView createGifImageView(BigImageView parent, int scaleType) {
+        return new GlideGifImageView(parent, scaleType, mRequestManager);
     }
 
     @Override
