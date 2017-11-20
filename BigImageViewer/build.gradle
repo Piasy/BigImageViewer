@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:support-annotations:$rootProject.ext.androidSupportSdkVersion"
+    implementation "com.android.support:support-annotations:$rootProject.ext.androidSupportSdkVersion"
 
-    compile "com.davemorrissey.labs:subsampling-scale-image-view:$rootProject.ext.ssivVersion"
+    api "com.davemorrissey.labs:subsampling-scale-image-view:$rootProject.ext.ssivVersion"
 }

@@ -1,5 +1,7 @@
 # Change log
 
++ v1.4.3
+  - Fix #72: allow disable tap to retry fail image;
 + v1.4.2
   - Fix crash when pass attr to SSIV in some case;
 + v1.4.1

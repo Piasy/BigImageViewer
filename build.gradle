@@ -27,6 +27,10 @@
 buildscript {
     repositories {
         jcenter()
+        google()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
@@ -70,8 +74,8 @@ ext {
             'usage and full featured image loading choices. Powered by Subsampling Scale ' +
             'Image View, Fresco, Glide, and Picasso.'
     artifactLabels = ['big', 'image', 'viewer', 'Fresco', 'Glide', 'Picasso']
-    releaseVersionCode = 21
-    releaseVersionName = '1.4.2'
+    releaseVersionCode = 22
+    releaseVersionName = '1.4.3'
 
     androidCompileSdkVersion = 27
     androidBuildToolsVersion = '27.0.1'

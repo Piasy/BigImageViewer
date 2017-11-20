@@ -47,8 +47,8 @@ android {
 }
 
 dependencies {
-    compile project(':BigImageViewer')
+    api project(':BigImageViewer')
 
-    compile "com.facebook.fresco:fresco:$rootProject.ext.frescoVersion"
-    compile "commons-io:commons-io:$rootProject.ext.commonsVersion"
+    api "com.facebook.fresco:fresco:$rootProject.ext.frescoVersion"
+    api "commons-io:commons-io:$rootProject.ext.commonsVersion"
 }
