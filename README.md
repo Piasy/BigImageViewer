@@ -65,7 +65,7 @@ BigImageViewer.initialize(GlideImageLoader.with(appContext));
         android:layout_height="match_parent"
         app:failureImage="@drawable/failure_image"
         app:failureImageInitScaleType="center"
-        app:optimizeDisplay="false"
+        app:optimizeDisplay="true"
         />
 ```
 
@@ -136,13 +136,7 @@ File path = bigImageView.getCurrentImageFile();
 
 ### Image init scale type
 
-``` xml
-<com.github.piasy.biv.view.BigImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:initScaleType="centerInside"
-        />
-```
+You can set the normal image scale type using `initScaleType` attribute, or `setInitScaleType`.
 
 ``` java
 mBigImageView.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_CROP);
@@ -156,37 +150,23 @@ mBigImageView.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_CROP);
 
 ### Failure image
 
-``` xml
-<com.github.piasy.biv.view.BigImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:failureImage="@drawable/failure_image"
-        />
-```
+You can set a local failure image using `failureImage` attribute, or `setFailureImage`.
 
-``` java
-mBigImageView.setFailureImage(failureImageDrawable);
-```
-
-Displayed using an `ImageView` when the image network request fails. If not specified, nothing is displayed when the request fails.
+It will displayed using an `ImageView` when the image network request fails. If not specified,
+nothing is displayed when the request fails.
 
 #### Failure image init scale type
 
-``` xml
-<com.github.piasy.biv.view.BigImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:failureImageInitScaleType="center"
-        />
-```
+You can set the failure image scale type using `failureImageInitScaleType` attribute,
+or `setFailureImageInitScaleType`.
 
-``` java
-mBigImageView.setFailureImageInitScaleType(ImageView.ScaleType.CENTER);
-```
+Any value of [ImageView.ScaleType](https://developer.android.com/reference/android/widget/ImageView.ScaleType.html) is valid.
+Default value is `ImageView.ScaleType.FIT_CENTER`. It will be ignored if there is no failure image set.
 
-Any valid [ImageView.ScaleType](https://developer.android.com/reference/android/widget/ImageView.ScaleType.html).
-Set to `ImageView.ScaleType.FIT_CENTER` by default. Ignored if there is no
-failure image set.
+#### Tap to retry
+
+When failure image is specified, you can tap the failure image then it will retry automatically.
+That's the default behavior, you can change it using `tapToRetry` attribute, or `setTapToRetry`.
 
 ### Image load callback
 

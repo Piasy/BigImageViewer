@@ -47,6 +47,7 @@ android {
 dependencies {
     api project(':BigImageViewer')
 
-    api 'com.github.filippudak.progresspieview:library:1.0.4'
+    api('com.github.filippudak.progresspieview:library:1.0.4') {
+        exclude module: 'support-v4'
+    }
 }
-
