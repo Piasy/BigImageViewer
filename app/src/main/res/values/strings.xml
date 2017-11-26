@@ -10,12 +10,12 @@
 
     <string name="scale_center_crop">centerCrop</string>
     <string name="scale_center_inside">centerInside</string>
-    <string name="scale_auto">auto</string>
+    <string name="scale_custom">custom</string>
     <string name="scale_start">start</string>
     <string-array name="init_scale_type">
         <item>@string/scale_center_crop</item>
         <item>@string/scale_center_inside</item>
-        <item>@string/scale_auto</item>
+        <item>@string/scale_custom</item>
         <item>@string/scale_start</item>
     </string-array>
 

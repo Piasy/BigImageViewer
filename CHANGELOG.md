@@ -1,5 +1,8 @@
 # Change log
 
++ v1.4.4
+  - Add `INIT_SCALE_TYPE_START` scale type;
+  - Rename `INIT_SCALE_TYPE_AUTO` to `INIT_SCALE_TYPE_CUSTOM`;
 + v1.4.3
   - Fix #72: allow disable tap to retry fail image;
 + v1.4.2

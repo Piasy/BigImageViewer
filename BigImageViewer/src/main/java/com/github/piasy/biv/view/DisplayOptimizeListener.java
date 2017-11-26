@@ -77,7 +77,7 @@ public class DisplayOptimizeListener implements SubsamplingScaleImageView.OnImag
             result += 0.2f;
         }
 
-        if (mInitScaleType == BigImageView.INIT_SCALE_TYPE_AUTO) {
+        if (mInitScaleType == BigImageView.INIT_SCALE_TYPE_CUSTOM) {
             float maxScale = Math.max((float) viewWidth / imageWidth,
                     (float) viewHeight / imageHeight);
             if (maxScale > 1) {

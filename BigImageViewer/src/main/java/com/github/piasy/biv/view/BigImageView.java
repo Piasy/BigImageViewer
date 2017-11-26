@@ -61,18 +61,18 @@ import java.util.List;
 public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public static final int INIT_SCALE_TYPE_CENTER_INSIDE = 1;
     public static final int INIT_SCALE_TYPE_CENTER_CROP = 2;
-    public static final int INIT_SCALE_TYPE_AUTO = 3;
+    public static final int INIT_SCALE_TYPE_CUSTOM = 3;
     public static final int INIT_SCALE_TYPE_START = 4;
 
-    public static final int IMAGE_SCALE_TYPE_FIT_CENTER = 2;
+    public static final int IMAGE_SCALE_TYPE_FIT_CENTER_INDEX = 3;
     public static final ImageView.ScaleType[] IMAGE_SCALE_TYPES = {
-            ImageView.ScaleType.FIT_XY,
-            ImageView.ScaleType.FIT_START,
+            ImageView.ScaleType.CENTER,
+            ImageView.ScaleType.CENTER_CROP,
+            ImageView.ScaleType.CENTER_INSIDE,
             ImageView.ScaleType.FIT_CENTER,
             ImageView.ScaleType.FIT_END,
-            ImageView.ScaleType.CENTER,
-            ImageView.ScaleType.CENTER_INSIDE,
-            ImageView.ScaleType.CENTER_CROP
+            ImageView.ScaleType.FIT_START,
+            ImageView.ScaleType.FIT_XY,
     };
 
     private final ImageLoader mImageLoader;
@@ -118,7 +118,11 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         if (array.hasValue(R.styleable.BigImageView_failureImage)) {
             int scaleTypeIndex = array.getInteger(
                     R.styleable.BigImageView_failureImageInitScaleType,
-                    IMAGE_SCALE_TYPE_FIT_CENTER);
+                    IMAGE_SCALE_TYPE_FIT_CENTER_INDEX);
+            if (scaleTypeIndex < 0 || IMAGE_SCALE_TYPES.length <= scaleTypeIndex) {
+                throw new IllegalArgumentException("Bad failureImageInitScaleType value: "
+                                                   + scaleTypeIndex);
+            }
             mFailureImageScaleType = IMAGE_SCALE_TYPES[scaleTypeIndex];
             Drawable mFailureImageDrawable = array.getDrawable(
                     R.styleable.BigImageView_failureImage);
@@ -147,22 +151,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
-        if (mImageView == null) {
-            mImageView = findViewById(mCustomSsivId);
-        }
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        mImageView.setLayoutParams(params);
-        mImageView.setMinimumTileDpi(160);
-
-        setOptimizeDisplay(mOptimizeDisplay);
-        setInitScaleType(mInitScaleType);
-    }
-
-    @Override
     public void setOnClickListener(final OnClickListener listener) {
         mImageView.setOnClickListener(listener);
         if (mFailureImageView != null) {
@@ -182,6 +170,22 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     @Override
     public void setOnLongClickListener(OnLongClickListener listener) {
         mImageView.setOnLongClickListener(listener);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        if (mImageView == null) {
+            mImageView = findViewById(mCustomSsivId);
+        }
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        mImageView.setLayoutParams(params);
+        mImageView.setMinimumTileDpi(160);
+
+        setOptimizeDisplay(mOptimizeDisplay);
+        setInitScaleType(mInitScaleType);
     }
 
     public void setFailureImageInitScaleType(ImageView.ScaleType scaleType) {
@@ -215,7 +219,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             case INIT_SCALE_TYPE_CENTER_CROP:
                 mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
                 break;
-            case INIT_SCALE_TYPE_AUTO:
+            case INIT_SCALE_TYPE_CUSTOM:
                 mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
                 break;
             case INIT_SCALE_TYPE_START:

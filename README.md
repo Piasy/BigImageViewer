@@ -30,16 +30,16 @@ allprojects {
     }
 }
 
-compile 'com.github.piasy:BigImageViewer:1.4.3'
+compile 'com.github.piasy:BigImageViewer:1.4.4'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.4.3'
+compile 'com.github.piasy:FrescoImageLoader:1.4.4'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.4.3'
+compile 'com.github.piasy:GlideImageLoader:1.4.4'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.4.3'
+compile 'com.github.piasy:ProgressPieIndicator:1.4.4'
 ```
 
 ### Initialize
@@ -144,9 +144,10 @@ mBigImageView.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_CROP);
 
 | value | effect |
 | ------| ------ |
-| centerInside | default, Scale the image so that both dimensions of the image will be equal to or less than the corresponding dimension of the view. The image is then centered in the view. This is the default behaviour and best for galleries. |
+| centerInside | Scale the image so that both dimensions of the image will be equal to or less than the corresponding dimension of the view. The image is then centered in the view. This is the default behaviour and best for galleries. |
 | centerCrop | Scale the image uniformly so that both dimensions of the image will be equal to or larger than the corresponding dimension of the view. The image is then centered in the view. |
-| auto | determine the max scale and min scale by image size and view size, fit the image to screen and centered when loaded. |
+| custom | Scale the image so that both dimensions of the image will be equal to or less than the maxScale and equal to or larger than minScale. The image is then centered in the view. |
+| start | Scale the image so that both dimensions of the image will be equal to or larger than the corresponding dimension of the view. The top left is shown. |
 
 ### Failure image
 

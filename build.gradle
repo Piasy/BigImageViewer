@@ -33,11 +33,12 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
 
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
 
+        // ./gradlew dependencyUpdates
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
     }
 }
@@ -74,8 +75,8 @@ ext {
             'usage and full featured image loading choices. Powered by Subsampling Scale ' +
             'Image View, Fresco, Glide, and Picasso.'
     artifactLabels = ['big', 'image', 'viewer', 'Fresco', 'Glide', 'Picasso']
-    releaseVersionCode = 22
-    releaseVersionName = '1.4.3'
+    releaseVersionCode = 23
+    releaseVersionName = '1.4.4'
 
     androidCompileSdkVersion = 27
     androidBuildToolsVersion = '27.0.1'

@@ -28,20 +28,21 @@
         <attr format="enum" name="initScaleType">
             <enum name="centerInside" value="1"/>
             <enum name="centerCrop" value="2"/>
-            <enum name="auto" value="3"/>
+            <enum name="custom" value="3"/>
+            <enum name="start" value="4"/>
         </attr>
         <attr format="boolean" name="tapToRetry"/>
         <attr format="boolean" name="optimizeDisplay"/>
         <!-- A drawable to be be used as a failure image. -->
         <attr name="failureImage" format="reference"/>
         <attr name="failureImageInitScaleType" format="enum">
-            <enum name="fitXY" value="0" />
-            <enum name="fitStart" value="1" />
-            <enum name="fitCenter" value="2" />
-            <enum name="fitEnd" value="3" />
-            <enum name="center" value="4" />
-            <enum name="centerInside" value="5" />
-            <enum name="centerCrop" value="6" />
+            <enum name="center" value="0" />
+            <enum name="centerCrop" value="1" />
+            <enum name="centerInside" value="2" />
+            <enum name="fitCenter" value="3" />
+            <enum name="fitEnd" value="4" />
+            <enum name="fitStart" value="5" />
+            <enum name="fitXY" value="6" />
         </attr>
         <attr name="customSsivId" format="reference"/>
     </declare-styleable>
