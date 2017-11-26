@@ -105,6 +105,10 @@ public final class GlideImageLoader implements ImageLoader {
                 break;
             case BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE:
                 thumbnailView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                break;
+            case BigImageView.INIT_SCALE_TYPE_START:
+                thumbnailView.setScaleType(ImageView.ScaleType.FIT_START);
+                break;
             default:
                 break;
         }

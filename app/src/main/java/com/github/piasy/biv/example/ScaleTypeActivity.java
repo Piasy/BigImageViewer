@@ -76,6 +76,8 @@ public class ScaleTypeActivity extends AppCompatActivity {
             mBigImageView.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE);
         } else if (TextUtils.equals(scaleType, getString(R.string.scale_auto))) {
             mBigImageView.setInitScaleType(BigImageView.INIT_SCALE_TYPE_AUTO);
+        } else if (TextUtils.equals(scaleType, getString(R.string.scale_start))) {
+            mBigImageView.setInitScaleType(BigImageView.INIT_SCALE_TYPE_START);
         }
     }
 

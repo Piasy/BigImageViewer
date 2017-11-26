@@ -130,6 +130,11 @@ public final class FrescoImageLoader implements ImageLoader {
             case BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE:
                 thumbnailView.getHierarchy()
                         .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_INSIDE);
+                break;
+            case BigImageView.INIT_SCALE_TYPE_START:
+                thumbnailView.getHierarchy()
+                        .setActualImageScaleType(ScalingUtils.ScaleType.FIT_START);
+                break;
             default:
                 break;
         }

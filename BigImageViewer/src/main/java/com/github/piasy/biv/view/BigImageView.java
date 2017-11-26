@@ -62,6 +62,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public static final int INIT_SCALE_TYPE_CENTER_INSIDE = 1;
     public static final int INIT_SCALE_TYPE_CENTER_CROP = 2;
     public static final int INIT_SCALE_TYPE_AUTO = 3;
+    public static final int INIT_SCALE_TYPE_START = 4;
 
     public static final int IMAGE_SCALE_TYPE_FIT_CENTER = 2;
     public static final ImageView.ScaleType[] IMAGE_SCALE_TYPES = {
@@ -216,6 +217,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 break;
             case INIT_SCALE_TYPE_AUTO:
                 mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
+                break;
+            case INIT_SCALE_TYPE_START:
+                mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_START);
                 break;
             case INIT_SCALE_TYPE_CENTER_INSIDE:
             default:
