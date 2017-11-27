@@ -31,7 +31,6 @@ import android.util.Log;
 import android.view.View;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
-import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
 import com.github.piasy.biv.loader.glide.GlideImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 

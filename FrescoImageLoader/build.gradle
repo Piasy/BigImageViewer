@@ -51,4 +51,5 @@ dependencies {
 
     api "com.facebook.fresco:fresco:$rootProject.ext.frescoVersion"
     api "commons-io:commons-io:$rootProject.ext.commonsVersion"
+    api "com.facebook.fresco:animated-gif:$rootProject.ext.frescoVersion"
 }

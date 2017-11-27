@@ -47,6 +47,7 @@ import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.view.BigImageView;
+import com.github.piasy.biv.view.GifImageView;
 import java.io.File;
 
 /**
@@ -118,7 +119,7 @@ public final class FrescoImageLoader implements ImageLoader {
     @Override
     public View showThumbnail(BigImageView parent, Uri thumbnail, int scaleType) {
         SimpleDraweeView thumbnailView = (SimpleDraweeView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.ui_fresco_thumbnail, parent, false);
+                .inflate(R.layout.ui_fresco_image, parent, false);
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setUri(thumbnail)
                 .build();
@@ -140,6 +141,11 @@ public final class FrescoImageLoader implements ImageLoader {
         }
         thumbnailView.setController(controller);
         return thumbnailView;
+    }
+
+    @Override
+    public GifImageView createGifImageView(BigImageView parent, int scaleType) {
+        return new FrescoGifImageView(parent, scaleType);
     }
 
     @Override
