@@ -297,6 +297,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
+        mImageLoader.cancel(this);
+
         for (int i = 0, size = mTempImages.size(); i < size; i++) {
             mTempImages.get(i).delete();
         }
@@ -310,7 +312,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void showImage(final Uri thumbnail, final Uri uri) {
         mThumbnail = thumbnail;
         mUri = uri;
-        mImageLoader.loadImage(uri, mInternalCallback);
+        mImageLoader.loadImage(this, uri, mInternalCallback);
 
         if (mFailureImageView != null) {
             mFailureImageView.setVisibility(GONE);

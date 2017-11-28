@@ -79,7 +79,7 @@ public final class FrescoImageLoader implements ImageLoader {
     }
 
     @Override
-    public void loadImage(Uri uri, final Callback callback) {
+    public void loadImage(BigImageView parent, Uri uri, final Callback callback) {
         ImageRequest request = ImageRequest.fromUri(uri);
 
         File localCache = getCacheFile(request);
@@ -147,6 +147,11 @@ public final class FrescoImageLoader implements ImageLoader {
         ImagePipeline pipeline = Fresco.getImagePipeline();
         pipeline.prefetchToDiskCache(ImageRequest.fromUri(uri),
                 false); // we don't need context, but avoid null
+    }
+
+    @Override
+    public void cancel(BigImageView parent) {
+
     }
 
     private File getCacheFile(final ImageRequest request) {

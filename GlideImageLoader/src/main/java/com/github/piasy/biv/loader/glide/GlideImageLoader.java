@@ -30,13 +30,17 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.view.BigImageView;
+
 import java.io.File;
+import java.util.concurrent.ConcurrentHashMap;
+
 import okhttp3.OkHttpClient;
 
 /**
@@ -45,6 +49,9 @@ import okhttp3.OkHttpClient;
 
 public final class GlideImageLoader implements ImageLoader {
     private final RequestManager mRequestManager;
+
+    private final ConcurrentHashMap<BigImageView, ImageDownloadTarget> mViewTargetMap
+            = new ConcurrentHashMap<>();
 
     private GlideImageLoader(Context context, OkHttpClient okHttpClient) {
         GlideProgressSupport.init(Glide.get(context), okHttpClient);
@@ -60,39 +67,54 @@ public final class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void loadImage(final Uri uri, final Callback callback) {
+    public void loadImage(final BigImageView parent, final Uri uri, final Callback callback) {
+        ImageDownloadTarget target = new ImageDownloadTarget(uri.toString()) {
+            @Override
+            public void onResourceReady(File resource,
+                                        Transition<? super File> transition) {
+                // we don't need delete this image file, so it behaves live cache hit
+                callback.onCacheHit(resource);
+                callback.onSuccess(resource);
+            }
+
+            @Override
+            public void onLoadFailed(final Drawable errorDrawable) {
+                callback.onFail(new GlideLoaderException(errorDrawable));
+            }
+
+            @Override
+            public void onDownloadStart() {
+                callback.onStart();
+            }
+
+            @Override
+            public void onProgress(int progress) {
+                callback.onProgress(progress);
+            }
+
+            @Override
+            public void onDownloadFinish() {
+                callback.onFinish();
+            }
+        };
+        clearTarget(parent);
+        saveTarget(parent, target);
+
         mRequestManager
                 .downloadOnly()
                 .load(uri)
-                .into(new ImageDownloadTarget(uri.toString()) {
-                    @Override
-                    public void onResourceReady(File resource,
-                            Transition<? super File> transition) {
-                        // we don't need delete this image file, so it behaves live cache hit
-                        callback.onCacheHit(resource);
-                        callback.onSuccess(resource);
-                    }
+                .into(target);
+    }
 
-                    @Override
-                    public void onLoadFailed(final Drawable errorDrawable) {
-                        callback.onFail(new GlideLoaderException(errorDrawable));
-                    }
+    private void saveTarget(BigImageView parent, ImageDownloadTarget target) {
+        mViewTargetMap.put(parent, target);
+    }
 
-                    @Override
-                    public void onDownloadStart() {
-                        callback.onStart();
-                    }
-
-                    @Override
-                    public void onProgress(int progress) {
-                        callback.onProgress(progress);
-                    }
-
-                    @Override
-                    public void onDownloadFinish() {
-                        callback.onFinish();
-                    }
-                });
+    private void clearTarget(BigImageView parent) {
+        ImageDownloadTarget target = mViewTargetMap.remove(parent);
+        if (target != null) {
+            mRequestManager.clear(target);
+        }
     }
 
     @Override
@@ -130,5 +152,10 @@ public final class GlideImageLoader implements ImageLoader {
                         // not interested in result
                     }
                 });
+    }
+
+    @Override
+    public void cancel(BigImageView parent) {
+        clearTarget(parent);
     }
 }
