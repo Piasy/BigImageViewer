@@ -48,6 +48,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 import java.io.File;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Piasy{github.com/Piasy} on 08/11/2016.
@@ -57,6 +58,9 @@ public final class FrescoImageLoader implements ImageLoader {
 
     private final Context mAppContext;
     private final DefaultExecutorSupplier mExecutorSupplier;
+
+    private final ConcurrentHashMap<BigImageView, DataSource> mViewSourceMap
+            = new ConcurrentHashMap<>();
 
     private FrescoImageLoader(Context appContext) {
         mAppContext = appContext;
@@ -112,6 +116,20 @@ public final class FrescoImageLoader implements ImageLoader {
                     callback.onFail((Exception) t);
                 }
             }, mExecutorSupplier.forBackgroundTasks());
+
+            closeSource(parent);
+            saveSource(parent, source);
+        }
+    }
+
+    private void saveSource(BigImageView parent, DataSource target) {
+        mViewSourceMap.put(parent, target);
+    }
+
+    private void closeSource(BigImageView parent) {
+        DataSource source = mViewSourceMap.remove(parent);
+        if (source != null) {
+            source.close();
         }
     }
 
@@ -151,7 +169,7 @@ public final class FrescoImageLoader implements ImageLoader {
 
     @Override
     public void cancel(BigImageView parent) {
-
+        closeSource(parent);
     }
 
     private File getCacheFile(final ImageRequest request) {
