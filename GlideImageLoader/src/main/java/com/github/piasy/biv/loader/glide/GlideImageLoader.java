@@ -72,6 +72,7 @@ public final class GlideImageLoader implements ImageLoader {
             @Override
             public void onResourceReady(File resource,
                                         Transition<? super File> transition) {
+                super.onResourceReady(resource, transition);
                 // we don't need delete this image file, so it behaves live cache hit
                 callback.onCacheHit(resource);
                 callback.onSuccess(resource);
@@ -79,6 +80,7 @@ public final class GlideImageLoader implements ImageLoader {
 
             @Override
             public void onLoadFailed(final Drawable errorDrawable) {
+                super.onLoadFailed(errorDrawable);
                 callback.onFail(new GlideLoaderException(errorDrawable));
             }
 
