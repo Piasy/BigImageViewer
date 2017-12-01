@@ -50,7 +50,7 @@ import okhttp3.OkHttpClient;
 public final class GlideImageLoader implements ImageLoader {
     private final RequestManager mRequestManager;
 
-    private final ConcurrentHashMap<BigImageView, ImageDownloadTarget> mViewTargetMap
+    private final ConcurrentHashMap<Integer, ImageDownloadTarget> mViewTargetMap
             = new ConcurrentHashMap<>();
 
     private GlideImageLoader(Context context, OkHttpClient okHttpClient) {
@@ -109,11 +109,11 @@ public final class GlideImageLoader implements ImageLoader {
     }
 
     private void saveTarget(BigImageView parent, ImageDownloadTarget target) {
-        mViewTargetMap.put(parent, target);
+        mViewTargetMap.put(parent.hashCode(), target);
     }
 
     private void clearTarget(BigImageView parent) {
-        ImageDownloadTarget target = mViewTargetMap.remove(parent);
+        ImageDownloadTarget target = mViewTargetMap.remove(parent.hashCode());
         if (target != null) {
             mRequestManager.clear(target);
         }

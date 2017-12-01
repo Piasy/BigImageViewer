@@ -59,7 +59,7 @@ public final class FrescoImageLoader implements ImageLoader {
     private final Context mAppContext;
     private final DefaultExecutorSupplier mExecutorSupplier;
 
-    private final ConcurrentHashMap<BigImageView, DataSource> mViewSourceMap
+    private final ConcurrentHashMap<Integer, DataSource> mViewSourceMap
             = new ConcurrentHashMap<>();
 
     private FrescoImageLoader(Context appContext) {
@@ -123,11 +123,11 @@ public final class FrescoImageLoader implements ImageLoader {
     }
 
     private void saveSource(BigImageView parent, DataSource target) {
-        mViewSourceMap.put(parent, target);
+        mViewSourceMap.put(parent.hashCode(), target);
     }
 
     private void closeSource(BigImageView parent) {
-        DataSource source = mViewSourceMap.remove(parent);
+        DataSource source = mViewSourceMap.remove(parent.hashCode());
         if (source != null) {
             source.close();
         }
