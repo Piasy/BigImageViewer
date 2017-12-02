@@ -319,6 +319,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         }
     }
 
+    public void cancel() {
+        mImageLoader.cancel(hashCode());
+    }
+
     public SubsamplingScaleImageView getSSIV() {
         return mImageView;
     }

@@ -30,16 +30,16 @@ allprojects {
     }
 }
 
-compile 'com.github.piasy:BigImageViewer:1.4.4'
+compile 'com.github.piasy:BigImageViewer:1.4.5'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.4.4'
+compile 'com.github.piasy:FrescoImageLoader:1.4.5'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.4.4'
+compile 'com.github.piasy:GlideImageLoader:1.4.5'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.4.4'
+compile 'com.github.piasy:ProgressPieIndicator:1.4.5'
 ```
 
 ### Initialize
@@ -227,6 +227,11 @@ as `onCacheHit(File image)` callbacks run on the UI thread. All other callbacks
 run on a background (worker) thread.
 
 For an example see ImageLoaderCallbackActivity.java
+
+### Cancel image loading
+
+BIV will cancel image loading automatically when detach from window, you can also call `cancel`
+to cancel it manually.
 
 ### Full customization
 

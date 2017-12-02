@@ -1,5 +1,8 @@
 # Change log
 
++ v1.4.5
+  - Add `cancel` method;
+  - Auto cancel when detach from window to fix memory leak;
 + v1.4.4
   - Add `INIT_SCALE_TYPE_START` scale type;
   - Rename `INIT_SCALE_TYPE_AUTO` to `INIT_SCALE_TYPE_CUSTOM`;
