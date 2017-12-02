@@ -59,7 +59,7 @@ public final class FrescoImageLoader implements ImageLoader {
     private final Context mAppContext;
     private final DefaultExecutorSupplier mExecutorSupplier;
 
-    private final ConcurrentHashMap<Integer, DataSource> mViewSourceMap
+    private final ConcurrentHashMap<Integer, DataSource> mRequestSourceMap
             = new ConcurrentHashMap<>();
 
     private FrescoImageLoader(Context appContext) {
@@ -83,7 +83,7 @@ public final class FrescoImageLoader implements ImageLoader {
     }
 
     @Override
-    public void loadImage(BigImageView parent, Uri uri, final Callback callback) {
+    public void loadImage(int requestId, Uri uri, final Callback callback) {
         ImageRequest request = ImageRequest.fromUri(uri);
 
         File localCache = getCacheFile(request);
@@ -117,17 +117,17 @@ public final class FrescoImageLoader implements ImageLoader {
                 }
             }, mExecutorSupplier.forBackgroundTasks());
 
-            closeSource(parent);
-            saveSource(parent, source);
+            closeSource(requestId);
+            saveSource(requestId, source);
         }
     }
 
-    private void saveSource(BigImageView parent, DataSource target) {
-        mViewSourceMap.put(parent.hashCode(), target);
+    private void saveSource(int requestId, DataSource target) {
+        mRequestSourceMap.put(requestId, target);
     }
 
-    private void closeSource(BigImageView parent) {
-        DataSource source = mViewSourceMap.remove(parent.hashCode());
+    private void closeSource(int requestId) {
+        DataSource source = mRequestSourceMap.remove(requestId);
         if (source != null) {
             source.close();
         }
@@ -168,8 +168,8 @@ public final class FrescoImageLoader implements ImageLoader {
     }
 
     @Override
-    public void cancel(BigImageView parent) {
-        closeSource(parent);
+    public void cancel(int requestId) {
+        closeSource(requestId);
     }
 
     private File getCacheFile(final ImageRequest request) {

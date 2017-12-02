@@ -50,7 +50,7 @@ import okhttp3.OkHttpClient;
 public final class GlideImageLoader implements ImageLoader {
     private final RequestManager mRequestManager;
 
-    private final ConcurrentHashMap<Integer, ImageDownloadTarget> mViewTargetMap
+    private final ConcurrentHashMap<Integer, ImageDownloadTarget> mRequestTargetMap
             = new ConcurrentHashMap<>();
 
     private GlideImageLoader(Context context, OkHttpClient okHttpClient) {
@@ -67,7 +67,7 @@ public final class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void loadImage(final BigImageView parent, final Uri uri, final Callback callback) {
+    public void loadImage(final int requestId, final Uri uri, final Callback callback) {
         ImageDownloadTarget target = new ImageDownloadTarget(uri.toString()) {
             @Override
             public void onResourceReady(File resource,
@@ -99,8 +99,8 @@ public final class GlideImageLoader implements ImageLoader {
                 callback.onFinish();
             }
         };
-        clearTarget(parent);
-        saveTarget(parent, target);
+        clearTarget(requestId);
+        saveTarget(requestId, target);
 
         mRequestManager
                 .downloadOnly()
@@ -108,12 +108,12 @@ public final class GlideImageLoader implements ImageLoader {
                 .into(target);
     }
 
-    private void saveTarget(BigImageView parent, ImageDownloadTarget target) {
-        mViewTargetMap.put(parent.hashCode(), target);
+    private void saveTarget(int requestId, ImageDownloadTarget target) {
+        mRequestTargetMap.put(requestId, target);
     }
 
-    private void clearTarget(BigImageView parent) {
-        ImageDownloadTarget target = mViewTargetMap.remove(parent.hashCode());
+    private void clearTarget(int requestId) {
+        ImageDownloadTarget target = mRequestTargetMap.remove(requestId);
         if (target != null) {
             mRequestManager.clear(target);
         }
@@ -157,7 +157,7 @@ public final class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void cancel(BigImageView parent) {
-        clearTarget(parent);
+    public void cancel(int requestId) {
+        clearTarget(requestId);
     }
 }
