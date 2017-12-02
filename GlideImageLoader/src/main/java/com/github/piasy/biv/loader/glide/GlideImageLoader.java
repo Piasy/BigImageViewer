@@ -30,13 +30,17 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.view.BigImageView;
+
 import java.io.File;
+import java.util.concurrent.ConcurrentHashMap;
+
 import okhttp3.OkHttpClient;
 
 /**
@@ -45,6 +49,9 @@ import okhttp3.OkHttpClient;
 
 public final class GlideImageLoader implements ImageLoader {
     private final RequestManager mRequestManager;
+
+    private final ConcurrentHashMap<Integer, ImageDownloadTarget> mRequestTargetMap
+            = new ConcurrentHashMap<>();
 
     private GlideImageLoader(Context context, OkHttpClient okHttpClient) {
         GlideProgressSupport.init(Glide.get(context), okHttpClient);
@@ -60,39 +67,56 @@ public final class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void loadImage(final Uri uri, final Callback callback) {
+    public void loadImage(final int requestId, final Uri uri, final Callback callback) {
+        ImageDownloadTarget target = new ImageDownloadTarget(uri.toString()) {
+            @Override
+            public void onResourceReady(File resource,
+                                        Transition<? super File> transition) {
+                super.onResourceReady(resource, transition);
+                // we don't need delete this image file, so it behaves live cache hit
+                callback.onCacheHit(resource);
+                callback.onSuccess(resource);
+            }
+
+            @Override
+            public void onLoadFailed(final Drawable errorDrawable) {
+                super.onLoadFailed(errorDrawable);
+                callback.onFail(new GlideLoaderException(errorDrawable));
+            }
+
+            @Override
+            public void onDownloadStart() {
+                callback.onStart();
+            }
+
+            @Override
+            public void onProgress(int progress) {
+                callback.onProgress(progress);
+            }
+
+            @Override
+            public void onDownloadFinish() {
+                callback.onFinish();
+            }
+        };
+        clearTarget(requestId);
+        saveTarget(requestId, target);
+
         mRequestManager
                 .downloadOnly()
                 .load(uri)
-                .into(new ImageDownloadTarget(uri.toString()) {
-                    @Override
-                    public void onResourceReady(File resource,
-                            Transition<? super File> transition) {
-                        // we don't need delete this image file, so it behaves live cache hit
-                        callback.onCacheHit(resource);
-                        callback.onSuccess(resource);
-                    }
+                .into(target);
+    }
 
-                    @Override
-                    public void onLoadFailed(final Drawable errorDrawable) {
-                        callback.onFail(new GlideLoaderException(errorDrawable));
-                    }
+    private void saveTarget(int requestId, ImageDownloadTarget target) {
+        mRequestTargetMap.put(requestId, target);
+    }
 
-                    @Override
-                    public void onDownloadStart() {
-                        callback.onStart();
-                    }
-
-                    @Override
-                    public void onProgress(int progress) {
-                        callback.onProgress(progress);
-                    }
-
-                    @Override
-                    public void onDownloadFinish() {
-                        callback.onFinish();
-                    }
-                });
+    private void clearTarget(int requestId) {
+        ImageDownloadTarget target = mRequestTargetMap.remove(requestId);
+        if (target != null) {
+            mRequestManager.clear(target);
+        }
     }
 
     @Override
@@ -130,5 +154,10 @@ public final class GlideImageLoader implements ImageLoader {
                         // not interested in result
                     }
                 });
+    }
+
+    @Override
+    public void cancel(int requestId) {
+        clearTarget(requestId);
     }
 }

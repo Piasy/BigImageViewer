@@ -26,6 +26,8 @@ package com.github.piasy.biv.loader.glide;
 
 import android.graphics.drawable.Drawable;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+
 import java.io.File;
 
 /**
@@ -38,6 +40,11 @@ public abstract class ImageDownloadTarget extends SimpleTarget<File> implements
 
     protected ImageDownloadTarget(String url) {
         mUrl = url;
+    }
+
+    @Override
+    public void onResourceReady(File resource, Transition<? super File> transition) {
+        GlideProgressSupport.forget(mUrl);
     }
 
     @Override

@@ -36,11 +36,13 @@ import java.io.File;
 
 public interface ImageLoader {
 
-    void loadImage(Uri uri, Callback callback);
+    void loadImage(int requestId, Uri uri, Callback callback);
 
     View showThumbnail(BigImageView parent, Uri thumbnail, int scaleType);
 
     void prefetch(Uri uri);
+
+    void cancel(int requestId);
 
     @UiThread
     interface Callback {

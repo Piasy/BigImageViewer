@@ -48,6 +48,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 import java.io.File;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Piasy{github.com/Piasy} on 08/11/2016.
@@ -57,6 +58,9 @@ public final class FrescoImageLoader implements ImageLoader {
 
     private final Context mAppContext;
     private final DefaultExecutorSupplier mExecutorSupplier;
+
+    private final ConcurrentHashMap<Integer, DataSource> mRequestSourceMap
+            = new ConcurrentHashMap<>();
 
     private FrescoImageLoader(Context appContext) {
         mAppContext = appContext;
@@ -79,7 +83,7 @@ public final class FrescoImageLoader implements ImageLoader {
     }
 
     @Override
-    public void loadImage(Uri uri, final Callback callback) {
+    public void loadImage(int requestId, Uri uri, final Callback callback) {
         ImageRequest request = ImageRequest.fromUri(uri);
 
         File localCache = getCacheFile(request);
@@ -112,6 +116,20 @@ public final class FrescoImageLoader implements ImageLoader {
                     callback.onFail((Exception) t);
                 }
             }, mExecutorSupplier.forBackgroundTasks());
+
+            closeSource(requestId);
+            saveSource(requestId, source);
+        }
+    }
+
+    private void saveSource(int requestId, DataSource target) {
+        mRequestSourceMap.put(requestId, target);
+    }
+
+    private void closeSource(int requestId) {
+        DataSource source = mRequestSourceMap.remove(requestId);
+        if (source != null) {
+            source.close();
         }
     }
 
@@ -147,6 +165,11 @@ public final class FrescoImageLoader implements ImageLoader {
         ImagePipeline pipeline = Fresco.getImagePipeline();
         pipeline.prefetchToDiskCache(ImageRequest.fromUri(uri),
                 false); // we don't need context, but avoid null
+    }
+
+    @Override
+    public void cancel(int requestId) {
+        closeSource(requestId);
     }
 
     private File getCacheFile(final ImageRequest request) {
