@@ -80,12 +80,12 @@ ext {
 
     androidCompileSdkVersion = 27
     androidBuildToolsVersion = '27.0.1'
-    androidSupportSdkVersion = '27.0.1'
+    androidSupportSdkVersion = '27.0.2'
     minSdkVersion = 14
     targetSdkVersion = 27
 
     frescoVersion = '1.5.0'
-    glideVersion = '4.3.1'
+    glideVersion = '4.4.0'
     ssivVersion = '3.8.0'
     commonsVersion = '2.6'
 }
