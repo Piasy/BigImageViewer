@@ -50,5 +50,4 @@ dependencies {
     api project(':BigImageViewer')
 
     api "com.facebook.fresco:fresco:$rootProject.ext.frescoVersion"
-    api "commons-io:commons-io:$rootProject.ext.commonsVersion"
 }

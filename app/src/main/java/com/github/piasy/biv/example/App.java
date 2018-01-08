@@ -33,7 +33,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Created by Piasy{github.com/Piasy} on 22/04/2017.
@@ -81,7 +80,11 @@ public class App extends Application {
             Log.w(TAG, "Unable to read sysprop " + propName, ex);
             return null;
         } finally {
-            IOUtils.closeQuietly(input);
+          try {
+            if (input != null) {
+              input.close();
+            }
+          } catch (Exception ignored) { }
         }
         return line;
     }
