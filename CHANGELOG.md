@@ -1,5 +1,7 @@
 # Change log
 
++ v1.4.6
+  - Remove commons-io dependency;
 + v1.4.5
   - Add `cancel` method;
   - Auto cancel when detach from window to fix memory leak;
