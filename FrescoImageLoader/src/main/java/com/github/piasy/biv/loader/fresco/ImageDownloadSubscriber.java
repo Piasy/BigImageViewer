@@ -77,14 +77,8 @@ public abstract class ImageDownloadSubscriber
         } catch (IOException e) {
             onFail(e);
         } finally {
-            try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            } catch (Exception ignored) { }
+            IOUtils.closeQuietly(inputStream);
+            IOUtils.closeQuietly(outputStream);
         }
     }
 

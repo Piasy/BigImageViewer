@@ -28,6 +28,8 @@ import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.github.piasy.biv.utils.IOUtils;
 import com.squareup.leakcanary.LeakCanary;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -80,11 +82,7 @@ public class App extends Application {
             Log.w(TAG, "Unable to read sysprop " + propName, ex);
             return null;
         } finally {
-          try {
-            if (input != null) {
-              input.close();
-            }
-          } catch (Exception ignored) { }
+            IOUtils.closeQuietly(input);
         }
         return line;
     }
