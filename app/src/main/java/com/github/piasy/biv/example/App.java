@@ -28,12 +28,13 @@ import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.github.piasy.biv.utils.IOUtils;
 import com.squareup.leakcanary.LeakCanary;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Created by Piasy{github.com/Piasy} on 22/04/2017.

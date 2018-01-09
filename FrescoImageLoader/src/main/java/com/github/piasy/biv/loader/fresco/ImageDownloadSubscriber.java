@@ -31,10 +31,10 @@ import com.facebook.common.memory.PooledByteBufferInputStream;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.BaseDataSubscriber;
 import com.facebook.datasource.DataSource;
+import com.github.piasy.biv.utils.IOUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Created by Piasy{github.com/Piasy} on 06/11/2016.
