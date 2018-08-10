@@ -278,6 +278,7 @@ for fir.im!
 + When you want load local image file, you can create the Uri via
 `Uri.fromFile`, but the path will be url encoded, and may cause the image loader
 fail to load it, consider using `Uri.parse("file://" + file.getAbsolutePath())`.
++ When using with ReceyclerView, the recycled BIV doesn't know it should clear the loaded image, so you need manually notify it in some way, see [issue 107](https://github.com/Piasy/BigImageViewer/issues/107).
 
 
 ## Why another big image viewer?
