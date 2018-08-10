@@ -72,5 +72,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, CustomSSIVActivity.class));
             }
         });
+        findViewById(R.id.mRecycler).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RecyclerViewActivity.class));
+            }
+        });
     }
 }
