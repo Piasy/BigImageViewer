@@ -312,6 +312,11 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void showImage(final Uri thumbnail, final Uri uri) {
         mThumbnail = thumbnail;
         mUri = uri;
+
+        if (mProgressIndicatorView != null && mProgressIndicatorView.getVisibility() == View.VISIBLE) {
+            removeView(mProgressIndicatorView);
+        }
+
         mImageLoader.loadImage(hashCode(), uri, mInternalCallback);
 
         if (mFailureImageView != null) {
