@@ -20,3 +20,7 @@
 -dontwarn com.github.piasy.cameracompat.**
 -dontwarn rx.**
 -dontwarn sun.misc.Unsafe
+
+-keep class android.support.v7.** {
+  *;
+}
