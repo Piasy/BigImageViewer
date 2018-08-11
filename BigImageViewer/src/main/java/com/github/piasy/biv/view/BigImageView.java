@@ -30,6 +30,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.Keep;
 import android.support.annotation.RequiresPermission;
 import android.support.annotation.UiThread;
 import android.text.TextUtils;
@@ -60,6 +61,7 @@ import java.util.List;
  * Use FrameLayout for extensibility.
  */
 
+@Keep
 public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public static final int INIT_SCALE_TYPE_CENTER_INSIDE = 1;
     public static final int INIT_SCALE_TYPE_CENTER_CROP = 2;
@@ -363,8 +365,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         if (mProgressIndicator != null) {
             mProgressIndicatorView = mProgressIndicator.getView(BigImageView.this);
-            addView(mProgressIndicatorView);
             mProgressIndicator.onStart();
+            if (mProgressIndicatorView != null) {
+                addView(mProgressIndicatorView);
+            }
         }
 
         if (mUserCallback != null) {
@@ -476,7 +480,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     private void clearProgressIndicator() {
-        if (mProgressIndicatorView != null && mProgressIndicatorView.getVisibility() == View.VISIBLE) {
+        if (mProgressIndicatorView != null) {
             removeView(mProgressIndicatorView);
             mProgressIndicatorView = null;
         }
