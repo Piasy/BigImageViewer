@@ -1,5 +1,7 @@
 # Change log
 
++ v1.4.7
+  - Fix #91
 + v1.4.6
   - Remove commons-io dependency;
 + v1.4.5
