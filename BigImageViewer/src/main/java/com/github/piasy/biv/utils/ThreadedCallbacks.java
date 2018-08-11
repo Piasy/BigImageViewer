@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Piasy
+ * Copyright (c) 2018 Piasy
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.github.piasy.biv.view;
+package com.github.piasy.biv.utils;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -32,7 +32,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
- * Created by powerinfo on 08/04/2017.
+ * Created by Piasy{github.com/Piasy} on 08/04/2017.
  */
 @Keep
 public final class ThreadedCallbacks implements InvocationHandler {
