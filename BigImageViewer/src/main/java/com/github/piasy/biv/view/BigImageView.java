@@ -85,8 +85,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     private SubsamplingScaleImageView mImageView;
 
-    private View mProgressIndicatorView;
     private View mThumbnailView;
+    private View mProgressIndicatorView;
     private ImageView mFailureImageView;
 
     private ImageSaveCallback mImageSaveCallback;
@@ -317,7 +317,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mThumbnail = thumbnail;
         mUri = uri;
 
-        clearProgressIndicator();
+        clearThumbnailAndProgressIndicator();
         mImageLoader.loadImage(hashCode(), uri, mInternalCallback);
 
         if (mFailureImageView != null) {
@@ -360,7 +360,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         if (mThumbnail != Uri.EMPTY) {
             mThumbnailView = mImageLoader.showThumbnail(BigImageView.this, mThumbnail,
                     mInitScaleType);
-            addView(mThumbnailView);
+            if (mThumbnailView != null) {
+                addView(mThumbnailView);
+            }
         }
 
         if (mProgressIndicator != null) {
@@ -421,13 +423,12 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             if (mThumbnailView != null) {
                 mThumbnailView.setAnimation(set);
             }
+            if (mProgressIndicatorView != null) {
+                mProgressIndicatorView.setAnimation(set);
+            }
 
             if (mProgressIndicator != null) {
                 mProgressIndicator.onFinish();
-            }
-
-            if (mProgressIndicatorView != null) {
-                mProgressIndicatorView.setAnimation(set);
             }
 
             animation.setAnimationListener(new Animation.AnimationListener() {
@@ -440,7 +441,23 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                     if (mThumbnailView != null) {
                         mThumbnailView.setVisibility(GONE);
                     }
-                    clearProgressIndicator();
+                    if (mProgressIndicatorView != null) {
+                        mProgressIndicatorView.setVisibility(GONE);
+                    }
+
+                    // fix:
+                    // java.lang.NullPointerException:
+                    // Attempt to read from field 'int android.view.View.mViewFlags'
+                    // on a null object reference
+                    // ref: https://stackoverflow.com/q/33242776/3077508
+                    if (mThumbnailView != null || mProgressIndicatorView != null) {
+                        post(new Runnable() {
+                            @Override
+                            public void run() {
+                                clearThumbnailAndProgressIndicator();
+                            }
+                        });
+                    }
                 }
 
                 @Override
@@ -451,10 +468,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             if (mProgressIndicator != null) {
                 mProgressIndicator.onFinish();
             }
-            if (mThumbnailView != null) {
-                mThumbnailView.setVisibility(GONE);
-            }
-            clearProgressIndicator();
+            clearThumbnailAndProgressIndicator();
         }
     }
 
@@ -476,10 +490,14 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         mFailureImageView.setVisibility(VISIBLE);
         mImageView.setVisibility(GONE);
-        clearProgressIndicator();
+        clearThumbnailAndProgressIndicator();
     }
 
-    private void clearProgressIndicator() {
+    private void clearThumbnailAndProgressIndicator() {
+        if (mThumbnailView != null) {
+            removeView(mThumbnailView);
+            mThumbnailView = null;
+        }
         if (mProgressIndicatorView != null) {
             removeView(mProgressIndicatorView);
             mProgressIndicatorView = null;
