@@ -95,6 +95,7 @@ dependencies {
         exclude module: 'support-v4'
     }
     implementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    implementation 'com.github.rubensousa:gravitysnaphelper:1.5'
 
     implementation project(':BigImageViewer')
     implementation project(':FrescoImageLoader')

@@ -312,6 +312,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void showImage(final Uri thumbnail, final Uri uri) {
         mThumbnail = thumbnail;
         mUri = uri;
+
+        clearProgressIndicator();
         mImageLoader.loadImage(hashCode(), uri, mInternalCallback);
 
         if (mFailureImageView != null) {
@@ -432,9 +434,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                     if (mThumbnailView != null) {
                         mThumbnailView.setVisibility(GONE);
                     }
-                    if (mProgressIndicatorView != null) {
-                        mProgressIndicatorView.setVisibility(GONE);
-                    }
+                    clearProgressIndicator();
                 }
 
                 @Override
@@ -448,9 +448,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             if (mThumbnailView != null) {
                 mThumbnailView.setVisibility(GONE);
             }
-            if (mProgressIndicatorView != null) {
-                mProgressIndicatorView.setVisibility(GONE);
-            }
+            clearProgressIndicator();
         }
     }
 
@@ -472,8 +470,13 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         mFailureImageView.setVisibility(VISIBLE);
         mImageView.setVisibility(GONE);
-        if (mProgressIndicatorView != null) {
-            mProgressIndicatorView.setVisibility(GONE);
+        clearProgressIndicator();
+    }
+
+    private void clearProgressIndicator() {
+        if (mProgressIndicatorView != null && mProgressIndicatorView.getVisibility() == View.VISIBLE) {
+            removeView(mProgressIndicatorView);
+            mProgressIndicatorView = null;
         }
     }
 }

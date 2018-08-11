@@ -61,6 +61,8 @@
         </activity>
         <activity android:name=".CustomSSIVActivity">
         </activity>
+        <activity android:name=".RecyclerViewActivity">
+        </activity>
     </application>
 
 </manifest>
