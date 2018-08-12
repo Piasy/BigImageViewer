@@ -14,8 +14,9 @@ View](https://github.com/davemorrissey/subsampling-scale-image-view),
 
 ![memory usage](art/android_studio_memory_monitor.png)
 
-<img alt="demo" src="/art/fresco_big_image_viewer_demo.gif" style="height:400px"/>
-<img alt="gif support" src="/art/biv_gif_support.gif" style="height:400px"/>
+pan and zoom               |  gif support
+:-------------------------:|:-------------------------:
+![demo](art/fresco_big_image_viewer_demo.gif)  |  ![gif support](art/biv_gif_support.gif)
 
 ## Getting started
 
