@@ -100,6 +100,8 @@ dependencies {
     implementation project(':BigImageViewer')
     implementation project(':FrescoImageLoader')
     implementation project(':GlideImageLoader')
+    implementation project(':FrescoImageViewFactory')
+    implementation project(':GlideImageViewFactory')
     annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.ext.glideVersion"
 
     implementation project(':ProgressPieIndicator')

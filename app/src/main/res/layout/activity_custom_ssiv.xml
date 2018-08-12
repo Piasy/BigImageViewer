@@ -28,21 +28,14 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context="com.github.piasy.biv.example.CustomSSIVActivity"
         >
+
     <com.github.piasy.biv.view.BigImageView
             android:id="@+id/mBigImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:customSsivId="@+id/mSSIV"
-            >
-        <com.github.piasy.biv.example.MySSIV
-                android:id="@+id/mSSIV"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
-    </com.github.piasy.biv.view.BigImageView>
+            />
 
     <Button
             android:id="@+id/mBtnLoad"

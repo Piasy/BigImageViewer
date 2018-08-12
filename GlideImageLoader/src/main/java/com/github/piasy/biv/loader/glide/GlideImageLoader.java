@@ -27,20 +27,14 @@ package com.github.piasy.biv.loader.glide;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.github.piasy.biv.loader.ImageLoader;
-import com.github.piasy.biv.view.BigImageView;
-
+import com.github.piasy.biv.metadata.ImageInfoExtractor;
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
-
 import okhttp3.OkHttpClient;
 
 /**
@@ -71,10 +65,10 @@ public final class GlideImageLoader implements ImageLoader {
         ImageDownloadTarget target = new ImageDownloadTarget(uri.toString()) {
             @Override
             public void onResourceReady(File resource,
-                                        Transition<? super File> transition) {
+                    Transition<? super File> transition) {
                 super.onResourceReady(resource, transition);
-                // we don't need delete this image file, so it behaves live cache hit
-                callback.onCacheHit(resource);
+                // we don't need delete this image file, so it behaves like cache hit
+                callback.onCacheHit(ImageInfoExtractor.getImageType(resource), resource);
                 callback.onSuccess(resource);
             }
 
@@ -108,40 +102,6 @@ public final class GlideImageLoader implements ImageLoader {
                 .into(target);
     }
 
-    private void saveTarget(int requestId, ImageDownloadTarget target) {
-        mRequestTargetMap.put(requestId, target);
-    }
-
-    private void clearTarget(int requestId) {
-        ImageDownloadTarget target = mRequestTargetMap.remove(requestId);
-        if (target != null) {
-            mRequestManager.clear(target);
-        }
-    }
-
-    @Override
-    public View showThumbnail(BigImageView parent, Uri thumbnail, int scaleType) {
-        ImageView thumbnailView = (ImageView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.ui_glide_thumbnail, parent, false);
-        switch (scaleType) {
-            case BigImageView.INIT_SCALE_TYPE_CENTER_CROP:
-                thumbnailView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                break;
-            case BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE:
-                thumbnailView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                break;
-            case BigImageView.INIT_SCALE_TYPE_START:
-                thumbnailView.setScaleType(ImageView.ScaleType.FIT_START);
-                break;
-            default:
-                break;
-        }
-        mRequestManager
-                .load(thumbnail)
-                .into(thumbnailView);
-        return thumbnailView;
-    }
-
     @Override
     public void prefetch(Uri uri) {
         mRequestManager
@@ -159,5 +119,16 @@ public final class GlideImageLoader implements ImageLoader {
     @Override
     public void cancel(int requestId) {
         clearTarget(requestId);
+    }
+
+    private void saveTarget(int requestId, ImageDownloadTarget target) {
+        mRequestTargetMap.put(requestId, target);
+    }
+
+    private void clearTarget(int requestId) {
+        ImageDownloadTarget target = mRequestTargetMap.remove(requestId);
+        if (target != null) {
+            mRequestManager.clear(target);
+        }
     }
 }

@@ -11,7 +11,7 @@
       android:layout_height="match_parent"
       app:failureImage="@drawable/ic_cloud_off_white"
       app:failureImageInitScaleType="center"
-      app:initScaleType="centerInside"
+      app:initScaleType="fitCenter"
       app:optimizeDisplay="true"
       />
 

@@ -7,15 +7,15 @@ featured image loading choices. Powered by [Subsampling Scale Image
 View](https://github.com/davemorrissey/subsampling-scale-image-view),
 [Fresco](https://github.com/facebook/fresco),
 [Glide](https://github.com/bumptech/glide), and
-[Picasso](https://github.com/square/picasso).
+[Picasso](https://github.com/square/picasso). Even with gif and webp support!
 
 
 ## Demo
 
 ![memory usage](art/android_studio_memory_monitor.png)
 
-![demo](art/fresco_big_image_viewer_demo.gif)
-
+<img alt="demo" src="/art/fresco_big_image_viewer_demo.gif" style="height:400px"/>
+<img alt="gif support" src="/art/biv_gif_support.gif" style="height:400px"/>
 
 ## Getting started
 
@@ -30,16 +30,22 @@ allprojects {
     }
 }
 
-compile 'com.github.piasy:BigImageViewer:1.4.7'
+compile 'com.github.piasy:BigImageViewer:1.5.0'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.4.7'
+compile 'com.github.piasy:FrescoImageLoader:1.5.0'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.4.7'
+compile 'com.github.piasy:GlideImageLoader:1.5.0'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.4.7'
+compile 'com.github.piasy:ProgressPieIndicator:1.5.0'
+
+// support thumbnail, gif and webp with Fresco
+compile 'com.github.piasy:FrescoImageViewFactory:1.5.0'
+
+// support thumbnail and gif with Glide
+compile 'com.github.piasy:GlideImageViewFactory:1.5.0'
 ```
 
 ### Initialize
@@ -83,8 +89,31 @@ bigImageView.showImage(Uri.parse(url));
 bigImageView.showImage(Uri.parse(thumbnail), Uri.parse(url));
 ```
 
+Note: since 1.5.0, to show thumbnail image, you need call `setImageViewFactory`, see details below.
 
 ## Usage
+
+### Animated image support
+
+Since 1.5.0, BIV support display animated image, e.g. gif and webp, to achieve that,
+you need set a custom `ImageViewFactory` via `biv.setImageViewFactory`:
+
+``` java
+// FrescoImageViewFactory is a prebuilt factory, which use Fresco's SimpleDraweeView
+// to display animated image, both gif and webp are supported.
+biv.setImageViewFactory(new FrescoImageViewFactory());
+
+// GlideImageViewFactory is another prebuilt factory, which use
+// https://github.com/koral--/android-gif-drawable to display gif,
+// webp is not supported.
+biv.setImageViewFactory(new GlideImageViewFactory());
+```
+
+To clean up code, we move thumbnail view creation from `ImageLoader` into `ImageViewFactory`,
+so to display thumbnail, you also need set an `ImageViewFactory`.
+
+Node: if the image is not gif or webp, then it will be displayed by SSIV, the image type is not
+determined by its file extension, but by its file header magic code.
 
 ### Download progress indicator
 
@@ -144,10 +173,18 @@ mBigImageView.setInitScaleType(BigImageView.INIT_SCALE_TYPE_CENTER_CROP);
 
 | value | effect |
 | ------| ------ |
-| centerInside | Scale the image so that both dimensions of the image will be equal to or less than the corresponding dimension of the view. The image is then centered in the view. This is the default behaviour and best for galleries. |
-| centerCrop | Scale the image uniformly so that both dimensions of the image will be equal to or larger than the corresponding dimension of the view. The image is then centered in the view. |
+| center | Center the image in the view, but perform no scaling. |
+| centerCrop | Scale the image uniformly (maintain the image's aspect ratio) so that both dimensions (width and height) of the image will be equal to or larger than the corresponding dimension of the view (minus padding). The image is then centered in the view. |
+| centerInside | Scale the image uniformly (maintain the image's aspect ratio) so that both dimensions (width and height) of the image will be equal to or less than the corresponding dimension of the view (minus padding). The image is then centered in the view. |
+| fitCenter | Scales the image so that it fits entirely inside the parent. At least one dimension (width or height) will fit exactly. Aspect ratio is preserved. Image is centered within the parent's bounds. |
+| fitEnd | Scales the image so that it fits entirely inside the parent. At least one dimension (width or height) will fit exactly. Aspect ratio is preserved. Image is aligned to the bottom-right corner of the parent. |
+| fitStart | Scales the image so that it fits entirely inside the parent. At least one dimension (width or height) will fit exactly. Aspect ratio is preserved. Image is aligned to the top-left corner of the parent. |
+| fitXY | Scales width and height independently, so that the image matches the parent exactly. This may change the aspect ratio of the image. |
 | custom | Scale the image so that both dimensions of the image will be equal to or less than the maxScale and equal to or larger than minScale. The image is then centered in the view. |
 | start | Scale the image so that both dimensions of the image will be equal to or larger than the corresponding dimension of the view. The top left is shown. |
+
+Note: SSIV only support centerCrop, centerInside, custom and start, other scale types are
+treated as centerInside, while other scale types may be used by animated image types.
 
 ### Failure image
 
@@ -161,8 +198,9 @@ nothing is displayed when the request fails.
 You can set the failure image scale type using `failureImageInitScaleType` attribute,
 or `setFailureImageInitScaleType`.
 
-Any value of [ImageView.ScaleType](https://developer.android.com/reference/android/widget/ImageView.ScaleType.html) is valid.
-Default value is `ImageView.ScaleType.FIT_CENTER`. It will be ignored if there is no failure image set.
+Any value of [ImageView.ScaleType](https://developer.android.com/reference/android/widget/ImageView.ScaleType.html)
+is valid. Default value is `ImageView.ScaleType.FIT_CENTER`. It will be ignored if there is
+no failure image set.
 
 #### Tap to retry
 
@@ -177,12 +215,12 @@ and overriding the key callbacks
 ```java
 ImageLoader.Callback myImageLoaderCallback = new ImageLoader.Callback() {
     @Override
-    public void onCacheHit(File image) {
+    public void onCacheHit(int imageType, File image) {
       // Image was found in the cache
     }
 
     @Override
-    public void onCacheMiss(File image) {
+    public void onCacheMiss(int imageType, File image) {
       // Image was downloaded from the network
     }
 
@@ -219,14 +257,10 @@ Then setting it as the image load callback
 mBigImageView.setImageLoaderCallback(myImageLoaderCallback);
 ```
 
-The `onSuccess(File image)` is always called after the image was  retrieved
+The `onSuccess(File image)` is always called after the image was retrieved
 successfully whether from the cache or the network.
 
-**Note that** only `onSuccess(File image)` and `onFail(Exception error)` as well
-as `onCacheHit(File image)` callbacks run on the UI thread. All other callbacks
-run on a background (worker) thread.
-
-For an example see ImageLoaderCallbackActivity.java
+For an example, see ImageLoaderCallbackActivity.java
 
 ### Cancel image loading
 
@@ -245,32 +279,13 @@ public SubsamplingScaleImageView getSSIV() {
 
 Then you can do anything you can imagine about SSIV :)
 
+Note: you should test whether SSIV is null, because the image could be a gif,
+then it won't be displayed by SSIV.
+
 ### Custom SSIV support
 
-You can even use your own custom SSIV, by declaring it in layout file:
-
-``` xml
-<com.github.piasy.biv.view.BigImageView
-        android:id="@+id/mBigImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:customSsivId="@+id/mSSIV"
-        >
-    <com.github.piasy.biv.example.MySSIV
-            android:id="@+id/mSSIV"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-</com.github.piasy.biv.view.BigImageView>
-```
-
-BIV look up custom SSIV through `customSsivId`, don't forget that.
-
-### Runnable demo
-
-You can try the example to checkout the differences! https://fir.im/BIV . Thanks
-for fir.im!
-
+You can even use your own custom SSIV, by calling `biv.setImageViewFactory()`,
+passing in a factory that override `createStillImageView`, and return your custom SSIV.
 
 ## Caveats
 
@@ -278,7 +293,9 @@ for fir.im!
 + When you want load local image file, you can create the Uri via
 `Uri.fromFile`, but the path will be url encoded, and may cause the image loader
 fail to load it, consider using `Uri.parse("file://" + file.getAbsolutePath())`.
-+ When using with ReceyclerView, the recycled BIV doesn't know it should clear the loaded image, so you need manually notify it in some way, see [issue 107](https://github.com/Piasy/BigImageViewer/issues/107).
++ When using with ReceyclerView, the recycled BIV doesn't know it should clear the loaded image,
+so you need manually notify it in some way,
+see [issue 107](https://github.com/Piasy/BigImageViewer/issues/107).
 
 
 ## Why another big image viewer?

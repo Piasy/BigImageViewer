@@ -27,6 +27,8 @@
         package="com.github.piasy.biv.example"
         >
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
             android:name=".App"
             android:allowBackup="true"

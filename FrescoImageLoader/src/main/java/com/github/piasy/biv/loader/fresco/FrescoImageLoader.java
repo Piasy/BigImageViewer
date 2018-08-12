@@ -26,8 +26,6 @@ package com.github.piasy.biv.loader.fresco;
 
 import android.content.Context;
 import android.net.Uri;
-import android.view.LayoutInflater;
-import android.view.View;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
 import com.facebook.cache.disk.FileCache;
@@ -36,9 +34,6 @@ import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.DraweeConfig;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
 import com.facebook.imagepipeline.core.DefaultExecutorSupplier;
 import com.facebook.imagepipeline.core.ImagePipeline;
@@ -46,7 +41,7 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.github.piasy.biv.loader.ImageLoader;
-import com.github.piasy.biv.view.BigImageView;
+import com.github.piasy.biv.metadata.ImageInfoExtractor;
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -86,10 +81,15 @@ public final class FrescoImageLoader implements ImageLoader {
     public void loadImage(int requestId, Uri uri, final Callback callback) {
         ImageRequest request = ImageRequest.fromUri(uri);
 
-        File localCache = getCacheFile(request);
+        final File localCache = getCacheFile(request);
         if (localCache.exists()) {
-            callback.onCacheHit(localCache);
-            callback.onSuccess(localCache);
+            mExecutorSupplier.forLocalStorageRead().execute(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onCacheHit(ImageInfoExtractor.getImageType(localCache), localCache);
+                    callback.onSuccess(localCache);
+                }
+            });
         } else {
             callback.onStart(); // ensure `onStart` is called before `onProgress` and `onFinish`
             callback.onProgress(0); // show 0 progress immediately
@@ -106,7 +106,7 @@ public final class FrescoImageLoader implements ImageLoader {
                 @Override
                 protected void onSuccess(final File image) {
                     callback.onFinish();
-                    callback.onCacheMiss(image);
+                    callback.onCacheMiss(ImageInfoExtractor.getImageType(image), image);
                     callback.onSuccess(image);
                 }
 
@@ -122,44 +122,6 @@ public final class FrescoImageLoader implements ImageLoader {
         }
     }
 
-    private void saveSource(int requestId, DataSource target) {
-        mRequestSourceMap.put(requestId, target);
-    }
-
-    private void closeSource(int requestId) {
-        DataSource source = mRequestSourceMap.remove(requestId);
-        if (source != null) {
-            source.close();
-        }
-    }
-
-    @Override
-    public View showThumbnail(BigImageView parent, Uri thumbnail, int scaleType) {
-        SimpleDraweeView thumbnailView = (SimpleDraweeView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.ui_fresco_thumbnail, parent, false);
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setUri(thumbnail)
-                .build();
-        switch (scaleType) {
-            case BigImageView.INIT_SCALE_TYPE_CENTER_CROP:
-                thumbnailView.getHierarchy()
-                        .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
-                break;
-            case BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE:
-                thumbnailView.getHierarchy()
-                        .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_INSIDE);
-                break;
-            case BigImageView.INIT_SCALE_TYPE_START:
-                thumbnailView.getHierarchy()
-                        .setActualImageScaleType(ScalingUtils.ScaleType.FIT_START);
-                break;
-            default:
-                break;
-        }
-        thumbnailView.setController(controller);
-        return thumbnailView;
-    }
-
     @Override
     public void prefetch(Uri uri) {
         ImagePipeline pipeline = Fresco.getImagePipeline();
@@ -170,6 +132,17 @@ public final class FrescoImageLoader implements ImageLoader {
     @Override
     public void cancel(int requestId) {
         closeSource(requestId);
+    }
+
+    private void saveSource(int requestId, DataSource target) {
+        mRequestSourceMap.put(requestId, target);
+    }
+
+    private void closeSource(int requestId) {
+        DataSource source = mRequestSourceMap.remove(requestId);
+        if (source != null) {
+            source.close();
+        }
     }
 
     private File getCacheFile(final ImageRequest request) {

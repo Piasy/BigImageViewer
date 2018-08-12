@@ -48,6 +48,7 @@ import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.R;
 import com.github.piasy.biv.indicator.ProgressIndicator;
 import com.github.piasy.biv.loader.ImageLoader;
+import com.github.piasy.biv.metadata.ImageInfoExtractor;
 import com.github.piasy.biv.utils.DisplayOptimizeListener;
 import com.github.piasy.biv.utils.ThreadedCallbacks;
 import java.io.File;
@@ -63,12 +64,17 @@ import java.util.List;
 
 @Keep
 public class BigImageView extends FrameLayout implements ImageLoader.Callback {
-    public static final int INIT_SCALE_TYPE_CENTER_INSIDE = 1;
-    public static final int INIT_SCALE_TYPE_CENTER_CROP = 2;
-    public static final int INIT_SCALE_TYPE_CUSTOM = 3;
-    public static final int INIT_SCALE_TYPE_START = 4;
+    public static final int INIT_SCALE_TYPE_CENTER = 0;
+    public static final int INIT_SCALE_TYPE_CENTER_CROP = 1;
+    public static final int INIT_SCALE_TYPE_CENTER_INSIDE = 2;
+    public static final int INIT_SCALE_TYPE_FIT_CENTER = 3;
+    public static final int INIT_SCALE_TYPE_FIT_END = 4;
+    public static final int INIT_SCALE_TYPE_FIT_START = 5;
+    public static final int INIT_SCALE_TYPE_FIT_XY = 6;
+    public static final int INIT_SCALE_TYPE_CUSTOM = 7;
+    public static final int INIT_SCALE_TYPE_START = 8;
 
-    public static final int IMAGE_SCALE_TYPE_FIT_CENTER_INDEX = 3;
+    public static final int DEFAULT_IMAGE_SCALE_TYPE = 3;
     public static final ImageView.ScaleType[] IMAGE_SCALE_TYPES = {
             ImageView.ScaleType.CENTER,
             ImageView.ScaleType.CENTER_CROP,
@@ -83,9 +89,12 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private final List<File> mTempImages;
     private final ImageLoader.Callback mInternalCallback;
 
-    private SubsamplingScaleImageView mImageView;
+    private ImageViewFactory mViewFactory;
 
+    private View mMainView;
     private View mThumbnailView;
+    private SubsamplingScaleImageView mSSIV;
+
     private View mProgressIndicatorView;
     private ImageView mFailureImageView;
 
@@ -100,7 +109,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private int mInitScaleType;
     private ImageView.ScaleType mFailureImageScaleType;
     private boolean mOptimizeDisplay;
-    private int mCustomSsivId;
     private boolean mTapToRetry;
 
     public BigImageView(Context context) {
@@ -117,32 +125,22 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         TypedArray array = context.getTheme()
                 .obtainStyledAttributes(attrs, R.styleable.BigImageView, defStyleAttr, 0);
         mInitScaleType = array.getInteger(R.styleable.BigImageView_initScaleType,
-                INIT_SCALE_TYPE_CENTER_INSIDE);
+                INIT_SCALE_TYPE_FIT_CENTER);
 
         if (array.hasValue(R.styleable.BigImageView_failureImage)) {
             int scaleTypeIndex = array.getInteger(
                     R.styleable.BigImageView_failureImageInitScaleType,
-                    IMAGE_SCALE_TYPE_FIT_CENTER_INDEX);
-            if (scaleTypeIndex < 0 || IMAGE_SCALE_TYPES.length <= scaleTypeIndex) {
-                throw new IllegalArgumentException("Bad failureImageInitScaleType value: "
-                                                   + scaleTypeIndex);
-            }
-            mFailureImageScaleType = IMAGE_SCALE_TYPES[scaleTypeIndex];
+                    DEFAULT_IMAGE_SCALE_TYPE);
+            mFailureImageScaleType = scaleType(scaleTypeIndex);
             Drawable mFailureImageDrawable = array.getDrawable(
                     R.styleable.BigImageView_failureImage);
             setFailureImage(mFailureImageDrawable);
         }
 
         mOptimizeDisplay = array.getBoolean(R.styleable.BigImageView_optimizeDisplay, true);
-        mCustomSsivId = array.getResourceId(R.styleable.BigImageView_customSsivId, 0);
         mTapToRetry = array.getBoolean(R.styleable.BigImageView_tapToRetry, true);
 
         array.recycle();
-
-        if (mCustomSsivId == 0) {
-            mImageView = new SubsamplingScaleImageView(context);
-            addView(mImageView);
-        }
 
         if (isInEditMode()) {
             mImageLoader = null;
@@ -151,12 +149,23 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         }
         mInternalCallback = ThreadedCallbacks.create(ImageLoader.Callback.class, this);
 
+        mViewFactory = new ImageViewFactory();
+
         mTempImages = new ArrayList<>();
+    }
+
+    public static ImageView.ScaleType scaleType(int value) {
+        if (0 <= value && value < IMAGE_SCALE_TYPES.length) {
+            return IMAGE_SCALE_TYPES[value];
+        }
+        return IMAGE_SCALE_TYPES[DEFAULT_IMAGE_SCALE_TYPE];
     }
 
     @Override
     public void setOnClickListener(final OnClickListener listener) {
-        mImageView.setOnClickListener(listener);
+        if (mMainView != null) {
+            mMainView.setOnClickListener(listener);
+        }
         if (mFailureImageView != null) {
             mFailureImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -173,23 +182,17 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     @Override
     public void setOnLongClickListener(OnLongClickListener listener) {
-        mImageView.setOnLongClickListener(listener);
+        if (mMainView != null) {
+            mMainView.setOnLongClickListener(listener);
+        }
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
-        if (mImageView == null) {
-            mImageView = findViewById(mCustomSsivId);
+    public void setImageViewFactory(ImageViewFactory viewFactory) {
+        if (viewFactory == null) {
+            return;
         }
-        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        mImageView.setLayoutParams(params);
-        mImageView.setMinimumTileDpi(160);
 
-        setOptimizeDisplay(mOptimizeDisplay);
-        setInitScaleType(mInitScaleType);
+        mViewFactory = viewFactory;
     }
 
     public void setFailureImageInitScaleType(ImageView.ScaleType scaleType) {
@@ -218,20 +221,24 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     public void setInitScaleType(int initScaleType) {
+        if (mSSIV == null) {
+            return;
+        }
+
         mInitScaleType = initScaleType;
         switch (initScaleType) {
             case INIT_SCALE_TYPE_CENTER_CROP:
-                mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
+                mSSIV.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_CROP);
                 break;
             case INIT_SCALE_TYPE_CUSTOM:
-                mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
+                mSSIV.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CUSTOM);
                 break;
             case INIT_SCALE_TYPE_START:
-                mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_START);
+                mSSIV.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_START);
                 break;
             case INIT_SCALE_TYPE_CENTER_INSIDE:
             default:
-                mImageView.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE);
+                mSSIV.setMinimumScaleType(SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE);
                 break;
         }
         if (mDisplayOptimizeListener != null) {
@@ -240,13 +247,17 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     public void setOptimizeDisplay(boolean optimizeDisplay) {
+        if (mSSIV == null) {
+            return;
+        }
+
         mOptimizeDisplay = optimizeDisplay;
         if (mOptimizeDisplay) {
-            mDisplayOptimizeListener = new DisplayOptimizeListener(mImageView);
-            mImageView.setOnImageEventListener(mDisplayOptimizeListener);
+            mDisplayOptimizeListener = new DisplayOptimizeListener(mSSIV);
+            mSSIV.setOnImageEventListener(mDisplayOptimizeListener);
         } else {
             mDisplayOptimizeListener = null;
-            mImageView.setOnImageEventListener(null);
+            mSSIV.setOnImageEventListener(null);
         }
     }
 
@@ -330,27 +341,27 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     public SubsamplingScaleImageView getSSIV() {
-        return mImageView;
+        return mSSIV;
     }
 
     @Override
-    public void onCacheHit(File image) {
+    public void onCacheHit(final int imageType, File image) {
         mCurrentImageFile = image;
-        doShowImage(image);
+        doShowImage(imageType, image);
 
         if (mUserCallback != null) {
-            mUserCallback.onCacheHit(image);
+            mUserCallback.onCacheHit(imageType, image);
         }
     }
 
     @Override
-    public void onCacheMiss(final File image) {
+    public void onCacheMiss(final int imageType, final File image) {
         mCurrentImageFile = image;
         mTempImages.add(image);
-        doShowImage(image);
+        doShowImage(imageType, image);
 
         if (mUserCallback != null) {
-            mUserCallback.onCacheMiss(image);
+            mUserCallback.onCacheMiss(imageType, image);
         }
     }
 
@@ -358,10 +369,11 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void onStart() {
         // why show thumbnail in onStart? because we may not need download it from internet
         if (mThumbnail != Uri.EMPTY) {
-            mThumbnailView = mImageLoader.showThumbnail(BigImageView.this, mThumbnail,
+            mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnail,
                     mInitScaleType);
             if (mThumbnailView != null) {
-                addView(mThumbnailView);
+                addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
             }
         }
 
@@ -473,12 +485,35 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     @UiThread
-    private void doShowImage(File image) {
-        mImageView.setImage(ImageSource.uri(Uri.fromFile(image)));
+    private void doShowImage(final int imageType, final File image) {
+        if (mMainView != null) {
+            removeView(mMainView);
+        }
+
+        mMainView = mViewFactory.createMainView(getContext(), imageType, image, mInitScaleType);
+        if (mMainView == null) {
+            onFail(new RuntimeException("Image type not supported: "
+                                        + ImageInfoExtractor.typeName(imageType)));
+            return;
+        }
+
+        addView(mMainView, ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+
+        if (mMainView instanceof SubsamplingScaleImageView) {
+            mSSIV = (SubsamplingScaleImageView) mMainView;
+
+            mSSIV.setMinimumTileDpi(160);
+
+            setOptimizeDisplay(mOptimizeDisplay);
+            setInitScaleType(mInitScaleType);
+
+            mSSIV.setImage(ImageSource.uri(Uri.fromFile(image)));
+        }
+
         if (mFailureImageView != null) {
             mFailureImageView.setVisibility(GONE);
         }
-        mImageView.setVisibility(VISIBLE);
     }
 
     @UiThread
@@ -487,9 +522,11 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         if (mFailureImageView == null) {
             return;
         }
+        if (mMainView != null) {
+            removeView(mMainView);
+        }
 
         mFailureImageView.setVisibility(VISIBLE);
-        mImageView.setVisibility(GONE);
         clearThumbnailAndProgressIndicator();
     }
 

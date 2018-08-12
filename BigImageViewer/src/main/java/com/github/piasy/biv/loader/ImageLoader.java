@@ -26,8 +26,6 @@ package com.github.piasy.biv.loader;
 
 import android.net.Uri;
 import android.support.annotation.UiThread;
-import android.view.View;
-import com.github.piasy.biv.view.BigImageView;
 import java.io.File;
 
 /**
@@ -38,17 +36,15 @@ public interface ImageLoader {
 
     void loadImage(int requestId, Uri uri, Callback callback);
 
-    View showThumbnail(BigImageView parent, Uri thumbnail, int scaleType);
-
     void prefetch(Uri uri);
 
     void cancel(int requestId);
 
     @UiThread
     interface Callback {
-        void onCacheHit(File image);
+        void onCacheHit(int imageType, File image);
 
-        void onCacheMiss(File image);
+        void onCacheMiss(int imageType, File image);
 
         void onStart();
 

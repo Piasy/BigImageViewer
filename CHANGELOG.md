@@ -1,5 +1,8 @@
 # Change log
 
++ v1.5.0
+  - Gif support, cheers~ 🍻
+  - Move thumbnail view creation from `ImageLoader` into `ImageViewFactory`.
 + v1.4.7
   - Fix #91
 + v1.4.6

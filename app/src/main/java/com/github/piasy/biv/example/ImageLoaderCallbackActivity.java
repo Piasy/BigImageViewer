@@ -70,14 +70,14 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
                 bigImageView.setProgressIndicator(new ProgressPieIndicator());
                 bigImageView.setImageLoaderCallback(new ImageLoader.Callback() {
                     @Override
-                    public void onCacheHit(File image) {
+                    public void onCacheHit(int imageType, File image) {
                         final String message = "onCacheHit callback called, cached image " + image.getName();
                         Log.i("onCacheHit", message);
                         showToast(message);
                     }
 
                     @Override
-                    public void onCacheMiss(File image) {
+                    public void onCacheMiss(int imageType, File image) {
                         final String message = "onCacheMiss callback called, fetching image " + image.getName();
                         Log.i("onCacheMiss", message);
                         showToastOnUiThread(message);
