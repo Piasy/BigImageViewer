@@ -104,6 +104,21 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private Uri mUri;
     private Uri mThumbnail;
 
+    private OnClickListener mOnClickListener;
+    private OnLongClickListener mOnLongClickListener;
+    private OnClickListener mFailureImageClickListener = new OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            // Retry loading when failure image is clicked
+            if (mTapToRetry) {
+                showImage(mThumbnail, mUri);
+            }
+            if (mOnClickListener != null) {
+                mOnClickListener.onClick(v);
+            }
+        }
+    };
+
     private ProgressIndicator mProgressIndicator;
     private DisplayOptimizeListener mDisplayOptimizeListener;
     private int mInitScaleType;
@@ -163,25 +178,15 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     @Override
     public void setOnClickListener(final OnClickListener listener) {
+        mOnClickListener = listener;
         if (mMainView != null) {
             mMainView.setOnClickListener(listener);
-        }
-        if (mFailureImageView != null) {
-            mFailureImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    // Retry loading when failure image is clicked
-                    if (mTapToRetry) {
-                        showImage(mThumbnail, mUri);
-                    }
-                    listener.onClick(v);
-                }
-            });
         }
     }
 
     @Override
     public void setOnLongClickListener(OnLongClickListener listener) {
+        mOnLongClickListener = listener;
         if (mMainView != null) {
             mMainView.setOnLongClickListener(listener);
         }
@@ -209,6 +214,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             // Init failure image
             mFailureImageView = new ImageView(getContext());
             mFailureImageView.setVisibility(GONE);
+            mFailureImageView.setOnClickListener(mFailureImageClickListener);
 
             if (mFailureImageScaleType != null) {
                 mFailureImageView.setScaleType(mFailureImageScaleType);
@@ -499,6 +505,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         addView(mMainView, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
+        mMainView.setOnClickListener(mOnClickListener);
+        mMainView.setOnLongClickListener(mOnLongClickListener);
 
         if (mMainView instanceof SubsamplingScaleImageView) {
             mSSIV = (SubsamplingScaleImageView) mMainView;

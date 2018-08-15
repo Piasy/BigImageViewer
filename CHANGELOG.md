@@ -1,5 +1,7 @@
 # Change log
 
++ v1.5.1
+  - Fix #110, click listener bug.
 + v1.5.0
   - Gif support, cheers~ 🍻
   - Move thumbnail view creation from `ImageLoader` into `ImageViewFactory`.
