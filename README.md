@@ -1,6 +1,6 @@
 # BigImageViewer
 
-<img src="Logotype primary.png" width="70%" height="70%" />
+<img src="art/Logotype_primary.png" width="70%" height="70%"/>
 
 [![Download](https://api.bintray.com/packages/piasy/maven/BigImageViewer/images/download.svg)](https://bintray.com/piasy/maven/BigImageViewer/_latestVersion)
 

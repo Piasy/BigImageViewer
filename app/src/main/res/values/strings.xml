@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BigImageViewer</string>
+    <string name="app_name">BIV</string>
 
     <string name="scan_qr_code">recognize qr code</string>
     <string name="save_image">save to gallery</string>
