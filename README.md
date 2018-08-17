@@ -1,5 +1,7 @@
 # BigImageViewer
 
+<img src="Logotype primary.png" width="70%" height="70%" />
+
 [![Download](https://api.bintray.com/packages/piasy/maven/BigImageViewer/images/download.svg)](https://bintray.com/piasy/maven/BigImageViewer/_latestVersion)
 
 Big image viewer supporting pan and zoom, with very little memory usage and full
