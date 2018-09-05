@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.example.glide.SampleCustomImageSizeModel;
-import com.github.piasy.biv.loader.glide.GlideImageLoader;
+import com.github.piasy.biv.loader.glide.GlideCustomImageLoader;
 import com.github.rubensousa.gravitysnaphelper.GravityPagerSnapHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        BigImageViewer.initialize(GlideImageLoader.with(getApplicationContext(), SampleCustomImageSizeModel.class));
+        BigImageViewer.initialize(GlideCustomImageLoader.with(getApplicationContext(), SampleCustomImageSizeModel.class));
 
         setContentView(R.layout.activity_recycler_view);
 
