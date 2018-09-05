@@ -103,23 +103,23 @@ public class GlideImageLoader implements ImageLoader {
 
     void downloadImageInto(Uri uri, ImageDownloadTarget target) {
         mRequestManager
-            .downloadOnly()
-            .load(uri)
-            .into(target);
+                .downloadOnly()
+                .load(uri)
+                .into(target);
     }
 
     @Override
     public void prefetch(Uri uri) {
         mRequestManager
-            .downloadOnly()
-            .load(uri)
-            .into(new SimpleTarget<File>() {
-                @Override
-                public void onResourceReady(File resource,
-                    Transition<? super File> transition) {
-                  // not interested in result
-                }
-            });
+                .downloadOnly()
+                .load(uri)
+                .into(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource,
+                            Transition<? super File> transition) {
+                        // not interested in result
+                    }
+                });
     }
 
     @Override
