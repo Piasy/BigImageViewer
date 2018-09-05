@@ -27,6 +27,8 @@ package com.github.piasy.biv.loader.glide;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -43,21 +45,31 @@ import okhttp3.OkHttpClient;
 
 public final class GlideImageLoader implements ImageLoader {
     private final RequestManager mRequestManager;
+    private final Class<? extends GlideModel> mModel;
 
     private final ConcurrentHashMap<Integer, ImageDownloadTarget> mRequestTargetMap
             = new ConcurrentHashMap<>();
 
-    private GlideImageLoader(Context context, OkHttpClient okHttpClient) {
+    private GlideImageLoader(Context context, OkHttpClient okHttpClient, Class<? extends GlideModel> model) {
         GlideProgressSupport.init(Glide.get(context), okHttpClient);
         mRequestManager = Glide.with(context);
+        mModel = model;
     }
 
     public static GlideImageLoader with(Context context) {
-        return with(context, null);
+        return with(context, null, null);
     }
 
     public static GlideImageLoader with(Context context, OkHttpClient okHttpClient) {
-        return new GlideImageLoader(context, okHttpClient);
+        return with(context, okHttpClient, null);
+    }
+
+    public static GlideImageLoader with(Context context, Class<? extends GlideModel> glideModel) {
+        return with(context, null, glideModel);
+    }
+
+    public static GlideImageLoader with(Context context, OkHttpClient okHttpClient, Class<? extends GlideModel> glideModel) {
+        return new GlideImageLoader(context, okHttpClient, glideModel);
     }
 
     @Override
@@ -96,24 +108,56 @@ public final class GlideImageLoader implements ImageLoader {
         clearTarget(requestId);
         saveTarget(requestId, target);
 
+        if(mModel != null) {
+            try {
+                GlideModel glideModel = mModel.newInstance();
+                glideModel.setBaseImageUrl(uri);
+                mRequestManager
+                    .downloadOnly()
+                    .load(glideModel)
+                    .into(target);
+            } catch (InstantiationException e) {
+                loadByUriIntoTarget(uri, target);
+            } catch (IllegalAccessException e) {
+                loadByUriIntoTarget(uri, target);
+            }
+        } else {
+            loadByUriIntoTarget(uri, target);
+        }
+    }
+
+    private void loadByUriIntoTarget(Uri uri, ImageDownloadTarget target) {
         mRequestManager
-                .downloadOnly()
-                .load(uri)
-                .into(target);
+            .downloadOnly()
+            .load(uri)
+            .into(target);
     }
 
     @Override
     public void prefetch(Uri uri) {
+        if(mModel != null) {
+            try {
+                GlideModel glideModel = mModel.newInstance();
+                glideModel.setBaseImageUrl(uri);
+                mRequestManager
+                    .downloadOnly()
+                    .load(glideModel)
+                    .into(new FileSimpleTarget());
+            } catch (InstantiationException e) {
+                loadByUriIntoSimpleTarget(uri);
+            } catch (IllegalAccessException e) {
+                loadByUriIntoSimpleTarget(uri);
+            }
+        } else {
+            loadByUriIntoSimpleTarget(uri);
+        }
+    }
+
+    private void loadByUriIntoSimpleTarget(Uri uri) {
         mRequestManager
-                .downloadOnly()
-                .load(uri)
-                .into(new SimpleTarget<File>() {
-                    @Override
-                    public void onResourceReady(File resource,
-                            Transition<? super File> transition) {
-                        // not interested in result
-                    }
-                });
+            .downloadOnly()
+            .load(uri)
+            .into(new FileSimpleTarget());
     }
 
     @Override
@@ -129,6 +173,13 @@ public final class GlideImageLoader implements ImageLoader {
         ImageDownloadTarget target = mRequestTargetMap.remove(requestId);
         if (target != null) {
             mRequestManager.clear(target);
+        }
+    }
+
+    private class FileSimpleTarget extends SimpleTarget<File> {
+        @Override
+        public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
+            // not interested in result
         }
     }
 }
