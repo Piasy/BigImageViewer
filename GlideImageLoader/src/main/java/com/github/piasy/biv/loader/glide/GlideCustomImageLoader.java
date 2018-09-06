@@ -25,7 +25,7 @@ public class GlideCustomImageLoader extends GlideImageLoader {
   }
 
   @Override
-  void downloadImageInto(Uri uri, ImageDownloadTarget target) {
+  protected void downloadImageInto(Uri uri, SimpleTarget<File> target) {
     if(mModel != null) {
       try {
         GlideModel glideModel = mModel.newInstance();
