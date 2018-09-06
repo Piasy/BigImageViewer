@@ -3,7 +3,6 @@ package com.github.piasy.biv.loader.glide;
 import android.content.Context;
 import android.net.Uri;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import java.io.File;
 import okhttp3.OkHttpClient;
 
@@ -26,7 +25,7 @@ public class GlideCustomImageLoader extends GlideImageLoader {
 
   @Override
   protected void downloadImageInto(Uri uri, SimpleTarget<File> target) {
-    if(mModel != null) {
+    if (mModel != null) {
       try {
         GlideModel glideModel = mModel.newInstance();
         glideModel.setBaseImageUrl(uri);
@@ -41,32 +40,6 @@ public class GlideCustomImageLoader extends GlideImageLoader {
       }
     } else {
       super.downloadImageInto(uri, target);
-    }
-  }
-
-  @Override
-  public void prefetch(Uri uri) {
-    if(mModel != null) {
-      try {
-        GlideModel glideModel = mModel.newInstance();
-        glideModel.setBaseImageUrl(uri);
-        mRequestManager
-            .downloadOnly()
-            .load(glideModel)
-            .into(new SimpleTarget<File>() {
-              @Override
-              public void onResourceReady(File resource,
-                  Transition<? super File> transition) {
-                // not interested in result
-              }
-            });
-      } catch (InstantiationException e) {
-        super.prefetch(uri);
-      } catch (IllegalAccessException e) {
-        super.prefetch(uri);
-      }
-    } else {
-      super.prefetch(uri);
     }
   }
 }
