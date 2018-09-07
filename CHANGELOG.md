@@ -1,5 +1,7 @@
 # Change log
 
++ v1.5.2
+  - Support custom Glide components.
 + v1.5.1
   - Fix #110, click listener bug.
 + v1.5.0

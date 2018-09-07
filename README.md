@@ -33,22 +33,22 @@ allprojects {
     }
 }
 
-compile 'com.github.piasy:BigImageViewer:1.5.1'
+compile 'com.github.piasy:BigImageViewer:1.5.2'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.5.1'
+compile 'com.github.piasy:FrescoImageLoader:1.5.2'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.5.1'
+compile 'com.github.piasy:GlideImageLoader:1.5.2'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.5.1'
+compile 'com.github.piasy:ProgressPieIndicator:1.5.2'
 
 // support thumbnail, gif and webp with Fresco
-compile 'com.github.piasy:FrescoImageViewFactory:1.5.1'
+compile 'com.github.piasy:FrescoImageViewFactory:1.5.2'
 
 // support thumbnail and gif with Glide
-compile 'com.github.piasy:GlideImageViewFactory:1.5.1'
+compile 'com.github.piasy:GlideImageViewFactory:1.5.2'
 ```
 
 ### Initialize
@@ -95,13 +95,13 @@ bigImageView.showImage(Uri.parse(url));
 bigImageView.showImage(Uri.parse(thumbnail), Uri.parse(url));
 ```
 
-Note: since 1.5.1, to show thumbnail image, you need call `setImageViewFactory`, see details below.
+Note: since 1.5.0, to show thumbnail image, you need call `setImageViewFactory`, see details below.
 
 ## Usage
 
 ### Animated image support
 
-Since 1.5.1, BIV support display animated image, e.g. gif and webp, to achieve that,
+Since 1.5.0, BIV support display animated image, e.g. gif and webp, to achieve that,
 you need set a custom `ImageViewFactory` via `biv.setImageViewFactory`:
 
 ``` java
@@ -303,6 +303,8 @@ BigImageViewer.initialize(GlideCustomImageLoader.with(appContext, CustomComponen
 ```
 
 Where `CustomComponentModel.class` is the Glide's model component. That's it!
+
+For more detailed example, please refer to [the example project](https://github.com/Piasy/BigImageViewer/tree/master/app/src/main/java/com/github/piasy/biv/example/glide).
 
 ## Caveats
 
