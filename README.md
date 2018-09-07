@@ -60,6 +60,9 @@ BigImageViewer.initialize(FrescoImageLoader.with(appContext));
 
 // or load with glide
 BigImageViewer.initialize(GlideImageLoader.with(appContext));
+
+// or load with glide custom component
+BigImageViewer.initialize(GlideCustomImageLoader.with(appContext, CustomComponentModel.class));
 ```
 
 **Note that** if you've already used Fresco in your project, please change
@@ -289,6 +292,17 @@ then it won't be displayed by SSIV.
 
 You can even use your own custom SSIV, by calling `biv.setImageViewFactory()`,
 passing in a factory that override `createStillImageView`, and return your custom SSIV.
+
+### Custom Glide components support
+
+You can use your custom Glide's [components](https://bumptech.github.io/glide/doc/configuration.html#registering-components).
+If you have customized your Glide's configuration, you are able to apply that configuration to BIV too, to do that you only have to initialize BIV in this way:
+
+```java
+BigImageViewer.initialize(GlideCustomImageLoader.with(appContext, CustomComponentModel.class));
+```
+
+Where `CustomComponentModel.class` is the Glide's model component. That's it!
 
 ## Caveats
 
