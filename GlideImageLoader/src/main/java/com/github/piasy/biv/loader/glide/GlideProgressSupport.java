@@ -100,19 +100,20 @@ public class GlideProgressSupport {
     private static class DispatchingProgressListener implements ResponseProgressListener {
         private static final Map<String, ProgressListener> LISTENERS = new HashMap<>();
         private static final Map<String, Integer> PROGRESSES = new HashMap<>();
+        private static final String URL_QUERY_PARAM_START = "\\?";
 
         static void forget(String url) {
-            LISTENERS.remove(url);
-            PROGRESSES.remove(url);
+            LISTENERS.remove(getRawKey(url));
+            PROGRESSES.remove(getRawKey(url));
         }
 
         static void expect(String url, ProgressListener listener) {
-            LISTENERS.put(url, listener);
+            LISTENERS.put(getRawKey(url), listener);
         }
 
         @Override
         public void update(HttpUrl url, final long bytesRead, final long contentLength) {
-            String key = url.toString();
+            String key = getRawKey(url.toString());
             final ProgressListener listener = LISTENERS.get(key);
             if (listener == null) {
                 return;
@@ -133,6 +134,10 @@ public class GlideProgressSupport {
                 PROGRESSES.put(key, progress);
                 listener.onProgress(progress);
             }
+        }
+
+        private static String getRawKey(String formerKey) {
+            return formerKey.split(URL_QUERY_PARAM_START)[0];
         }
     }
 

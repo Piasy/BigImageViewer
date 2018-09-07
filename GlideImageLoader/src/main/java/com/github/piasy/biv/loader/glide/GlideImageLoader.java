@@ -41,13 +41,13 @@ import okhttp3.OkHttpClient;
  * Created by Piasy{github.com/Piasy} on 09/11/2016.
  */
 
-public final class GlideImageLoader implements ImageLoader {
-    private final RequestManager mRequestManager;
+public class GlideImageLoader implements ImageLoader {
+    protected final RequestManager mRequestManager;
 
     private final ConcurrentHashMap<Integer, ImageDownloadTarget> mRequestTargetMap
             = new ConcurrentHashMap<>();
 
-    private GlideImageLoader(Context context, OkHttpClient okHttpClient) {
+    protected GlideImageLoader(Context context, OkHttpClient okHttpClient) {
         GlideProgressSupport.init(Glide.get(context), okHttpClient);
         mRequestManager = Glide.with(context);
     }
@@ -96,6 +96,10 @@ public final class GlideImageLoader implements ImageLoader {
         clearTarget(requestId);
         saveTarget(requestId, target);
 
+        downloadImageInto(uri, target);
+    }
+
+    protected void downloadImageInto(Uri uri, SimpleTarget<File> target) {
         mRequestManager
                 .downloadOnly()
                 .load(uri)
@@ -104,16 +108,13 @@ public final class GlideImageLoader implements ImageLoader {
 
     @Override
     public void prefetch(Uri uri) {
-        mRequestManager
-                .downloadOnly()
-                .load(uri)
-                .into(new SimpleTarget<File>() {
-                    @Override
-                    public void onResourceReady(File resource,
-                            Transition<? super File> transition) {
-                        // not interested in result
-                    }
-                });
+        downloadImageInto(uri, new SimpleTarget<File>() {
+          @Override
+          public void onResourceReady(File resource,
+              Transition<? super File> transition) {
+            // not interested in result
+          }
+        });
     }
 
     @Override

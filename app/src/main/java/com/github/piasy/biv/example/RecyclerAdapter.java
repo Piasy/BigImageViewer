@@ -8,14 +8,14 @@ import android.view.ViewGroup;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
 import com.github.piasy.biv.view.BigImageView;
-import com.github.piasy.biv.view.FrescoImageViewFactory;
+import com.github.piasy.biv.view.GlideImageViewFactory;
 import com.github.piasy.biv.view.ImageViewFactory;
 import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
     private List<String> imageUrls;
-    private ImageViewFactory viewFactory = new FrescoImageViewFactory();
+    private ImageViewFactory viewFactory = new GlideImageViewFactory();
 
     public RecyclerAdapter(List<String> imageUrls) {
         this.imageUrls = imageUrls;
