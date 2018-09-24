@@ -42,10 +42,17 @@ public class GlideImageViewFactory extends ImageViewFactory {
             final File imageFile, int initScaleType) {
         switch (imageType) {
             case ImageInfoExtractor.TYPE_GIF:
-                GifImageView view = new GifImageView(context);
-                view.setImageURI(Uri.parse("file://" + imageFile.getAbsolutePath()));
-                view.setScaleType(BigImageView.scaleType(initScaleType));
-                return view;
+                GifImageView gifImageView = new GifImageView(context);
+                gifImageView.setImageURI(Uri.parse("file://" + imageFile.getAbsolutePath()));
+                gifImageView.setScaleType(BigImageView.scaleType(initScaleType));
+                return gifImageView;
+            case ImageInfoExtractor.TYPE_ANIMATED_WEBP:
+                ImageView imageView = new ImageView(context);
+                imageView.setScaleType(BigImageView.scaleType(initScaleType));
+                Glide.with(context)
+                        .load(imageFile)
+                        .into(imageView);
+                return imageView;
             default:
                 return super.createAnimatedImageView(context, imageType, imageFile, initScaleType);
         }

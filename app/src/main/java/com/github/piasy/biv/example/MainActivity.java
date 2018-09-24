@@ -78,5 +78,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, RecyclerViewActivity.class));
             }
         });
+        findViewById(R.id.mImageTypes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ImageTypesActivity.class));
+            }
+        });
     }
 }

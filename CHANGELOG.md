@@ -1,5 +1,8 @@
 # Change log
 
++ v1.5.3
+  - Determine still/animated webp, show still webp with SSIV.
+  - Use ImageView to display animated webp rather than leave it blank when using GlideImageLoader.
 + v1.5.2
   - Support custom Glide components.
 + v1.5.1

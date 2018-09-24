@@ -35,22 +35,22 @@ allprojects {
     }
 }
 
-compile 'com.github.piasy:BigImageViewer:1.5.2'
+compile 'com.github.piasy:BigImageViewer:1.5.3'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.5.2'
+compile 'com.github.piasy:FrescoImageLoader:1.5.3'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.5.2'
+compile 'com.github.piasy:GlideImageLoader:1.5.3'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.5.2'
+compile 'com.github.piasy:ProgressPieIndicator:1.5.3'
 
 // support thumbnail, gif and webp with Fresco
-compile 'com.github.piasy:FrescoImageViewFactory:1.5.2'
+compile 'com.github.piasy:FrescoImageViewFactory:1.5.3'
 
 // support thumbnail and gif with Glide
-compile 'com.github.piasy:GlideImageViewFactory:1.5.2'
+compile 'com.github.piasy:GlideImageViewFactory:1.5.3'
 ```
 
 ### Initialize
@@ -103,7 +103,7 @@ Note: since 1.5.0, to show thumbnail image, you need call `setImageViewFactory`,
 
 ### Animated image support
 
-Since 1.5.0, BIV support display animated image, e.g. gif and webp, to achieve that,
+Since 1.5.0, BIV support display animated image, e.g. gif and animated webp, to achieve that,
 you need set a custom `ImageViewFactory` via `biv.setImageViewFactory`:
 
 ``` java
@@ -113,15 +113,16 @@ biv.setImageViewFactory(new FrescoImageViewFactory());
 
 // GlideImageViewFactory is another prebuilt factory, which use
 // https://github.com/koral--/android-gif-drawable to display gif,
-// webp is not supported.
+// animated webp is not supported (although it will be displayed with ImageView,
+// but it won't animate).
 biv.setImageViewFactory(new GlideImageViewFactory());
 ```
 
 To clean up code, we move thumbnail view creation from `ImageLoader` into `ImageViewFactory`,
 so to display thumbnail, you also need set an `ImageViewFactory`.
 
-Node: if the image is not gif or webp, then it will be displayed by SSIV, the image type is not
-determined by its file extension, but by its file header magic code.
+Node: if the image is not gif or animated webp, then it will be displayed by SSIV,
+the image type is not determined by its file extension, but by its file header magic code.
 
 ### Download progress indicator
 

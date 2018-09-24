@@ -48,4 +48,10 @@
         android:layout_height="wrap_content"
         android:text="Recycler"
         />
+    <Button
+        android:id="@+id/mImageTypes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="image types"
+        />
 </LinearLayout>

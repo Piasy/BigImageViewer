@@ -37,7 +37,6 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             >
-
         <meta-data
                 android:name="android.support.VERSION"
                 android:value="${ANDROID_SUPPORT_SDK_VERSION}"
@@ -51,20 +50,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".FrescoLoaderActivity">
-        </activity>
-        <activity android:name=".GlideLoaderActivity">
-        </activity>
-        <activity android:name=".LongImageActivity">
-        </activity>
-        <activity android:name=".ScaleTypeActivity">
-        </activity>
-        <activity android:name=".ImageLoaderCallbackActivity">
-        </activity>
-        <activity android:name=".CustomSSIVActivity">
-        </activity>
-        <activity android:name=".RecyclerViewActivity">
-        </activity>
+        <activity android:name=".FrescoLoaderActivity"/>
+        <activity android:name=".GlideLoaderActivity"/>
+        <activity android:name=".LongImageActivity"/>
+        <activity android:name=".ScaleTypeActivity"/>
+        <activity android:name=".ImageLoaderCallbackActivity"/>
+        <activity android:name=".CustomSSIVActivity"/>
+        <activity android:name=".RecyclerViewActivity"/>
+        <activity android:name=".ImageTypesActivity"/>
     </application>
 
 </manifest>
