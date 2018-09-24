@@ -78,13 +78,13 @@ ext {
     releaseVersionCode = 30
     releaseVersionName = '1.5.3'
 
-    androidCompileSdkVersion = 27
-    androidBuildToolsVersion = '27.0.3'
-    androidSupportSdkVersion = '27.1.1'
+    androidCompileSdkVersion = 28
+    androidBuildToolsVersion = '28.0.2'
+    androidSupportSdkVersion = '28.0.0'
     minSdkVersion = 14
-    targetSdkVersion = 27
+    targetSdkVersion = 28
 
     frescoVersion = '1.10.0'
-    glideVersion = '4.7.1'
+    glideVersion = '4.8.0'
     ssivVersion = '3.10.0'
 }
