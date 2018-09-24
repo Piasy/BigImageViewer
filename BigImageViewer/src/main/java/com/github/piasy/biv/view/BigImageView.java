@@ -122,6 +122,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private ProgressIndicator mProgressIndicator;
     private DisplayOptimizeListener mDisplayOptimizeListener;
     private int mInitScaleType;
+    private ImageView.ScaleType mThumbnailScaleType;
     private ImageView.ScaleType mFailureImageScaleType;
     private boolean mOptimizeDisplay;
     private boolean mTapToRetry;
@@ -150,6 +151,12 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             Drawable mFailureImageDrawable = array.getDrawable(
                     R.styleable.BigImageView_failureImage);
             setFailureImage(mFailureImageDrawable);
+        }
+        if (array.hasValue(R.styleable.BigImageView_thumbnailScaleType)) {
+            int scaleTypeIndex = array.getInteger(
+                    R.styleable.BigImageView_thumbnailScaleType,
+                    DEFAULT_IMAGE_SCALE_TYPE);
+            mThumbnailScaleType = scaleType(scaleTypeIndex);
         }
 
         mOptimizeDisplay = array.getBoolean(R.styleable.BigImageView_optimizeDisplay, true);
@@ -250,6 +257,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         if (mDisplayOptimizeListener != null) {
             mDisplayOptimizeListener.setInitScaleType(initScaleType);
         }
+    }
+
+    public void setThumbnailScaleType(ImageView.ScaleType scaleType) {
+        mThumbnailScaleType = scaleType;
     }
 
     public void setOptimizeDisplay(boolean optimizeDisplay) {
@@ -376,7 +387,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         // why show thumbnail in onStart? because we may not need download it from internet
         if (mThumbnail != Uri.EMPTY) {
             mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnail,
-                    mInitScaleType);
+                    mThumbnailScaleType);
             if (mThumbnailView != null) {
                 addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);

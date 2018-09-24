@@ -27,6 +27,7 @@ package com.github.piasy.biv.view;
 import android.content.Context;
 import android.net.Uri;
 import android.view.View;
+import android.widget.ImageView;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.metadata.ImageInfoExtractor;
 import java.io.File;
@@ -58,7 +59,7 @@ public class ImageViewFactory {
         return null;
     }
 
-    public View createThumbnailView(Context context, Uri thumbnail, int scaleType) {
+    public View createThumbnailView(Context context, Uri thumbnail, ImageView.ScaleType scaleType) {
         return null;
     }
 }

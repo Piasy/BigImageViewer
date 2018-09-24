@@ -27,6 +27,7 @@ package com.github.piasy.biv.view;
 import android.content.Context;
 import android.net.Uri;
 import android.view.View;
+import android.widget.ImageView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -52,7 +53,7 @@ public class FrescoImageViewFactory extends ImageViewFactory {
 
     @Override
     public View createThumbnailView(final Context context, final Uri thumbnail,
-            final int scaleType) {
+            final ImageView.ScaleType scaleType) {
         SimpleDraweeView thumbnailView = new SimpleDraweeView(context);
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setUri(thumbnail)
@@ -77,6 +78,26 @@ public class FrescoImageViewFactory extends ImageViewFactory {
             case BigImageView.INIT_SCALE_TYPE_FIT_XY:
                 return ScalingUtils.ScaleType.FIT_XY;
             case BigImageView.INIT_SCALE_TYPE_FIT_CENTER:
+            default:
+                return ScalingUtils.ScaleType.FIT_CENTER;
+        }
+    }
+
+    private ScalingUtils.ScaleType scaleType(ImageView.ScaleType scaleType) {
+        switch (scaleType) {
+            case CENTER:
+                return ScalingUtils.ScaleType.CENTER;
+            case CENTER_CROP:
+                return ScalingUtils.ScaleType.CENTER_CROP;
+            case CENTER_INSIDE:
+                return ScalingUtils.ScaleType.CENTER_INSIDE;
+            case FIT_END:
+                return ScalingUtils.ScaleType.FIT_END;
+            case FIT_START:
+                return ScalingUtils.ScaleType.FIT_START;
+            case FIT_XY:
+                return ScalingUtils.ScaleType.FIT_XY;
+            case FIT_CENTER:
             default:
                 return ScalingUtils.ScaleType.FIT_CENTER;
         }
