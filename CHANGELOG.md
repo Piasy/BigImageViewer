@@ -1,5 +1,7 @@
 # Change log
 
++ v1.5.4
+  - Add thumbnail scale type attribute.
 + v1.5.3
   - Determine still/animated webp, show still webp with SSIV.
   - Use ImageView to display animated webp rather than leave it blank when using GlideImageLoader.
