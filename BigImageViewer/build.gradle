@@ -45,7 +45,5 @@ android {
 }
 
 dependencies {
-//    implementation "androidx.annotation:annotation:$rootProject.ext.androidXVersion"
-
     api "com.davemorrissey.labs:subsampling-scale-image-view:$rootProject.ext.ssivVersion"
 }

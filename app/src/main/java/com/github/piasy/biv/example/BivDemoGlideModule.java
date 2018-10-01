@@ -49,8 +49,7 @@ public class BivDemoGlideModule extends AppGlideModule {
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide,
         @NonNull Registry registry) {
-        glide.getRegistry()
-            .prepend(CustomImageSizeModel.class, InputStream.class,
-                new CustomImageSizeUrlLoaderFactory());
+        glide.getRegistry().prepend(CustomImageSizeModel.class, InputStream.class, new
+            CustomImageSizeUrlLoaderFactory());
     }
 }

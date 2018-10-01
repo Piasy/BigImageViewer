@@ -17,8 +17,7 @@ public class CustomImageSizeUrlLoader extends BaseGlideUrlLoader<CustomImageSize
   }
 
   @Override
-  protected String getUrl(CustomImageSizeModel model, int width, int height,
-      Options options) {
+  protected String getUrl(CustomImageSizeModel model, int width, int height, Options options) {
     return model.requestCustomSizeUrl(width, height);
   }
 
