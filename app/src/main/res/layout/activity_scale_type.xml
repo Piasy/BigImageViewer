@@ -14,7 +14,7 @@
             app:failureImage="@drawable/ic_cloud_off_white"
             />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <Spinner
             android:id="@+id/mScaleType"
             android:layout_width="150dp"
             android:layout_height="50dp"
@@ -24,7 +24,7 @@
             android:background="@android:color/white"
             />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <Spinner
             android:id="@+id/mImageSize"
             android:layout_width="150dp"
             android:layout_height="50dp"
