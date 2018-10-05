@@ -1,5 +1,7 @@
 # Change log
 
++ v1.5.5
+  - Migrate to Android X.
 + v1.5.4
   - Add thumbnail scale type attribute.
 + v1.5.3

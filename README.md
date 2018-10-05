@@ -35,22 +35,22 @@ allprojects {
     }
 }
 
-compile 'com.github.piasy:BigImageViewer:1.5.4'
+compile 'com.github.piasy:BigImageViewer:1.5.5'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.5.4'
+compile 'com.github.piasy:FrescoImageLoader:1.5.5'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.5.4'
+compile 'com.github.piasy:GlideImageLoader:1.5.5'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.5.4'
+compile 'com.github.piasy:ProgressPieIndicator:1.5.5'
 
 // support thumbnail, gif and webp with Fresco
-compile 'com.github.piasy:FrescoImageViewFactory:1.5.4'
+compile 'com.github.piasy:FrescoImageViewFactory:1.5.5'
 
 // support thumbnail and gif with Glide
-compile 'com.github.piasy:GlideImageViewFactory:1.5.4'
+compile 'com.github.piasy:GlideImageViewFactory:1.5.5'
 ```
 
 ### Initialize
@@ -368,3 +368,6 @@ Memory usage of different libraries:
 Those features are offered by image load libraries, and they should be easy to
 implement, but I don't have enough time currently. So your contributions are
 welcome!
+
+When you submit PR, please conform the [code style of this project](https://github.com/Piasy/java-code-styles),
+which is customized from Square Android style.

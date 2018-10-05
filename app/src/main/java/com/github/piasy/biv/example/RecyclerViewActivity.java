@@ -1,7 +1,6 @@
 package com.github.piasy.biv.example;
 
 import android.os.Bundle;
-import android.view.Gravity;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.example.glide.SampleCustomImageSizeModel;
 import com.github.piasy.biv.loader.glide.GlideCustomImageLoader;
-import com.github.rubensousa.gravitysnaphelper.GravityPagerSnapHelper;
 import java.util.ArrayList;
 import java.util.List;
 
