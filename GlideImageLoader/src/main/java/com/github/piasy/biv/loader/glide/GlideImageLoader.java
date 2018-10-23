@@ -27,14 +27,18 @@ package com.github.piasy.biv.loader.glide;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.metadata.ImageInfoExtractor;
+
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
+
+import androidx.annotation.NonNull;
 import okhttp3.OkHttpClient;
 
 /**
@@ -64,7 +68,7 @@ public class GlideImageLoader implements ImageLoader {
     public void loadImage(final int requestId, final Uri uri, final Callback callback) {
         ImageDownloadTarget target = new ImageDownloadTarget(uri.toString()) {
             @Override
-            public void onResourceReady(File resource,
+            public void onResourceReady(@NonNull File resource,
                     Transition<? super File> transition) {
                 super.onResourceReady(resource, transition);
                 // we don't need delete this image file, so it behaves like cache hit
@@ -99,7 +103,7 @@ public class GlideImageLoader implements ImageLoader {
         downloadImageInto(uri, target);
     }
 
-    protected void downloadImageInto(Uri uri, SimpleTarget<File> target) {
+    protected void downloadImageInto(Uri uri, Target<File> target) {
         mRequestManager
                 .downloadOnly()
                 .load(uri)
@@ -108,13 +112,7 @@ public class GlideImageLoader implements ImageLoader {
 
     @Override
     public void prefetch(Uri uri) {
-        downloadImageInto(uri, new SimpleTarget<File>() {
-          @Override
-          public void onResourceReady(File resource,
-              Transition<? super File> transition) {
-            // not interested in result
-          }
-        });
+        downloadImageInto(uri, new PrefetchTarget());
     }
 
     @Override
