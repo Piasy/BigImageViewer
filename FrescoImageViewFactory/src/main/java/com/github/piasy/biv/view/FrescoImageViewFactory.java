@@ -58,7 +58,9 @@ public class FrescoImageViewFactory extends ImageViewFactory {
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setUri(thumbnail)
                 .build();
-        thumbnailView.getHierarchy().setActualImageScaleType(scaleType(scaleType));
+        if (scaleType != null) {
+            thumbnailView.getHierarchy().setActualImageScaleType(scaleType(scaleType));
+        }
         thumbnailView.setController(controller);
         return thumbnailView;
     }

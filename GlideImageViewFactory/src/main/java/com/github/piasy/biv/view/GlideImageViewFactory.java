@@ -62,7 +62,9 @@ public class GlideImageViewFactory extends ImageViewFactory {
     public View createThumbnailView(final Context context, final Uri thumbnail,
             final ImageView.ScaleType scaleType) {
         ImageView thumbnailView = new ImageView(context);
-        thumbnailView.setScaleType(scaleType);
+        if (scaleType != null) {
+            thumbnailView.setScaleType(scaleType);
+        }
         Glide.with(context)
                 .load(thumbnail)
                 .into(thumbnailView);
