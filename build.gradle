@@ -75,8 +75,8 @@ ext {
             'usage and full featured image loading choices. Powered by Subsampling Scale ' +
             'Image View, Fresco, Glide, and Picasso.'
     artifactLabels = ['big', 'image', 'viewer', 'Fresco', 'Glide', 'Picasso']
-    releaseVersionCode = 32
-    releaseVersionName = '1.5.5'
+    releaseVersionCode = 33
+    releaseVersionName = '1.5.6'
 
     androidCompileSdkVersion = 28
     androidBuildToolsVersion = '28.0.2'
@@ -84,7 +84,7 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 28
 
-    frescoVersion = '1.10.0'
+    frescoVersion = '1.11.0'
     glideVersion = '4.8.0'
     ssivVersion = '3.10.0'
 }

@@ -1,5 +1,8 @@
 # Change log
 
++ v1.5.6
+  - Replace deprecated Glide SimpleTarget, #131;
+  - Fix NPE when thumbnail scale type not specified, #130;
 + v1.5.5
   - Migrate to Android X.
 + v1.5.4
