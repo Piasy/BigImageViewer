@@ -2,8 +2,11 @@ package com.github.piasy.biv.loader.glide;
 
 import android.content.Context;
 import android.net.Uri;
-import com.bumptech.glide.request.target.SimpleTarget;
+
+import com.bumptech.glide.request.target.Target;
+
 import java.io.File;
+
 import okhttp3.OkHttpClient;
 
 public class GlideCustomImageLoader extends GlideImageLoader {
@@ -24,7 +27,7 @@ public class GlideCustomImageLoader extends GlideImageLoader {
   }
 
   @Override
-  protected void downloadImageInto(Uri uri, SimpleTarget<File> target) {
+  protected void downloadImageInto(Uri uri, Target<File> target) {
     if (mModel != null) {
       try {
         GlideModel glideModel = mModel.newInstance();
