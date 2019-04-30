@@ -40,6 +40,8 @@ public interface ImageLoader {
 
     void cancel(int requestId);
 
+    void cancelAll();
+
     @UiThread
     interface Callback {
         void onCacheHit(int imageType, File image);

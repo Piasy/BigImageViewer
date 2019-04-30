@@ -134,6 +134,13 @@ public final class FrescoImageLoader implements ImageLoader {
         closeSource(requestId);
     }
 
+    @Override
+    public void cancelAll() {
+        for (Integer key : mRequestSourceMap.keySet()) {
+            cancel(key);
+        }
+    }
+
     private void saveSource(int requestId, DataSource target) {
         mRequestSourceMap.put(requestId, target);
     }
