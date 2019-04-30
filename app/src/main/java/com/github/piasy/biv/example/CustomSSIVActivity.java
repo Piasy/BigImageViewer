@@ -66,4 +66,11 @@ public class CustomSSIVActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        BigImageViewer.imageLoader().cancelAll();
+    }
 }

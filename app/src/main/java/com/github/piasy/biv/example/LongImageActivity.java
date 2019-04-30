@@ -124,6 +124,8 @@ public class LongImageActivity extends AppCompatActivity {
 
         disposePermissionRequest();
         disposeQrCodeDecode();
+
+        BigImageViewer.imageLoader().cancelAll();
     }
 
     private void decodeQrCode() {

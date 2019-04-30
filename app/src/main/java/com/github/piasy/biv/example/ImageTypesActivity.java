@@ -144,6 +144,13 @@ public class ImageTypesActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        BigImageViewer.imageLoader().cancelAll();
+    }
+
     private <T> ArrayAdapter getArrayAdapter(final List<T> list) {
         ArrayAdapter<T> spinnerAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, list);

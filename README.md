@@ -35,22 +35,22 @@ allprojects {
     }
 }
 
-implementation 'com.github.piasy:BigImageViewer:1.5.6'
+implementation 'com.github.piasy:BigImageViewer:1.5.7'
 
 // load with fresco
-implementation 'com.github.piasy:FrescoImageLoader:1.5.6'
+implementation 'com.github.piasy:FrescoImageLoader:1.5.7'
 
 // load with glide
-implementation 'com.github.piasy:GlideImageLoader:1.5.6'
+implementation 'com.github.piasy:GlideImageLoader:1.5.7'
 
 // progress pie indicator
-implementation 'com.github.piasy:ProgressPieIndicator:1.5.6'
+implementation 'com.github.piasy:ProgressPieIndicator:1.5.7'
 
 // support thumbnail, gif and webp with Fresco
-implementation 'com.github.piasy:FrescoImageViewFactory:1.5.6'
+implementation 'com.github.piasy:FrescoImageViewFactory:1.5.7'
 
 // support thumbnail and gif with Glide
-implementation 'com.github.piasy:GlideImageViewFactory:1.5.6'
+implementation 'com.github.piasy:GlideImageViewFactory:1.5.7'
 ```
 
 ### Initialize
@@ -275,6 +275,9 @@ For an example, see ImageLoaderCallbackActivity.java
 
 BIV will cancel image loading automatically when detach from window, you can also call `cancel`
 to cancel it manually.
+
+You can also call `BigImageViewer.imageLoader().cancelAll();` in an appropriate time,
+e.g. Activity/Fragment's `onDestroy` callback, to cancel all flying requests, avoiding memory leak.
 
 ### Full customization
 

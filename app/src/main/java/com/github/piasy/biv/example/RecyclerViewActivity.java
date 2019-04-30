@@ -25,6 +25,13 @@ public class RecyclerViewActivity extends AppCompatActivity {
         configRecycler();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        BigImageViewer.imageLoader().cancelAll();
+    }
+
     private void configRecycler() {
         final List<String> imageUrlsList = new ArrayList<>();
 

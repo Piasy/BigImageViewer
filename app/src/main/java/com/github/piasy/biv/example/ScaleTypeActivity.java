@@ -68,6 +68,13 @@ public class ScaleTypeActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        BigImageViewer.imageLoader().cancelAll();
+    }
+
     private void setScaleType() {
         String scaleType = (String) mScaleType.getSelectedItem();
         if (TextUtils.equals(scaleType, getString(R.string.scale_center_crop))) {

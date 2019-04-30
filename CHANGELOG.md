@@ -1,5 +1,7 @@
 # Change log
 
++ v1.5.7
+  - Add `ImageLoader.cancelAll()` to allow APP cancel all flying requests, avoiding memory leak;
 + v1.5.6
   - Replace deprecated Glide SimpleTarget, #131;
   - Fix NPE when thumbnail scale type not specified, #130;

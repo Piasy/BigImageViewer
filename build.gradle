@@ -33,10 +33,10 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.android.tools.build:gradle:3.4.0'
 
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
 
         // ./gradlew dependencyUpdates
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.20.0'
@@ -75,16 +75,16 @@ ext {
             'usage and full featured image loading choices. Powered by Subsampling Scale ' +
             'Image View, Fresco, Glide, and Picasso.'
     artifactLabels = ['big', 'image', 'viewer', 'Fresco', 'Glide', 'Picasso']
-    releaseVersionCode = 33
-    releaseVersionName = '1.5.6'
+    releaseVersionCode = 34
+    releaseVersionName = '1.5.7'
 
     androidCompileSdkVersion = 28
-    androidBuildToolsVersion = '28.0.2'
+    androidBuildToolsVersion = '28.0.3'
     androidXVersion = '1.0.0'
     minSdkVersion = 14
     targetSdkVersion = 28
 
-    frescoVersion = '1.11.0'
-    glideVersion = '4.8.0'
+    frescoVersion = '1.13.0'
+    glideVersion = '4.9.0'
     ssivVersion = '3.10.0'
 }
