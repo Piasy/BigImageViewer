@@ -26,6 +26,9 @@ package com.github.piasy.biv.loader;
 
 import android.net.Uri;
 import androidx.annotation.UiThread;
+
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+
 import java.io.File;
 
 /**
@@ -47,6 +50,8 @@ public interface ImageLoader {
         void onCacheHit(int imageType, File image);
 
         void onCacheMiss(int imageType, File image);
+
+        void onBeforeSetImage(int imageType, File image, SubsamplingScaleImageView ssv);
 
         void onStart();
 

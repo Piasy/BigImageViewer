@@ -31,6 +31,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
 import com.github.piasy.biv.loader.ImageLoader;
@@ -80,6 +82,13 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
                     public void onCacheMiss(int imageType, File image) {
                         final String message = "onCacheMiss callback called, fetching image " + image.getName();
                         Log.i("onCacheMiss", message);
+                        showToastOnUiThread(message);
+                    }
+
+                    @Override
+                    public void onBeforeSetImage(int imageType, File image, SubsamplingScaleImageView ssv) {
+                        final String message = "onBeforeSetImage callback called, fetching image " + image.getName();
+                        Log.i("onBeforeSetImage", message);
                         showToastOnUiThread(message);
                     }
 

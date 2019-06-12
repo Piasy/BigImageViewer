@@ -234,6 +234,16 @@ ImageLoader.Callback myImageLoaderCallback = new ImageLoader.Callback() {
     }
 
     @Override
+    public void onBeforeSetImage(int imageType, File image, SubsamplingScaleImageView ssv) {
+        // Called right before the setImage on the subsampling image view
+        // You can use the following code as example to improve the image quality
+        /*
+        ssv.setBitmapDecoderFactory(new CompatDecoderFactory<>(SkiaImageDecoder.class, Bitmap.Config.ARGB_8888));
+        ssv.setRegionDecoderFactory(new CompatDecoderFactory<ImageRegionDecoder>(SkiaImageRegionDecoder.class, Bitmap.Config.ARGB_8888));
+        */
+    }
+
+    @Override
     public void onStart() {
       // Image download has started
     }

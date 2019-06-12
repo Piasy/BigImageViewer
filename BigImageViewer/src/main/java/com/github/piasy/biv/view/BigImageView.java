@@ -383,6 +383,11 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     @Override
+    public void onBeforeSetImage(int imageType, File image, SubsamplingScaleImageView ssv) {
+
+    }
+
+    @Override
     public void onStart() {
         // why show thumbnail in onStart? because we may not need download it from internet
         if (mThumbnail != Uri.EMPTY) {
@@ -526,6 +531,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
             setOptimizeDisplay(mOptimizeDisplay);
             setInitScaleType(mInitScaleType);
+
+            if (mUserCallback != null) {
+                mUserCallback.onBeforeSetImage(imageType, image, mSSIV);
+            }
 
             mSSIV.setImage(ImageSource.uri(Uri.fromFile(image)));
         }
