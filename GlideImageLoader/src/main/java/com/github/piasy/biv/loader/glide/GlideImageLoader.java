@@ -57,10 +57,10 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     public static GlideImageLoader with(Context context) {
-        return with(context, null);
+        return createImageLoader(context, null);
     }
 
-    public static GlideImageLoader with(Context context, OkHttpClient okHttpClient) {
+    public static GlideImageLoader createImageLoader(Context context, OkHttpClient okHttpClient) {
         return new GlideImageLoader(context, okHttpClient);
     }
 
