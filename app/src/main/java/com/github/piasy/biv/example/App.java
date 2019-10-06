@@ -30,7 +30,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.github.piasy.biv.utils.IOUtils;
-import com.squareup.leakcanary.LeakCanary;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -85,16 +84,5 @@ public class App extends Application {
             IOUtils.closeQuietly(input);
         }
         return line;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
     }
 }

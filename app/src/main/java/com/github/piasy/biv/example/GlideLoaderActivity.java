@@ -51,7 +51,7 @@ public class GlideLoaderActivity extends AppCompatActivity {
                 bigImageView.setProgressIndicator(new ProgressPieIndicator());
                 bigImageView.showImage(
                         Uri.parse("http://img1.imgtn.bdimg.com/it/u=1520386803,778399414&fm=21&gp=0.jpg"),
-                        Uri.parse("http://youimg1.c-ctrip.com/target/tg/773/732/734/7ca19416b8cd423f8f6ef2d08366b7dc.jpg")
+                        Uri.parse("https://youimg1.c-ctrip.com/target/tg/773/732/734/7ca19416b8cd423f8f6ef2d08366b7dc.jpg")
                 );
             }
         });
