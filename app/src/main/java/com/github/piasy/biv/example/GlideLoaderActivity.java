@@ -62,9 +62,9 @@ public class GlideLoaderActivity extends AppCompatActivity {
         super.onDestroy();
 
         long start = System.nanoTime();
-        App.fixLeakCanary696(getApplicationContext());
+        Utils.fixLeakCanary696(getApplicationContext());
         long end = System.nanoTime();
-        Log.w(App.TAG, "fixLeakCanary696: " + (end - start));
+        Log.w(Utils.TAG, "fixLeakCanary696: " + (end - start));
 
         BigImageViewer.imageLoader().cancelAll();
     }

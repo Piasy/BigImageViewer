@@ -49,6 +49,6 @@ android {
 dependencies {
     implementation project(':BigImageViewer')
 
-    implementation "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
+    api "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.15'
 }

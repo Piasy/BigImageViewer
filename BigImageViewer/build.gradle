@@ -45,5 +45,5 @@ android {
 }
 
 dependencies {
-    implementation "com.davemorrissey.labs:subsampling-scale-image-view:$rootProject.ext.ssivVersion"
+    api "com.davemorrissey.labs:subsampling-scale-image-view:$rootProject.ext.ssivVersion"
 }

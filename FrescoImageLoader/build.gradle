@@ -49,6 +49,6 @@ android {
 dependencies {
     implementation project(':BigImageViewer')
 
-    implementation "com.facebook.fresco:fresco:$rootProject.ext.frescoVersion"
+    api "com.facebook.fresco:fresco:$rootProject.ext.frescoVersion"
     implementation "androidx.annotation:annotation:$rootProject.ext.annotationVersion"
 }

@@ -47,5 +47,5 @@ android {
 dependencies {
     implementation project(':BigImageViewer')
 
-    implementation 'com.github.filippudak.progresspieview:library:1.0.4'
+    api 'com.github.filippudak.progresspieview:library:1.0.4'
 }

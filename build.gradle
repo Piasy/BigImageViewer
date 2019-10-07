@@ -79,7 +79,7 @@ ext {
 
     androidCompileSdkVersion = 29
     androidBuildToolsVersion = '29.0.2'
-    minSdkVersion = 15
+    minSdkVersion = 14
     targetSdkVersion = 29
 
     materialVersion = '1.1.0-beta01'
