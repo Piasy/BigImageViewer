@@ -24,6 +24,7 @@
 
 package com.github.piasy.biv.loader.fresco;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import com.facebook.binaryresource.FileBinaryResource;
@@ -77,6 +78,7 @@ public final class FrescoImageLoader implements ImageLoader {
         return new FrescoImageLoader(appContext);
     }
 
+    @SuppressLint("WrongThread")
     @Override
     public void loadImage(int requestId, Uri uri, final Callback callback) {
         ImageRequest request = ImageRequest.fromUri(uri);

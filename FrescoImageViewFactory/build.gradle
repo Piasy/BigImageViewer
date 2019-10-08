@@ -47,7 +47,7 @@ android {
 }
 
 dependencies {
-    api project(':BigImageViewer')
+    implementation project(':BigImageViewer')
 
     api "com.facebook.fresco:fresco:$rootProject.ext.frescoVersion"
     api "com.facebook.fresco:animated-gif:$rootProject.ext.frescoVersion"

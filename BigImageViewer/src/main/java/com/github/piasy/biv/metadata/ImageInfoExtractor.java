@@ -71,6 +71,7 @@ public final class ImageInfoExtractor {
 
             inputStream.close();
         } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return type;

@@ -25,13 +25,16 @@
 package com.github.piasy.biv.example;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import com.afollestad.materialdialogs.MaterialDialog;
+
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
 import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
@@ -52,6 +55,8 @@ public class LongImageActivity extends AppCompatActivity {
     private Disposable mPermissionRequest;
     private Disposable mQrCodeDecode;
 
+    private Dialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,24 +73,36 @@ public class LongImageActivity extends AppCompatActivity {
             }
         });
 
+        dialog = new Dialog(this);
+        dialog.setTitle(R.string.long_click_actions);
+        dialog.setContentView(R.layout.dialog_long_image);
+
+        final WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.getWindow().setAttributes(lp);
+
+        final TextView textScan = dialog.findViewById(R.id.action_scan_qr);
+        final TextView textSave = dialog.findViewById(R.id.action_save_image);
+
+        textScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decodeQrCode();
+            }
+        });
+
+        textSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveImage();
+            }
+        });
+
         mBigImageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                new MaterialDialog.Builder(LongImageActivity.this)
-                        .items(R.array.big_image_ops)
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog dialog, View itemView,
-                                    int position, CharSequence text) {
-                                if (TextUtils.equals(text, getString(R.string.save_image))) {
-                                    saveImage();
-                                } else if (TextUtils.equals(text,
-                                        getString(R.string.scan_qr_code))) {
-                                    decodeQrCode();
-                                }
-                            }
-                        })
-                        .show();
+                dialog.show();
                 return true;
             }
         });
@@ -112,8 +129,7 @@ public class LongImageActivity extends AppCompatActivity {
         findViewById(R.id.mBtnLoad).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBigImageView.showImage(Uri.parse(
-                        "http://ww1.sinaimg.cn/mw690/005Fj2RDgw1f9mvl4pivvj30c82ougw3.jpg"));
+                mBigImageView.showImage(Uri.parse("https://ww1.sinaimg.cn/mw690/005Fj2RDgw1f9mvl4pivvj30c82ougw3.jpg"));
             }
         });
     }
@@ -124,6 +140,10 @@ public class LongImageActivity extends AppCompatActivity {
 
         disposePermissionRequest();
         disposeQrCodeDecode();
+
+        if (dialog.isShowing()) {
+            dialog.dismiss();
+        }
 
         BigImageViewer.imageLoader().cancelAll();
     }

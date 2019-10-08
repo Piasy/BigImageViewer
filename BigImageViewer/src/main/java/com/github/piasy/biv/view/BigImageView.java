@@ -106,7 +106,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     private OnClickListener mOnClickListener;
     private OnLongClickListener mOnLongClickListener;
-    private OnClickListener mFailureImageClickListener = new OnClickListener() {
+    private final OnClickListener mFailureImageClickListener = new OnClickListener() {
         @Override
         public void onClick(final View v) {
             // Retry loading when failure image is clicked

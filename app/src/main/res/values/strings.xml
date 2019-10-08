@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">BIV</string>
 
+    <string name="long_click_actions">Actions:</string>
     <string name="scan_qr_code">recognize qr code</string>
     <string name="save_image">save to gallery</string>
     <string-array name="big_image_ops">

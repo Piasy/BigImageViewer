@@ -33,13 +33,13 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0'
+        classpath 'com.android.tools.build:gradle:3.5.1'
 
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
 
         // ./gradlew dependencyUpdates
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.20.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.25.0'
     }
 }
 
@@ -47,9 +47,8 @@ allprojects {
     repositories {
         jcenter()
         google()
-        maven {
-            url  "http://dl.bintray.com/piasy/maven"
-        }
+
+        maven { url  "http://dl.bintray.com/piasy/maven" }
     }
 }
 
@@ -78,13 +77,16 @@ ext {
     releaseVersionCode = 34
     releaseVersionName = '1.5.7'
 
-    androidCompileSdkVersion = 28
-    androidBuildToolsVersion = '28.0.3'
-    androidXVersion = '1.0.0'
+    androidCompileSdkVersion = 29
+    androidBuildToolsVersion = '29.0.2'
     minSdkVersion = 14
-    targetSdkVersion = 28
+    targetSdkVersion = 29
 
-    frescoVersion = '1.13.0'
-    glideVersion = '4.9.0'
+    materialVersion = '1.1.0-beta01'
+    annotationVersion = '1.1.0'
+
+    frescoVersion = '2.0.0'
+    glideVersion = '4.10.0'
+    okhttpVersion = '4.2.1'
     ssivVersion = '3.10.0'
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/action_scan_qr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/scan_qr_code"
+        android:layout_margin="16dp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        />
+
+    <TextView
+        android:id="@+id/action_save_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_image"
+        android:layout_margin="16dp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        />
+
+</LinearLayout>
