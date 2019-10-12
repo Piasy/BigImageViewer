@@ -98,7 +98,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private View mProgressIndicatorView;
     private ImageView mFailureImageView;
 
+    private boolean mDelayImage = false;
+
     private ImageSaveCallback mImageSaveCallback;
+    private ImageCycleCallback mImageCycleCallback;
     private ImageLoader.Callback mUserCallback;
     private File mCurrentImageFile;
     private Uri mUri;
@@ -286,6 +289,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mImageSaveCallback = imageSaveCallback;
     }
 
+    public void setImageCycleCallback(ImageCycleCallback imageCycleCallback) {
+        mImageCycleCallback = imageCycleCallback;
+    }
+
     public void setProgressIndicator(ProgressIndicator progressIndicator) {
         mProgressIndicator = progressIndicator;
     }
@@ -342,15 +349,31 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     public void showImage(final Uri thumbnail, final Uri uri) {
+        showImage(thumbnail, uri, false);
+    }
+
+    public void showImage(final Uri thumbnail, final Uri uri, final boolean delayImage) {
         mThumbnail = thumbnail;
         mUri = uri;
 
         clearThumbnailAndProgressIndicator();
-        mImageLoader.loadImage(hashCode(), uri, mInternalCallback);
+
+        mDelayImage = delayImage;
+        if (mDelayImage) {
+            mImageLoader.loadImage(hashCode(), thumbnail, mInternalCallback);
+        } else {
+            mImageLoader.loadImage(hashCode(), uri, mInternalCallback);
+        }
 
         if (mFailureImageView != null) {
             mFailureImageView.setVisibility(GONE);
         }
+    }
+
+    public void triggerImageSwap() {
+
+        mDelayImage = false;
+        mImageLoader.loadImage(hashCode(), mUri, mInternalCallback);
     }
 
     public void cancel() {
@@ -362,9 +385,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     @Override
-    public void onCacheHit(final int imageType, File image) {
+    public void onCacheHit(final int imageType, final File image) {
         mCurrentImageFile = image;
-        doShowImage(imageType, image);
+        doShowImage(imageType, image, mDelayImage);
 
         if (mUserCallback != null) {
             mUserCallback.onCacheHit(imageType, image);
@@ -375,7 +398,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void onCacheMiss(final int imageType, final File image) {
         mCurrentImageFile = image;
         mTempImages.add(image);
-        doShowImage(imageType, image);
+        doShowImage(imageType, image, mDelayImage);
 
         if (mUserCallback != null) {
             mUserCallback.onCacheMiss(imageType, image);
@@ -503,31 +526,65 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     @UiThread
     private void doShowImage(final int imageType, final File image) {
-        if (mMainView != null) {
-            removeView(mMainView);
-        }
+        doShowImage(imageType, image, false);
+    }
 
-        mMainView = mViewFactory.createMainView(getContext(), imageType, image, mInitScaleType);
-        if (mMainView == null) {
-            onFail(new RuntimeException("Image type not supported: "
-                                        + ImageInfoExtractor.typeName(imageType)));
-            return;
-        }
+    @UiThread
+    private void doShowImage(final int imageType, final File image, final boolean useThumbnailView) {
 
-        addView(mMainView, ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-        mMainView.setOnClickListener(mOnClickListener);
-        mMainView.setOnLongClickListener(mOnLongClickListener);
+        if (useThumbnailView) {
 
-        if (mMainView instanceof SubsamplingScaleImageView) {
-            mSSIV = (SubsamplingScaleImageView) mMainView;
+            if(mThumbnailView != null) {
+                removeView(mThumbnailView);
+            }
 
-            mSSIV.setMinimumTileDpi(160);
+            mThumbnailView = new ImageView(getContext());
 
-            setOptimizeDisplay(mOptimizeDisplay);
-            setInitScaleType(mInitScaleType);
+            addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            mThumbnailView.setOnClickListener(mOnClickListener);
+            mThumbnailView.setOnLongClickListener(mOnLongClickListener);
 
-            mSSIV.setImage(ImageSource.uri(Uri.fromFile(image)));
+            ((ImageView)mThumbnailView).setAdjustViewBounds(true);
+            ((ImageView)mThumbnailView).setScaleType(ImageView.ScaleType.FIT_START);
+            ((ImageView)mThumbnailView).setImageURI(Uri.fromFile(image));
+
+            if (mImageCycleCallback != null) {
+                mImageCycleCallback.onThumbnailShown();
+            }
+
+        } else {
+
+            if (mMainView != null) {
+                removeView(mMainView);
+            }
+
+            mMainView = mViewFactory.createMainView(getContext(), imageType, image, mInitScaleType);
+            if (mMainView == null) {
+                onFail(new RuntimeException("Image type not supported: "
+                        + ImageInfoExtractor.typeName(imageType)));
+                return;
+            }
+
+            addView(mMainView, ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            mMainView.setOnClickListener(mOnClickListener);
+            mMainView.setOnLongClickListener(mOnLongClickListener);
+
+            if (mMainView instanceof SubsamplingScaleImageView) {
+                mSSIV = (SubsamplingScaleImageView) mMainView;
+
+                mSSIV.setMinimumTileDpi(160);
+
+                setOptimizeDisplay(mOptimizeDisplay);
+                setInitScaleType(mInitScaleType);
+
+                mSSIV.setImage(ImageSource.uri(Uri.fromFile(image)));
+
+                if (mImageCycleCallback != null) {
+                    mImageCycleCallback.onImageShown();
+                }
+            }
         }
 
         if (mFailureImageView != null) {

@@ -1,57 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
 
     <Button
-            android:id="@+id/mFresco"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="fresco loader"
-            />
+        android:id="@+id/mFresco"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/main_fresco"
+        />
     <Button
-            android:id="@+id/mGlide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="glide loader"
-            />
+        android:id="@+id/mGlide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/main_glide"
+        />
     <Button
-            android:id="@+id/mLongImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="long image"
-            />
+        android:id="@+id/mLongImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/main_long"
+        />
     <Button
-            android:id="@+id/mScaleType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="scale type"
-            />
+        android:id="@+id/mScaleType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/main_scale"
+        />
     <Button
         android:id="@+id/mImageLoaderCallback"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="image loader callback"
+        android:layout_margin="8dp"
+        android:text="@string/main_callback"
         />
     <Button
         android:id="@+id/mCustomSSIV"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Custom SSIV"
+        android:layout_margin="8dp"
+        android:text="@string/main_custom_ssiv"
         />
     <Button
         android:id="@+id/mRecycler"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Recycler"
+        android:layout_margin="8dp"
+        android:text="@string/main_recycler"
         />
     <Button
         android:id="@+id/mImageTypes"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="image types"
+        android:layout_margin="8dp"
+        android:text="@string/main_types"
+        />
+    <Button
+        android:id="@+id/mSharedTransition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/main_shared_trans"
         />
 </LinearLayout>

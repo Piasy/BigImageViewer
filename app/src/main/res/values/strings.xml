@@ -1,13 +1,31 @@
 <resources>
     <string name="app_name">BIV</string>
 
+    <string name="main_fresco">fresco loader</string>
+    <string name="main_glide">glide loader</string>
+    <string name="main_long">long image</string>
+    <string name="main_scale">scale type</string>
+    <string name="main_callback">image loader callback</string>
+    <string name="main_custom_ssiv">Custom SSIV</string>
+    <string name="main_recycler">Recycler</string>
+    <string name="main_types">image types</string>
+    <string name="main_shared_trans">shared elem. transition</string>
+
+    <string name="bttn_load">Load</string>
+
+    <string name="header_image_loader">Image Loader:</string>
+    <string name="header_image_type">Image Type:</string>
+    <string name="header_first_activity">First Activity:</string>
+    <string name="header_second_activity">Second Activity:</string>
+
+    <string name="transition_name">shared_transition_element_view</string>
+    
+    <string name="content_desc_thumb">Thumbnail Image</string>
+    <string name="content_desc_source">Source Image</string>
+
     <string name="long_click_actions">Actions:</string>
     <string name="scan_qr_code">recognize qr code</string>
     <string name="save_image">save to gallery</string>
-    <string-array name="big_image_ops">
-        <item>@string/scan_qr_code</item>
-        <item>@string/save_image</item>
-    </string-array>
 
     <string name="scale_center_crop">centerCrop</string>
     <string name="scale_center_inside">centerInside</string>
