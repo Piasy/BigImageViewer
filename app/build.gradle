@@ -75,7 +75,7 @@ android {
 dependencies {
     implementation "androidx.core:core-ktx:1.1.0"
     implementation "androidx.appcompat:appcompat:1.1.0"
-    implementation "androidx.recyclerview:recyclerview:1.1.0-beta04"
+    implementation "androidx.recyclerview:recyclerview:1.1.0-beta05"
     implementation "com.google.android.material:material:$materialVersion"
 
     implementation('com.tbruyelle.rxpermissions2:rxpermissions:0.9.5') {

@@ -60,6 +60,6 @@ public class ImageViewFactory {
     }
 
     public View createThumbnailView(Context context, Uri thumbnail, ImageView.ScaleType scaleType) {
-        return null;
+        return new ImageView(context);
     }
 }

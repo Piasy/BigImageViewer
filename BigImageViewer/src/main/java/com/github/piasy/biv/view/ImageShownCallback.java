@@ -3,8 +3,8 @@ package com.github.piasy.biv.view;
 import androidx.annotation.UiThread;
 
 @UiThread
-public interface ImageCycleCallback {
+public interface ImageShownCallback {
 
     void onThumbnailShown();
-    void onImageShown();
+    void onMainImageShown();
 }

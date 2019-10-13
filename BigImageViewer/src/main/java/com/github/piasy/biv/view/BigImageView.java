@@ -98,10 +98,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private View mProgressIndicatorView;
     private ImageView mFailureImageView;
 
-    private boolean mDelayImage = false;
+    private boolean mDelayMainImage = false;
 
     private ImageSaveCallback mImageSaveCallback;
-    private ImageCycleCallback mImageCycleCallback;
+    private ImageShownCallback mImageShownCallback;
     private ImageLoader.Callback mUserCallback;
     private File mCurrentImageFile;
     private Uri mUri;
@@ -289,8 +289,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mImageSaveCallback = imageSaveCallback;
     }
 
-    public void setImageCycleCallback(ImageCycleCallback imageCycleCallback) {
-        mImageCycleCallback = imageCycleCallback;
+    public void setImageShownCallback(ImageShownCallback imageCycleCallback) {
+        mImageShownCallback = imageCycleCallback;
     }
 
     public void setProgressIndicator(ProgressIndicator progressIndicator) {
@@ -352,14 +352,15 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         showImage(thumbnail, uri, false);
     }
 
-    public void showImage(final Uri thumbnail, final Uri uri, final boolean delayImage) {
+    public void showImage(final Uri thumbnail, final Uri uri, final boolean delayMainImage) {
         mThumbnail = thumbnail;
         mUri = uri;
 
         clearThumbnailAndProgressIndicator();
 
-        mDelayImage = delayImage;
-        if (mDelayImage) {
+        mDelayMainImage = delayMainImage;
+        if (mDelayMainImage) {
+            BigImageViewer.prefetch(uri);
             mImageLoader.loadImage(hashCode(), thumbnail, mInternalCallback);
         } else {
             mImageLoader.loadImage(hashCode(), uri, mInternalCallback);
@@ -370,9 +371,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         }
     }
 
-    public void triggerImageSwap() {
+    public void loadMainImageNow() {
 
-        mDelayImage = false;
+        mDelayMainImage = false;
         mImageLoader.loadImage(hashCode(), mUri, mInternalCallback);
     }
 
@@ -387,7 +388,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     @Override
     public void onCacheHit(final int imageType, final File image) {
         mCurrentImageFile = image;
-        doShowImage(imageType, image, mDelayImage);
+        doShowImage(imageType, image, mDelayMainImage);
 
         if (mUserCallback != null) {
             mUserCallback.onCacheHit(imageType, image);
@@ -398,7 +399,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void onCacheMiss(final int imageType, final File image) {
         mCurrentImageFile = image;
         mTempImages.add(image);
-        doShowImage(imageType, image, mDelayImage);
+        doShowImage(imageType, image, mDelayMainImage);
 
         if (mUserCallback != null) {
             mUserCallback.onCacheMiss(imageType, image);
@@ -525,11 +526,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     @UiThread
-    private void doShowImage(final int imageType, final File image) {
-        doShowImage(imageType, image, false);
-    }
-
-    @UiThread
     private void doShowImage(final int imageType, final File image, final boolean useThumbnailView) {
 
         if (useThumbnailView) {
@@ -538,19 +534,21 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 removeView(mThumbnailView);
             }
 
-            mThumbnailView = new ImageView(getContext());
+            mThumbnailView = mViewFactory.createThumbnailView(getContext(), Uri.fromFile(image), mThumbnailScaleType);
+            if (mThumbnailView != null) {
 
-            addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
-            mThumbnailView.setOnClickListener(mOnClickListener);
-            mThumbnailView.setOnLongClickListener(mOnLongClickListener);
+                addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+                mThumbnailView.setOnClickListener(mOnClickListener);
+                mThumbnailView.setOnLongClickListener(mOnLongClickListener);
 
-            ((ImageView)mThumbnailView).setAdjustViewBounds(true);
-            ((ImageView)mThumbnailView).setScaleType(ImageView.ScaleType.FIT_START);
-            ((ImageView)mThumbnailView).setImageURI(Uri.fromFile(image));
+                ((ImageView) mThumbnailView).setAdjustViewBounds(true);
+                ((ImageView) mThumbnailView).setScaleType(ImageView.ScaleType.FIT_START);
+                ((ImageView) mThumbnailView).setImageURI(Uri.fromFile(image));
 
-            if (mImageCycleCallback != null) {
-                mImageCycleCallback.onThumbnailShown();
+                if (mImageShownCallback != null) {
+                    mImageShownCallback.onThumbnailShown();
+                }
             }
 
         } else {
@@ -581,8 +579,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
                 mSSIV.setImage(ImageSource.uri(Uri.fromFile(image)));
 
-                if (mImageCycleCallback != null) {
-                    mImageCycleCallback.onImageShown();
+                if (mImageShownCallback != null) {
+                    mImageShownCallback.onMainImageShown();
                 }
             }
         }

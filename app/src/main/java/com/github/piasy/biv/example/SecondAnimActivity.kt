@@ -15,7 +15,7 @@ import androidx.core.net.toUri
 import com.github.piasy.biv.BigImageViewer
 import com.github.piasy.biv.loader.glide.GlideImageLoader
 import com.github.piasy.biv.view.BigImageView
-import com.github.piasy.biv.view.ImageCycleCallback
+import com.github.piasy.biv.view.ImageShownCallback
 
 class SecondAnimActivity : AppCompatActivity() {
 
@@ -64,19 +64,19 @@ class SecondAnimActivity : AppCompatActivity() {
 
                 override fun onTransitionEnd(transition: Transition?) {
 
-                    biv.triggerImageSwap()
+                    biv.loadMainImageNow()
                 }
             })
         }
 
-        biv.setImageCycleCallback(object : ImageCycleCallback {
+        biv.setImageShownCallback(object : ImageShownCallback {
 
             override fun onThumbnailShown() {
                 showToast("onThumbnailShown triggered!")
             }
 
-            override fun onImageShown() {
-                showToast("onImageShown triggered!")
+            override fun onMainImageShown() {
+                showToast("onMainImageShown triggered!")
             }
         })
 
