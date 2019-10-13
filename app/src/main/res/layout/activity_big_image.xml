@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <com.github.piasy.biv.view.BigImageView
+        android:id="@+id/mBigImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black"
-        >
-    <com.github.piasy.biv.view.BigImageView
-            android:id="@+id/mBigImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:optimizeDisplay="true"
-            app:failureImage="@drawable/ic_cloud_off_white"
-            app:failureImageInitScaleType="center"
-            />
+        app:optimizeDisplay="true"
+        app:failureImage="@drawable/ic_cloud_off_white"
+        app:failureImageInitScaleType="center"
+        />
 
     <Button
-            android:id="@+id/mBtnLoad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="load"
-            />
+        android:id="@+id/mBtnLoad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bttn_load"
+        />
 </FrameLayout>

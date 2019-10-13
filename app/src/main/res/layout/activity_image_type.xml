@@ -53,7 +53,7 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Image Loader:"
+                    android:text="@string/header_image_loader"
                     android:textSize="16sp"
                     />
 
@@ -77,7 +77,7 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Image Type:"
+                    android:text="@string/header_image_type"
                     android:textSize="16sp"
                     />
 
@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="load"
+                android:text="@string/bttn_load"
                 />
 
     </LinearLayout>

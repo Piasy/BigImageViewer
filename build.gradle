@@ -34,6 +34,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50"
+
 
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
@@ -87,6 +89,6 @@ ext {
 
     frescoVersion = '2.0.0'
     glideVersion = '4.10.0'
-    okhttpVersion = '4.2.1'
+    okhttpVersion = '4.2.2'
     ssivVersion = '3.10.0'
 }

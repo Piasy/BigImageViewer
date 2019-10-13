@@ -28,8 +28,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.github.piasy.biv.example.CustomSSIVActivity"
-        >
+        tools:context="com.github.piasy.biv.example.CustomSSIVActivity">
 
     <com.github.piasy.biv.view.BigImageView
             android:id="@+id/mBigImage"
@@ -41,6 +40,6 @@
             android:id="@+id/mBtnLoad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="load"
+            android:text="@string/bttn_load"
             />
 </FrameLayout>

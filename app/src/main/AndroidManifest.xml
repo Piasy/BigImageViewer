@@ -23,8 +23,7 @@
   ~ SOFTWARE.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        package="com.github.piasy.biv.example">
+    package="com.github.piasy.biv.example">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
@@ -52,6 +51,8 @@
         <activity android:name=".CustomSSIVActivity"/>
         <activity android:name=".RecyclerViewActivity"/>
         <activity android:name=".ImageTypesActivity"/>
+        <activity android:name=".FirstAnimActivity" android:theme="@style/TransitionTheme"/>
+        <activity android:name=".SecondAnimActivity" android:theme="@style/TransitionTheme"/>
     </application>
 
 </manifest>
