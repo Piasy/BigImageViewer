@@ -13,6 +13,11 @@
 
     <string name="bttn_load">Load</string>
 
+    <string name="radio_use_glide">Use Glide</string>
+    <string name="radio_use_fresco">Use Fresco</string>
+
+    <string name="check_use_view_factory">Use view factory</string>
+
     <string name="header_image_loader">Image Loader:</string>
     <string name="header_image_type">Image Type:</string>
     <string name="header_first_activity">First Activity:</string>

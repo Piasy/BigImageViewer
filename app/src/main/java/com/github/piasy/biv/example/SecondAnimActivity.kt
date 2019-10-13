@@ -12,9 +12,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.net.toUri
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.github.piasy.biv.BigImageViewer
+import com.github.piasy.biv.loader.fresco.FrescoImageLoader
 import com.github.piasy.biv.loader.glide.GlideImageLoader
 import com.github.piasy.biv.view.BigImageView
+import com.github.piasy.biv.view.FrescoImageViewFactory
+import com.github.piasy.biv.view.GlideImageViewFactory
 import com.github.piasy.biv.view.ImageShownCallback
 
 class SecondAnimActivity : AppCompatActivity() {
@@ -24,11 +28,21 @@ class SecondAnimActivity : AppCompatActivity() {
         private const val THUMB_PARAM = "intent_param_thumbnail"
         private const val SOURCE_PARAM = "intent_param_source"
 
-        fun start(activity: Activity, imageView: ImageView, thumbUrl: String, sourceUrl: String) {
+        private const val FLAG_USEGLIDE = "intent_param_flag_use_glide"
+        private const val FLAG_USEFRESCO = "intent_param_flag_use_fresco"
+        private const val FLAG_USEVIEWFACTORY = "intent_param_flag_use_view_factory"
+
+        fun start(activity: Activity, imageView: ImageView,
+                  thumbUrl: String, sourceUrl: String,
+                  useGlide: Boolean, useFresco: Boolean, useViewFactory: Boolean) {
 
             val intent = Intent(activity, SecondAnimActivity::class.java)
             intent.putExtra(THUMB_PARAM, thumbUrl)
             intent.putExtra(SOURCE_PARAM, sourceUrl)
+
+            intent.putExtra(FLAG_USEGLIDE, useGlide)
+            intent.putExtra(FLAG_USEFRESCO, useFresco)
+            intent.putExtra(FLAG_USEVIEWFACTORY, useViewFactory)
 
             val transitionName = activity.resources.getString(R.string.transition_name)
             val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, imageView, transitionName)
@@ -45,12 +59,24 @@ class SecondAnimActivity : AppCompatActivity() {
     private val thumbUrl by lazy { intent.getStringExtra(THUMB_PARAM)!! }
     private val sourceUrl by lazy { intent.getStringExtra(SOURCE_PARAM)!! }
 
+    private val useGlide by lazy { intent.getBooleanExtra(FLAG_USEGLIDE, true) }
+    private val useFresco by lazy { intent.getBooleanExtra(FLAG_USEFRESCO, false) }
+    private val useViewFactory by lazy { intent.getBooleanExtra(FLAG_USEVIEWFACTORY, false) }
+
     private val biv by lazy { findViewById<BigImageView>(R.id.sourceView) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Fresco.initialize(this)
+
         super.onCreate(savedInstanceState)
 
-        BigImageViewer.initialize(GlideImageLoader.with(applicationContext))
+        if (useGlide) {
+            BigImageViewer.initialize(GlideImageLoader.with(applicationContext))
+        }
+
+        if (useFresco) {
+            BigImageViewer.initialize(FrescoImageLoader.with(applicationContext))
+        }
 
         setContentView(R.layout.activity_anim_second)
 
@@ -67,6 +93,14 @@ class SecondAnimActivity : AppCompatActivity() {
                     biv.loadMainImageNow()
                 }
             })
+        }
+
+        if (useGlide && useViewFactory) {
+            biv.setImageViewFactory(GlideImageViewFactory())
+        }
+
+        if (useFresco && useViewFactory) {
+            biv.setImageViewFactory(FrescoImageViewFactory())
         }
 
         biv.setImageShownCallback(object : ImageShownCallback {
