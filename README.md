@@ -11,7 +11,6 @@ View](https://github.com/davemorrissey/subsampling-scale-image-view),
 [Glide](https://github.com/bumptech/glide), and
 [Picasso](https://github.com/square/picasso). Even with gif and webp support!
 
-
 ## Demo
 
 ![memory usage](art/android_studio_memory_monitor.png)
@@ -318,10 +317,11 @@ For more detailed example, please refer to [the example project](https://github.
 + When you want load local image file, you can create the Uri via
 `Uri.fromFile`, but the path will be url encoded, and may cause the image loader
 fail to load it, consider using `Uri.parse("file://" + file.getAbsolutePath())`.
-+ When using with ReceyclerView, the recycled BIV doesn't know it should clear the loaded image,
++ When using with RecyclerView or ViewPager, the recycled BIV doesn't know
+it should clear the loaded image or reload the image,
 so you need manually notify it in some way,
-see [issue 107](https://github.com/Piasy/BigImageViewer/issues/107).
-
+see [issue 107](https://github.com/Piasy/BigImageViewer/issues/107),
+and [issue 177](https://github.com/Piasy/BigImageViewer/issues/177).
 
 ## Why another big image viewer?
 
@@ -344,7 +344,6 @@ If you are interested in how does this library work, you can refer to [this
 issue](https://github.com/Piasy/BigImageViewer/issues/8), and [Subsampling Scale
 Image View](https://github.com/davemorrissey/subsampling-scale-image-view).
 
-
 ## Performance
 
 Memory usage of different libraries:
@@ -352,7 +351,6 @@ Memory usage of different libraries:
 | \- | PhotoDraweeView | FrescoImageViewer | BigImageViewer |
 | ------| ------ | ------ | ------ |
 | 4135\*5134 | 80MB | 80MB | 2~20 MB |
-
 
 ## Todo
 
