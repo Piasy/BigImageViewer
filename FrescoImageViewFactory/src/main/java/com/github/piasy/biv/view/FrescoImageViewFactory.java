@@ -39,30 +39,36 @@ import java.io.File;
  */
 public class FrescoImageViewFactory extends ImageViewFactory {
     @Override
-    protected View createAnimatedImageView(final Context context, final int imageType,
-            final File imageFile, int initScaleType) {
-        SimpleDraweeView view = new SimpleDraweeView(context);
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setUri(Uri.parse("file://" + imageFile.getAbsolutePath()))
-                .setAutoPlayAnimations(true)
-                .build();
-        view.setController(controller);
+    protected View createAnimatedImageView(final Context context, final int imageType, int initScaleType) {
+        final SimpleDraweeView view = new SimpleDraweeView(context);
         view.getHierarchy().setActualImageScaleType(scaleType(initScaleType));
         return view;
     }
 
     @Override
-    public View createThumbnailView(final Context context, final Uri thumbnail,
-            final ImageView.ScaleType scaleType) {
-        SimpleDraweeView thumbnailView = new SimpleDraweeView(context);
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setUri(thumbnail)
+    public void loadAnimatedContent(View view, int imageType, File imageFile) {
+        final DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(Uri.parse("file://" + imageFile.getAbsolutePath()))
+                .setAutoPlayAnimations(true)
                 .build();
+        ((SimpleDraweeView) view).setController(controller);
+    }
+
+    @Override
+    public View createThumbnailView(final Context context, final ImageView.ScaleType scaleType) {
+        final SimpleDraweeView thumbnailView = new SimpleDraweeView(context);
         if (scaleType != null) {
             thumbnailView.getHierarchy().setActualImageScaleType(scaleType(scaleType));
         }
-        thumbnailView.setController(controller);
         return thumbnailView;
+    }
+
+    @Override
+    public void loadThumbnailContent(View view, Uri thumbnail) {
+        final DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(thumbnail)
+                .build();
+        ((SimpleDraweeView) view).setController(controller);
     }
 
     private ScalingUtils.ScaleType scaleType(int value) {

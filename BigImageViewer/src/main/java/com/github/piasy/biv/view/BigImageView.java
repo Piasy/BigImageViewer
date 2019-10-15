@@ -410,8 +410,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void onStart() {
         // why show thumbnail in onStart? because we may not need download it from internet
         if (mThumbnail != Uri.EMPTY) {
-            mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnail,
-                    mThumbnailScaleType);
+            mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType);
+            mViewFactory.loadThumbnailContent(mThumbnailView, mThumbnail);
             if (mThumbnailView != null) {
                 addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
@@ -534,7 +534,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 removeView(mThumbnailView);
             }
 
-            mThumbnailView = mViewFactory.createThumbnailView(getContext(), Uri.fromFile(image), mThumbnailScaleType);
+            mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType);
+            mViewFactory.loadThumbnailContent(mThumbnailView, Uri.fromFile(image));
             if (mThumbnailView != null) {
 
                 addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -557,7 +558,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 removeView(mMainView);
             }
 
-            mMainView = mViewFactory.createMainView(getContext(), imageType, image, mInitScaleType);
+            mMainView = mViewFactory.createMainView(getContext(), imageType, mInitScaleType);
+            mViewFactory.loadAnimatedContent(mMainView, imageType, image);
             if (mMainView == null) {
                 onFail(new RuntimeException("Image type not supported: "
                         + ImageInfoExtractor.typeName(imageType)));

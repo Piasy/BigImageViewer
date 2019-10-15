@@ -37,12 +37,11 @@ import java.io.File;
  */
 public class ImageViewFactory {
 
-    public final View createMainView(Context context, int imageType, File imageFile,
-            int initScaleType) {
+    public final View createMainView(final Context context, final int imageType, final int initScaleType) {
         switch (imageType) {
             case ImageInfoExtractor.TYPE_GIF:
             case ImageInfoExtractor.TYPE_ANIMATED_WEBP:
-                return createAnimatedImageView(context, imageType, imageFile, initScaleType);
+                return createAnimatedImageView(context, imageType, initScaleType);
             case ImageInfoExtractor.TYPE_STILL_WEBP:
             case ImageInfoExtractor.TYPE_STILL_IMAGE:
             default:
@@ -50,16 +49,19 @@ public class ImageViewFactory {
         }
     }
 
-    protected SubsamplingScaleImageView createStillImageView(Context context) {
+    protected SubsamplingScaleImageView createStillImageView(final Context context) {
         return new SubsamplingScaleImageView(context);
     }
 
-    protected View createAnimatedImageView(Context context, int imageType, File imageFile,
-            int initScaleType) {
+    protected View createAnimatedImageView(final Context context, final int imageType, final int initScaleType) {
         return null;
     }
 
-    public View createThumbnailView(Context context, Uri thumbnail, ImageView.ScaleType scaleType) {
+    public void loadAnimatedContent(final View view, final int imageType, final File imageFile) {}
+
+    public View createThumbnailView(final Context context, final ImageView.ScaleType scaleType) {
         return new ImageView(context);
     }
+
+    public void loadThumbnailContent(final View view, final Uri thumbnail) {}
 }
