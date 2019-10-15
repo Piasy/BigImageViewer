@@ -29,6 +29,7 @@ class FirstAnimActivity : AppCompatActivity() {
         val useFresco = findViewById<RadioButton>(R.id.use_fresco)
         val useViewFactory = findViewById<CheckBox>(R.id.check_use_view_factory)
 
+        thumb.setLegacyVisibilityHandlingEnabled(true)
         thumb.setOnClickListener {
 
             SecondAnimActivity.start(this, thumb,

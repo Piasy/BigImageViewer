@@ -1,18 +1,21 @@
 package com.github.piasy.biv.example
 
 import android.app.Activity
+import android.app.SharedElementCallback
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.transition.Transition
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.net.toUri
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.view.SimpleDraweeView
 import com.github.piasy.biv.BigImageViewer
 import com.github.piasy.biv.loader.fresco.FrescoImageLoader
 import com.github.piasy.biv.loader.glide.GlideImageLoader
@@ -49,6 +52,26 @@ class SecondAnimActivity : AppCompatActivity() {
             val bundle = options.toBundle()
 
             if (Build.VERSION.SDK_INT >= 16) {
+
+                if (Build.VERSION.SDK_INT >= 21) {
+                    activity.setExitSharedElementCallback(object : SharedElementCallback() {
+
+                        override fun onSharedElementEnd(
+                                names: MutableList<String>?,
+                                elements: MutableList<View>?,
+                                snapshots: MutableList<View>?
+                        ) {
+                            super.onSharedElementEnd(names, elements, snapshots)
+
+                            elements?.forEach {
+                                if (it is SimpleDraweeView) {
+                                    it.post { it.setVisibility(View.VISIBLE) }
+                                }
+                            }
+                        }
+                    })
+                }
+
                 activity.startActivity(intent, bundle)
             } else {
                 Log.i("SecondAnimActivity", "Animation not available for this SDK Versions.")
@@ -81,6 +104,24 @@ class SecondAnimActivity : AppCompatActivity() {
         setContentView(R.layout.activity_anim_second)
 
         if (Build.VERSION.SDK_INT >= 21) {
+
+            setEnterSharedElementCallback(object : SharedElementCallback() {
+
+                override fun onSharedElementEnd(
+                        names: MutableList<String>?,
+                        elements: MutableList<View>?,
+                        snapshots: MutableList<View>?
+                ) {
+                    super.onSharedElementEnd(names, elements, snapshots)
+
+                    elements?.forEach {
+                        if (it is SimpleDraweeView) {
+                            it.post { it.setVisibility(View.VISIBLE) }
+                        }
+                    }
+                }
+            })
+
             window.sharedElementEnterTransition.addListener(object : Transition.TransitionListener {
 
                 override fun onTransitionStart(transition: Transition?) {}
