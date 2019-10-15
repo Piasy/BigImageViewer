@@ -38,7 +38,7 @@ import pl.droidsonroids.gif.GifImageView;
  */
 public class GlideImageViewFactory extends ImageViewFactory {
     @Override
-    protected View createAnimatedImageView(final Context context, final int imageType, final int initScaleType) {
+    protected final View createAnimatedImageView(final Context context, final int imageType, final int initScaleType) {
         switch (imageType) {
             case ImageInfoExtractor.TYPE_GIF: {
                 final GifImageView gifImageView = new GifImageView(context);
@@ -56,7 +56,7 @@ public class GlideImageViewFactory extends ImageViewFactory {
     }
 
     @Override
-    public void loadAnimatedContent(final View view, final int imageType, final File imageFile) {
+    public final void loadAnimatedContent(final View view, final int imageType, final File imageFile) {
         switch (imageType) {
             case ImageInfoExtractor.TYPE_GIF: {
                 ((GifImageView) view).setImageURI(Uri.parse("file://" + imageFile.getAbsolutePath()));
@@ -75,7 +75,7 @@ public class GlideImageViewFactory extends ImageViewFactory {
     }
 
     @Override
-    public View createThumbnailView(final Context context, final ImageView.ScaleType scaleType) {
+    public final View createThumbnailView(final Context context, final ImageView.ScaleType scaleType) {
         final ImageView thumbnailView = new ImageView(context);
         if (scaleType != null) {
             thumbnailView.setScaleType(scaleType);
@@ -83,10 +83,10 @@ public class GlideImageViewFactory extends ImageViewFactory {
         return thumbnailView;
     }
 
-    @Override
-    public void loadThumbnailContent(View view, Uri thumbnail) {
+    /*@Override
+    public final void loadThumbnailContent(View view, Uri thumbnail) {
         Glide.with(view.getContext())
                 .load(thumbnail)
                 .into((ImageView) view);
-    }
+    }*/
 }

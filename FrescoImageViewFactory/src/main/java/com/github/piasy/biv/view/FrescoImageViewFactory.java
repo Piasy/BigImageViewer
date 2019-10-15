@@ -39,37 +39,45 @@ import java.io.File;
  */
 public class FrescoImageViewFactory extends ImageViewFactory {
     @Override
-    protected View createAnimatedImageView(final Context context, final int imageType, int initScaleType) {
+    protected final View createAnimatedImageView(final Context context, final int imageType, int initScaleType) {
         final SimpleDraweeView view = new SimpleDraweeView(context);
         view.getHierarchy().setActualImageScaleType(scaleType(initScaleType));
         return view;
     }
 
     @Override
-    public void loadAnimatedContent(View view, int imageType, File imageFile) {
-        final DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setUri(Uri.parse("file://" + imageFile.getAbsolutePath()))
-                .setAutoPlayAnimations(true)
-                .build();
-        ((SimpleDraweeView) view).setController(controller);
+    public final void loadAnimatedContent(final View view, final int imageType, final File imageFile) {
+        if (view instanceof SimpleDraweeView) {
+            final DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setUri(Uri.parse("file://" + imageFile.getAbsolutePath()))
+                    .setAutoPlayAnimations(true)
+                    .build();
+            ((SimpleDraweeView) view).setController(controller);
+        }
     }
 
     @Override
-    public View createThumbnailView(final Context context, final ImageView.ScaleType scaleType) {
-        final SimpleDraweeView thumbnailView = new SimpleDraweeView(context);
+    public final View createThumbnailView(final Context context, final ImageView.ScaleType scaleType) {
+        final ImageView thumbnailView = new ImageView(context);
+        if (scaleType != null) {
+            thumbnailView.setScaleType(scaleType);
+        }
+        return thumbnailView;
+
+        /*final SimpleDraweeView thumbnailView = new SimpleDraweeView(context);
         if (scaleType != null) {
             thumbnailView.getHierarchy().setActualImageScaleType(scaleType(scaleType));
         }
-        return thumbnailView;
+        return thumbnailView;*/
     }
 
-    @Override
-    public void loadThumbnailContent(View view, Uri thumbnail) {
+    /*@Override
+    public final void loadThumbnailContent(final View view, final Uri thumbnail) {
         final DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setUri(thumbnail)
                 .build();
         ((SimpleDraweeView) view).setController(controller);
-    }
+    }*/
 
     private ScalingUtils.ScaleType scaleType(int value) {
         switch (value) {
@@ -91,7 +99,7 @@ public class FrescoImageViewFactory extends ImageViewFactory {
         }
     }
 
-    private ScalingUtils.ScaleType scaleType(ImageView.ScaleType scaleType) {
+    /*private ScalingUtils.ScaleType scaleType(ImageView.ScaleType scaleType) {
         switch (scaleType) {
             case CENTER:
                 return ScalingUtils.ScaleType.CENTER;
@@ -109,5 +117,5 @@ public class FrescoImageViewFactory extends ImageViewFactory {
             default:
                 return ScalingUtils.ScaleType.FIT_CENTER;
         }
-    }
+    }*/
 }

@@ -28,6 +28,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.metadata.ImageInfoExtractor;
 import java.io.File;
@@ -49,6 +51,18 @@ public class ImageViewFactory {
         }
     }
 
+    public boolean isAnimatedContent(final int imageType) {
+        switch (imageType) {
+
+            case ImageInfoExtractor.TYPE_GIF:
+            case ImageInfoExtractor.TYPE_ANIMATED_WEBP:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
     protected SubsamplingScaleImageView createStillImageView(final Context context) {
         return new SubsamplingScaleImageView(context);
     }
@@ -59,9 +73,17 @@ public class ImageViewFactory {
 
     public void loadAnimatedContent(final View view, final int imageType, final File imageFile) {}
 
+    public void loadSillContent(final View view, final Uri uri) {
+        if (view instanceof SubsamplingScaleImageView) {
+            ((SubsamplingScaleImageView) view).setImage(ImageSource.uri(uri));
+        }
+    }
+
     public View createThumbnailView(final Context context, final ImageView.ScaleType scaleType) {
         return new ImageView(context);
     }
 
-    public void loadThumbnailContent(final View view, final Uri thumbnail) {}
+    public void loadThumbnailContent(final View view, final Uri thumbnail) {
+        ((ImageView) view).setImageURI(thumbnail);
+    }
 }

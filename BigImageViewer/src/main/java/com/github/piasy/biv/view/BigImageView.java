@@ -42,7 +42,6 @@ import android.widget.ImageView;
 import androidx.annotation.Keep;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.UiThread;
-import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.R;
@@ -530,22 +529,27 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         if (useThumbnailView) {
 
-            if(mThumbnailView != null) {
-                removeView(mThumbnailView);
+            if (mThumbnailView == null) {
+                mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType);
             }
 
-            mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType);
-            mViewFactory.loadThumbnailContent(mThumbnailView, Uri.fromFile(image));
+            if (mThumbnailView.getVisibility() != View.VISIBLE) {
+                mThumbnailView.setVisibility(View.VISIBLE);
+            }
+
             if (mThumbnailView != null) {
 
-                addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
+                if (!(mThumbnailView.getParent() == this)) {
+                    addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT);
+                }
+
                 mThumbnailView.setOnClickListener(mOnClickListener);
                 mThumbnailView.setOnLongClickListener(mOnLongClickListener);
 
                 ((ImageView) mThumbnailView).setAdjustViewBounds(true);
                 ((ImageView) mThumbnailView).setScaleType(ImageView.ScaleType.FIT_START);
-                ((ImageView) mThumbnailView).setImageURI(Uri.fromFile(image));
+                mViewFactory.loadThumbnailContent(mThumbnailView, Uri.fromFile(image));
 
                 if (mImageShownCallback != null) {
                     mImageShownCallback.onThumbnailShown();
@@ -559,7 +563,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             }
 
             mMainView = mViewFactory.createMainView(getContext(), imageType, mInitScaleType);
-            mViewFactory.loadAnimatedContent(mMainView, imageType, image);
             if (mMainView == null) {
                 onFail(new RuntimeException("Image type not supported: "
                         + ImageInfoExtractor.typeName(imageType)));
@@ -568,6 +571,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
             addView(mMainView, ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
+
             mMainView.setOnClickListener(mOnClickListener);
             mMainView.setOnLongClickListener(mOnLongClickListener);
 
@@ -579,10 +583,21 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 setOptimizeDisplay(mOptimizeDisplay);
                 setInitScaleType(mInitScaleType);
 
-                mSSIV.setImage(ImageSource.uri(Uri.fromFile(image)));
+                if (mViewFactory.isAnimatedContent(imageType)) {
+                    mViewFactory.loadAnimatedContent(mSSIV, imageType, image);
+                } else {
+                    mViewFactory.loadSillContent(mSSIV, Uri.fromFile(image));
+                }
 
                 if (mImageShownCallback != null) {
                     mImageShownCallback.onMainImageShown();
+                }
+            } else {
+
+                if (mViewFactory.isAnimatedContent(imageType)) {
+                    mViewFactory.loadAnimatedContent(mMainView, imageType, image);
+                } else {
+                    mViewFactory.loadSillContent(mMainView, Uri.fromFile(image));
                 }
             }
         }
