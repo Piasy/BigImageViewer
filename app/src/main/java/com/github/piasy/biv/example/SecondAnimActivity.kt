@@ -28,6 +28,8 @@ class SecondAnimActivity : AppCompatActivity() {
 
     companion object {
 
+        private const val TAG = "SecondAnimActivity"
+        
         private const val THUMB_PARAM = "intent_param_thumbnail"
         private const val SOURCE_PARAM = "intent_param_source"
 
@@ -122,18 +124,52 @@ class SecondAnimActivity : AppCompatActivity() {
                 }
             })
 
-            window.sharedElementEnterTransition.addListener(object : Transition.TransitionListener {
+            val returnTransitionListener = object : Transition.TransitionListener {
+                override fun onTransitionStart(transition: Transition?) {
+                    Log.e(TAG, "return onTransitionStart")
 
-                override fun onTransitionStart(transition: Transition?) {}
-                override fun onTransitionCancel(transition: Transition?) {}
-                override fun onTransitionPause(transition: Transition?) {}
-                override fun onTransitionResume(transition: Transition?) {}
+                    //biv.switchImageForTransition(false)
+                }
+                override fun onTransitionCancel(transition: Transition?) {
+                    Log.e(TAG, "return onTransitionCancel")
+                }
+                override fun onTransitionPause(transition: Transition?) {
+                    Log.e(TAG, "return onTransitionPause")
+                }
+                override fun onTransitionResume(transition: Transition?) {
+                    Log.e(TAG, "return onTransitionResume")
+                }
 
                 override fun onTransitionEnd(transition: Transition?) {
+                    Log.e(TAG, "return onTransitionEnd")
 
-                    biv.loadMainImageNow()
+                    window.sharedElementReturnTransition.removeListener(this)
                 }
-            })
+            }
+            val enterTransitionListener = object : Transition.TransitionListener {
+                override fun onTransitionStart(transition: Transition?) {
+                    Log.e(TAG, "enter onTransitionStart")
+                }
+                override fun onTransitionCancel(transition: Transition?) {
+                    Log.e(TAG, "enter onTransitionCancel")
+                }
+                override fun onTransitionPause(transition: Transition?) {
+                    Log.e(TAG, "enter onTransitionPause")
+                }
+                override fun onTransitionResume(transition: Transition?) {
+                    Log.e(TAG, "enter onTransitionResume")
+                }
+
+                override fun onTransitionEnd(transition: Transition?) {
+                    Log.e(TAG, "enter onTransitionEnd")
+
+                    biv.switchImageForTransition(true)
+
+                    window.sharedElementEnterTransition.removeListener(this)
+                    window.sharedElementReturnTransition.addListener(returnTransitionListener)
+                }
+            }
+            window.sharedElementEnterTransition.addListener(enterTransitionListener)
         }
 
         if (useGlide && useViewFactory) {
@@ -156,6 +192,11 @@ class SecondAnimActivity : AppCompatActivity() {
         })
 
         biv.showImage(thumbUrl.toUri(), sourceUrl.toUri(), true)
+    }
+
+    override fun onBackPressed() {
+        biv.switchImageForTransition(false)
+        super.onBackPressed()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

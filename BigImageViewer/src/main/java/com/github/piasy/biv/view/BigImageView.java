@@ -108,6 +108,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private File mCurrentImageFile;
     private Uri mUri;
     private Uri mThumbnail;
+    // for shared element exit transition
+    private File mThumbnailFile;
 
     private OnClickListener mOnClickListener;
     private OnLongClickListener mOnLongClickListener;
@@ -374,9 +376,16 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         }
     }
 
-    public void loadMainImageNow() {
+    public void switchImageForTransition(boolean showMainImage) {
         mDelayMainImageForTransition = false;
-        mImageLoader.loadImage(hashCode(), mUri, mInternalCallback);
+        if (showMainImage) {
+            mImageLoader.loadImage(hashCode(), mUri, mInternalCallback);
+        } else if (mThumbnailFile != null) {
+            if (mSSIV != null) {
+                mSSIV.setVisibility(GONE);
+            }
+            doShowImage(ImageInfoExtractor.TYPE_STILL_IMAGE, mThumbnailFile, true);
+        }
     }
 
     public void cancel() {
@@ -539,6 +548,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType,
                     false);
             if (mThumbnailView != null) {
+                mThumbnailFile = image;
                 addView(mThumbnailView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
                 mThumbnailView.setOnClickListener(mOnClickListener);
