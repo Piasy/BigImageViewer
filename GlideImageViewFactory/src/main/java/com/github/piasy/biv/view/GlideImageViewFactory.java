@@ -82,11 +82,4 @@ public class GlideImageViewFactory extends ImageViewFactory {
         }
         return thumbnailView;
     }
-
-    /*@Override
-    public final void loadThumbnailContent(View view, Uri thumbnail) {
-        Glide.with(view.getContext())
-                .load(thumbnail)
-                .into((ImageView) view);
-    }*/
 }

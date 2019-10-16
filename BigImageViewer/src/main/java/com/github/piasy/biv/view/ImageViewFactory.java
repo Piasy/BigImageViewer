@@ -84,6 +84,8 @@ public class ImageViewFactory {
     }
 
     public void loadThumbnailContent(final View view, final Uri thumbnail) {
-        ((ImageView) view).setImageURI(thumbnail);
+        if (view instanceof ImageView) {
+            ((ImageView) view).setImageURI(thumbnail);
+        }
     }
 }

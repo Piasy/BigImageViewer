@@ -63,21 +63,7 @@ public class FrescoImageViewFactory extends ImageViewFactory {
             thumbnailView.setScaleType(scaleType);
         }
         return thumbnailView;
-
-        /*final SimpleDraweeView thumbnailView = new SimpleDraweeView(context);
-        if (scaleType != null) {
-            thumbnailView.getHierarchy().setActualImageScaleType(scaleType(scaleType));
-        }
-        return thumbnailView;*/
     }
-
-    /*@Override
-    public final void loadThumbnailContent(final View view, final Uri thumbnail) {
-        final DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setUri(thumbnail)
-                .build();
-        ((SimpleDraweeView) view).setController(controller);
-    }*/
 
     private ScalingUtils.ScaleType scaleType(int value) {
         switch (value) {
@@ -98,24 +84,4 @@ public class FrescoImageViewFactory extends ImageViewFactory {
                 return ScalingUtils.ScaleType.FIT_CENTER;
         }
     }
-
-    /*private ScalingUtils.ScaleType scaleType(ImageView.ScaleType scaleType) {
-        switch (scaleType) {
-            case CENTER:
-                return ScalingUtils.ScaleType.CENTER;
-            case CENTER_CROP:
-                return ScalingUtils.ScaleType.CENTER_CROP;
-            case CENTER_INSIDE:
-                return ScalingUtils.ScaleType.CENTER_INSIDE;
-            case FIT_END:
-                return ScalingUtils.ScaleType.FIT_END;
-            case FIT_START:
-                return ScalingUtils.ScaleType.FIT_START;
-            case FIT_XY:
-                return ScalingUtils.ScaleType.FIT_XY;
-            case FIT_CENTER:
-            default:
-                return ScalingUtils.ScaleType.FIT_CENTER;
-        }
-    }*/
 }

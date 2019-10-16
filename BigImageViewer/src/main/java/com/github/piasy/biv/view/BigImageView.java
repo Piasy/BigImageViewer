@@ -547,12 +547,15 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 mThumbnailView.setOnClickListener(mOnClickListener);
                 mThumbnailView.setOnLongClickListener(mOnLongClickListener);
 
-                ((ImageView) mThumbnailView).setAdjustViewBounds(true);
-                ((ImageView) mThumbnailView).setScaleType(ImageView.ScaleType.FIT_START);
-                mViewFactory.loadThumbnailContent(mThumbnailView, Uri.fromFile(image));
+                if (mThumbnailView instanceof ImageView) {
+                    ((ImageView) mThumbnailView).setAdjustViewBounds(true);
+                    ((ImageView) mThumbnailView).setScaleType(ImageView.ScaleType.FIT_START);
 
-                if (mImageShownCallback != null) {
-                    mImageShownCallback.onThumbnailShown();
+                    mViewFactory.loadThumbnailContent(mThumbnailView, Uri.fromFile(image));
+
+                    if (mImageShownCallback != null) {
+                        mImageShownCallback.onThumbnailShown();
+                    }
                 }
             }
 
