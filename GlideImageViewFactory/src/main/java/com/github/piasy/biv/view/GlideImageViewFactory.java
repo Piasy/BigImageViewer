@@ -38,36 +38,48 @@ import pl.droidsonroids.gif.GifImageView;
  */
 public class GlideImageViewFactory extends ImageViewFactory {
     @Override
-    protected View createAnimatedImageView(final Context context, final int imageType,
-            final File imageFile, int initScaleType) {
+    protected final View createAnimatedImageView(final Context context, final int imageType, final int initScaleType) {
         switch (imageType) {
-            case ImageInfoExtractor.TYPE_GIF:
-                GifImageView gifImageView = new GifImageView(context);
-                gifImageView.setImageURI(Uri.parse("file://" + imageFile.getAbsolutePath()));
+            case ImageInfoExtractor.TYPE_GIF: {
+                final GifImageView gifImageView = new GifImageView(context);
                 gifImageView.setScaleType(BigImageView.scaleType(initScaleType));
                 return gifImageView;
-            case ImageInfoExtractor.TYPE_ANIMATED_WEBP:
-                ImageView imageView = new ImageView(context);
+            }
+            case ImageInfoExtractor.TYPE_ANIMATED_WEBP: {
+                final ImageView imageView = new ImageView(context);
                 imageView.setScaleType(BigImageView.scaleType(initScaleType));
-                Glide.with(context)
-                        .load(imageFile)
-                        .into(imageView);
                 return imageView;
+            }
             default:
-                return super.createAnimatedImageView(context, imageType, imageFile, initScaleType);
+                return super.createAnimatedImageView(context, imageType, initScaleType);
         }
     }
 
     @Override
-    public View createThumbnailView(final Context context, final Uri thumbnail,
-            final ImageView.ScaleType scaleType) {
-        ImageView thumbnailView = new ImageView(context);
+    public final void loadAnimatedContent(final View view, final int imageType, final File imageFile) {
+        switch (imageType) {
+            case ImageInfoExtractor.TYPE_GIF: {
+                ((GifImageView) view).setImageURI(Uri.parse("file://" + imageFile.getAbsolutePath()));
+                break;
+            }
+            case ImageInfoExtractor.TYPE_ANIMATED_WEBP: {
+                Glide.with(view.getContext())
+                        .load(imageFile)
+                        .into((ImageView) view);
+                break;
+            }
+
+            default:
+                super.loadAnimatedContent(view, imageType, imageFile);
+        }
+    }
+
+    @Override
+    public final View createThumbnailView(final Context context, final ImageView.ScaleType scaleType) {
+        final ImageView thumbnailView = new ImageView(context);
         if (scaleType != null) {
             thumbnailView.setScaleType(scaleType);
         }
-        Glide.with(context)
-                .load(thumbnail)
-                .into(thumbnailView);
         return thumbnailView;
     }
 }

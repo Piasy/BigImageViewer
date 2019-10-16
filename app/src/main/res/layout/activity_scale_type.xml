@@ -4,8 +4,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black"
-        >
+        android:background="@android:color/black">
+
     <com.github.piasy.biv.view.BigImageView
             android:id="@+id/mBigImage"
             android:layout_width="match_parent"
@@ -38,9 +38,9 @@
             android:id="@+id/mBtnLoad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_marginTop="15dp"
             android:layout_marginRight="15dp"
-            android:text="load"
+            android:text="@string/bttn_load"
             />
 </FrameLayout>

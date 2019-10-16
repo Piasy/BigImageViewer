@@ -84,5 +84,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ImageTypesActivity.class));
             }
         });
+        findViewById(R.id.mSharedTransition).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, FirstAnimActivity.class));
+            }
+        });
     }
 }
