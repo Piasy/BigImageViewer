@@ -33,6 +33,7 @@ import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
 import com.github.piasy.biv.loader.glide.GlideImageLoader;
 import com.github.piasy.biv.view.BigImageView;
+import com.github.piasy.biv.view.GlideImageViewFactory;
 
 public class GlideLoaderActivity extends AppCompatActivity {
 
@@ -49,6 +50,7 @@ public class GlideLoaderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 BigImageView bigImageView = findViewById(R.id.mBigImage);
                 bigImageView.setProgressIndicator(new ProgressPieIndicator());
+                bigImageView.setImageViewFactory(new GlideImageViewFactory());
                 bigImageView.showImage(
                         Uri.parse("http://img1.imgtn.bdimg.com/it/u=1520386803,778399414&fm=21&gp=0.jpg"),
                         Uri.parse("https://youimg1.c-ctrip.com/target/tg/773/732/734/7ca19416b8cd423f8f6ef2d08366b7dc.jpg")

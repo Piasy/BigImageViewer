@@ -38,7 +38,8 @@ import pl.droidsonroids.gif.GifImageView;
  */
 public class GlideImageViewFactory extends ImageViewFactory {
     @Override
-    protected final View createAnimatedImageView(final Context context, final int imageType, final int initScaleType) {
+    protected final View createAnimatedImageView(final Context context, final int imageType,
+            final int initScaleType) {
         switch (imageType) {
             case ImageInfoExtractor.TYPE_GIF: {
                 final GifImageView gifImageView = new GifImageView(context);
@@ -56,16 +57,22 @@ public class GlideImageViewFactory extends ImageViewFactory {
     }
 
     @Override
-    public final void loadAnimatedContent(final View view, final int imageType, final File imageFile) {
+    public final void loadAnimatedContent(final View view, final int imageType,
+            final File imageFile) {
         switch (imageType) {
             case ImageInfoExtractor.TYPE_GIF: {
-                ((GifImageView) view).setImageURI(Uri.parse("file://" + imageFile.getAbsolutePath()));
+                if (view instanceof GifImageView) {
+                    ((GifImageView) view).setImageURI(
+                            Uri.parse("file://" + imageFile.getAbsolutePath()));
+                }
                 break;
             }
             case ImageInfoExtractor.TYPE_ANIMATED_WEBP: {
-                Glide.with(view.getContext())
-                        .load(imageFile)
-                        .into((ImageView) view);
+                if (view instanceof ImageView) {
+                    Glide.with(view.getContext())
+                            .load(imageFile)
+                            .into((ImageView) view);
+                }
                 break;
             }
 
@@ -75,11 +82,11 @@ public class GlideImageViewFactory extends ImageViewFactory {
     }
 
     @Override
-    public final View createThumbnailView(final Context context, final ImageView.ScaleType scaleType) {
-        final ImageView thumbnailView = new ImageView(context);
-        if (scaleType != null) {
-            thumbnailView.setScaleType(scaleType);
+    public void loadThumbnailContent(final View view, final Uri thumbnail) {
+        if (view instanceof ImageView) {
+            Glide.with(view.getContext())
+                    .load(thumbnail)
+                    .into((ImageView) view);
         }
-        return thumbnailView;
     }
 }

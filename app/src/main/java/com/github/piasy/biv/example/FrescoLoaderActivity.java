@@ -32,6 +32,7 @@ import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
 import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
 import com.github.piasy.biv.view.BigImageView;
+import com.github.piasy.biv.view.FrescoImageViewFactory;
 
 public class FrescoLoaderActivity extends AppCompatActivity {
 
@@ -48,9 +49,10 @@ public class FrescoLoaderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 BigImageView bigImageView = findViewById(R.id.mBigImage);
                 bigImageView.setProgressIndicator(new ProgressPieIndicator());
+                bigImageView.setImageViewFactory(new FrescoImageViewFactory());
                 bigImageView.showImage(
-                        Uri.parse("https://images.unsplash.com/photo-1497240299146-17ff4089466a?dpr=2&auto=compress,format&fit=crop&w=376"),
-                        Uri.parse("https://images.unsplash.com/photo-1497240299146-17ff4089466a")
+                        Uri.parse("http://img1.imgtn.bdimg.com/it/u=1520386803,778399414&fm=21&gp=0.jpg"),
+                        Uri.parse("https://youimg1.c-ctrip.com/target/tg/773/732/734/7ca19416b8cd423f8f6ef2d08366b7dc.jpg")
                 );
             }
         });

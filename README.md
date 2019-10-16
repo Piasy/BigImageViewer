@@ -34,22 +34,22 @@ allprojects {
     }
 }
 
-implementation 'com.github.piasy:BigImageViewer:1.5.7'
+implementation 'com.github.piasy:BigImageViewer:1.6.0'
 
 // load with fresco
-implementation 'com.github.piasy:FrescoImageLoader:1.5.7'
+implementation 'com.github.piasy:FrescoImageLoader:1.6.0'
 
 // load with glide
-implementation 'com.github.piasy:GlideImageLoader:1.5.7'
+implementation 'com.github.piasy:GlideImageLoader:1.6.0'
 
 // progress pie indicator
-implementation 'com.github.piasy:ProgressPieIndicator:1.5.7'
+implementation 'com.github.piasy:ProgressPieIndicator:1.6.0'
 
 // support thumbnail, gif and webp with Fresco
-implementation 'com.github.piasy:FrescoImageViewFactory:1.5.7'
+implementation 'com.github.piasy:FrescoImageViewFactory:1.6.0'
 
 // support thumbnail and gif with Glide
-implementation 'com.github.piasy:GlideImageViewFactory:1.5.7'
+implementation 'com.github.piasy:GlideImageViewFactory:1.6.0'
 ```
 
 ### Initialize
@@ -83,7 +83,7 @@ BigImageViewer.initialize(GlideCustomImageLoader.with(appContext, CustomComponen
 ```
 
 You can disable display optimization using `optimizeDisplay` attribute, or
-`BigImageView.setOptimizeDisplay(false)`. Which will disable animation for long
+`BigImageView.setOptimizeDisplay(false)`, which will disable animation for long
 image, and the switch between thumbnail and origin image.
 
 ### Show the image
@@ -91,12 +91,7 @@ image, and the switch between thumbnail and origin image.
 ``` java
 BigImageView bigImageView = (BigImageView) findViewById(R.id.mBigImage);
 bigImageView.showImage(Uri.parse(url));
-
-// Or show a thumbnail before the big image is loaded
-bigImageView.showImage(Uri.parse(thumbnail), Uri.parse(url));
 ```
-
-Note: since 1.5.0, to show thumbnail image, you need call `setImageViewFactory`, see details below.
 
 ## Usage
 
@@ -117,11 +112,29 @@ biv.setImageViewFactory(new FrescoImageViewFactory());
 biv.setImageViewFactory(new GlideImageViewFactory());
 ```
 
-To clean up code, we move thumbnail view creation from `ImageLoader` into `ImageViewFactory`,
-so to display thumbnail, you also need set an `ImageViewFactory`.
-
 Node: if the image is not gif or animated webp, then it will be displayed by SSIV,
 the image type is not determined by its file extension, but by its file header magic code.
+
+### Thumbnail support
+
+To show a thumbnail before the big image is loaded, you can call below version of `showImage`:
+
+``` java
+bigImageView.showImage(Uri.parse(thumbnail), Uri.parse(url));
+```
+
+Note: make sure that you have already called `setImageViewFactory`.
+
+### Shared element transition support (experimental)
+
+Since 1.6.0, BIV has experimental support for shared element transition,
+but it has following known issues:
+
++ The shared image may flicker during enter transition, or become white after return transition,
+when using Fresco, see [Fresco issue #1445](https://github.com/facebook/fresco/issues/1445);
++ The shared image may flicker after return transition, especially after you zoomed SSIV;
+
+You can play with the demo app to evaluate the shared element transition support.
 
 ### Download progress indicator
 

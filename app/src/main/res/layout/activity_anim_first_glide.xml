@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FirstAnimGlideActivity">
+
+    <TextView
+        android:id="@+id/firstHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:text="@string/header_first_activity"
+        />
+
+    <RadioGroup
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/use_glide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/radio_use_glide"
+            android:checked="true"
+            />
+
+        <RadioButton
+            android:id="@+id/use_fresco"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/radio_use_fresco"
+            />
+
+    </RadioGroup>
+
+    <CheckBox
+        android:id="@+id/check_use_view_factory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/check_use_view_factory"
+        />
+
+    <ImageView
+        android:id="@+id/thumbView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:transitionName="@string/transition_name"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+        android:contentDescription="@string/content_desc_thumb" />
+
+</LinearLayout>

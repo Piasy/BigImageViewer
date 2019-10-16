@@ -1,5 +1,7 @@
 # Change log
 
++ v1.6.0
+  - Experimental support for shared element transition;
 + v1.5.7
   - Add `ImageLoader.cancelAll()` to allow APP cancel all flying requests, avoiding memory leak;
 + v1.5.6

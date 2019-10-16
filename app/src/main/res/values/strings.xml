@@ -9,7 +9,8 @@
     <string name="main_custom_ssiv">Custom SSIV</string>
     <string name="main_recycler">Recycler</string>
     <string name="main_types">image types</string>
-    <string name="main_shared_trans">shared elem. transition</string>
+    <string name="main_shared_trans_glide">shared elem. transition glide</string>
+    <string name="main_shared_trans_fresco">shared elem. transition fresco</string>
 
     <string name="bttn_load">Load</string>
 

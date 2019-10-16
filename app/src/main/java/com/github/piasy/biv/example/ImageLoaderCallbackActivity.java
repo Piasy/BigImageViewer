@@ -37,6 +37,7 @@ import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 
+import com.github.piasy.biv.view.FrescoImageViewFactory;
 import java.io.File;
 
 public class ImageLoaderCallbackActivity extends AppCompatActivity {
@@ -68,6 +69,7 @@ public class ImageLoaderCallbackActivity extends AppCompatActivity {
             public void onClick(View v) {
                 BigImageView bigImageView = findViewById(R.id.mBigImage);
                 bigImageView.setProgressIndicator(new ProgressPieIndicator());
+                bigImageView.setImageViewFactory(new FrescoImageViewFactory());
                 bigImageView.setImageLoaderCallback(new ImageLoader.Callback() {
                     @Override
                     public void onCacheHit(int imageType, File image) {

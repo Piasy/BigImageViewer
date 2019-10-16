@@ -85,7 +85,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     };
 
     private final ImageLoader mImageLoader;
-    private final List<File> mTempImages;
+    // With FrescoImageLoader, we create a temp image file on cache miss to make it work,
+    // so we need delete this temp image file when we are detached from window.
+    // GlideImageLoader won't fire onCacheMiss, so don't worry about glide.
+    private final List<File> mTempImagesForFrescoCacheMiss;
     private final ImageLoader.Callback mInternalCallback;
 
     private ImageViewFactory mViewFactory;
@@ -97,7 +100,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private View mProgressIndicatorView;
     private ImageView mFailureImageView;
 
-    private boolean mDelayMainImage = false;
+    private boolean mDelayMainImageForTransition = false;
 
     private ImageSaveCallback mImageSaveCallback;
     private ImageShownCallback mImageShownCallback;
@@ -108,6 +111,14 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     private OnClickListener mOnClickListener;
     private OnLongClickListener mOnLongClickListener;
+    private ProgressIndicator mProgressIndicator;
+    private DisplayOptimizeListener mDisplayOptimizeListener;
+    private int mInitScaleType;
+    private ImageView.ScaleType mThumbnailScaleType;
+    private ImageView.ScaleType mFailureImageScaleType;
+    private boolean mOptimizeDisplay;
+    private boolean mTapToRetry;
+
     private final OnClickListener mFailureImageClickListener = new OnClickListener() {
         @Override
         public void onClick(final View v) {
@@ -120,14 +131,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             }
         }
     };
-
-    private ProgressIndicator mProgressIndicator;
-    private DisplayOptimizeListener mDisplayOptimizeListener;
-    private int mInitScaleType;
-    private ImageView.ScaleType mThumbnailScaleType;
-    private ImageView.ScaleType mFailureImageScaleType;
-    private boolean mOptimizeDisplay;
-    private boolean mTapToRetry;
 
     public BigImageView(Context context) {
         this(context, null);
@@ -175,7 +178,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         mViewFactory = new ImageViewFactory();
 
-        mTempImages = new ArrayList<>();
+        mTempImagesForFrescoCacheMiss = new ArrayList<>();
     }
 
     public static ImageView.ScaleType scaleType(int value) {
@@ -337,10 +340,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         mImageLoader.cancel(hashCode());
 
-        for (int i = 0, size = mTempImages.size(); i < size; i++) {
-            mTempImages.get(i).delete();
+        for (int i = 0, size = mTempImagesForFrescoCacheMiss.size(); i < size; i++) {
+            mTempImagesForFrescoCacheMiss.get(i).delete();
         }
-        mTempImages.clear();
+        mTempImagesForFrescoCacheMiss.clear();
     }
 
     public void showImage(Uri uri) {
@@ -351,14 +354,15 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         showImage(thumbnail, uri, false);
     }
 
-    public void showImage(final Uri thumbnail, final Uri uri, final boolean delayMainImage) {
+    public void showImage(final Uri thumbnail, final Uri uri,
+            final boolean delayMainImageForTransition) {
         mThumbnail = thumbnail;
         mUri = uri;
 
         clearThumbnailAndProgressIndicator();
 
-        mDelayMainImage = delayMainImage;
-        if (mDelayMainImage) {
+        mDelayMainImageForTransition = delayMainImageForTransition;
+        if (mDelayMainImageForTransition) {
             BigImageViewer.prefetch(uri);
             mImageLoader.loadImage(hashCode(), thumbnail, mInternalCallback);
         } else {
@@ -371,8 +375,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     public void loadMainImageNow() {
-
-        mDelayMainImage = false;
+        mDelayMainImageForTransition = false;
         mImageLoader.loadImage(hashCode(), mUri, mInternalCallback);
     }
 
@@ -387,7 +390,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     @Override
     public void onCacheHit(final int imageType, final File image) {
         mCurrentImageFile = image;
-        doShowImage(imageType, image, mDelayMainImage);
+        doShowImage(imageType, image, mDelayMainImageForTransition);
 
         if (mUserCallback != null) {
             mUserCallback.onCacheHit(imageType, image);
@@ -397,8 +400,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     @Override
     public void onCacheMiss(final int imageType, final File image) {
         mCurrentImageFile = image;
-        mTempImages.add(image);
-        doShowImage(imageType, image, mDelayMainImage);
+        mTempImagesForFrescoCacheMiss.add(image);
+        doShowImage(imageType, image, mDelayMainImageForTransition);
 
         if (mUserCallback != null) {
             mUserCallback.onCacheMiss(imageType, image);
@@ -409,7 +412,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public void onStart() {
         // why show thumbnail in onStart? because we may not need download it from internet
         if (mThumbnail != Uri.EMPTY) {
-            mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType);
+            mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType,
+                    true);
             mViewFactory.loadThumbnailContent(mThumbnailView, mThumbnail);
             if (mThumbnailView != null) {
                 addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -525,42 +529,30 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     }
 
     @UiThread
-    private void doShowImage(final int imageType, final File image, final boolean useThumbnailView) {
-
+    private void doShowImage(final int imageType, final File image,
+            final boolean useThumbnailView) {
         if (useThumbnailView) {
-
-            if (mThumbnailView == null) {
-                mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType);
-            }
-
-            if (mThumbnailView.getVisibility() != View.VISIBLE) {
-                mThumbnailView.setVisibility(View.VISIBLE);
-            }
-
             if (mThumbnailView != null) {
+                removeView(mThumbnailView);
+            }
 
-                if (!(mThumbnailView.getParent() == this)) {
-                    addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT);
-                }
+            mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType,
+                    false);
+            if (mThumbnailView != null) {
+                addView(mThumbnailView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
                 mThumbnailView.setOnClickListener(mOnClickListener);
                 mThumbnailView.setOnLongClickListener(mOnLongClickListener);
 
                 if (mThumbnailView instanceof ImageView) {
-                    ((ImageView) mThumbnailView).setAdjustViewBounds(true);
-                    ((ImageView) mThumbnailView).setScaleType(ImageView.ScaleType.FIT_START);
-
-                    mViewFactory.loadThumbnailContent(mThumbnailView, Uri.fromFile(image));
+                    mViewFactory.loadThumbnailContent(mThumbnailView, image);
 
                     if (mImageShownCallback != null) {
                         mImageShownCallback.onThumbnailShown();
                     }
                 }
             }
-
         } else {
-
             if (mMainView != null) {
                 removeView(mMainView);
             }
@@ -568,12 +560,11 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             mMainView = mViewFactory.createMainView(getContext(), imageType, mInitScaleType);
             if (mMainView == null) {
                 onFail(new RuntimeException("Image type not supported: "
-                        + ImageInfoExtractor.typeName(imageType)));
+                                            + ImageInfoExtractor.typeName(imageType)));
                 return;
             }
 
-            addView(mMainView, ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT);
+            addView(mMainView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
             mMainView.setOnClickListener(mOnClickListener);
             mMainView.setOnLongClickListener(mOnLongClickListener);
@@ -585,23 +576,16 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
                 setOptimizeDisplay(mOptimizeDisplay);
                 setInitScaleType(mInitScaleType);
+            }
 
-                if (mViewFactory.isAnimatedContent(imageType)) {
-                    mViewFactory.loadAnimatedContent(mSSIV, imageType, image);
-                } else {
-                    mViewFactory.loadSillContent(mSSIV, Uri.fromFile(image));
-                }
-
-                if (mImageShownCallback != null) {
-                    mImageShownCallback.onMainImageShown();
-                }
+            if (mViewFactory.isAnimatedContent(imageType)) {
+                mViewFactory.loadAnimatedContent(mMainView, imageType, image);
             } else {
+                mViewFactory.loadSillContent(mMainView, Uri.fromFile(image));
+            }
 
-                if (mViewFactory.isAnimatedContent(imageType)) {
-                    mViewFactory.loadAnimatedContent(mMainView, imageType, image);
-                } else {
-                    mViewFactory.loadSillContent(mMainView, Uri.fromFile(image));
-                }
+            if (mImageShownCallback != null) {
+                mImageShownCallback.onMainImageShown();
             }
         }
 

@@ -41,6 +41,7 @@
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
         <activity android:name=".FrescoLoaderActivity"/>
@@ -51,7 +52,8 @@
         <activity android:name=".CustomSSIVActivity"/>
         <activity android:name=".RecyclerViewActivity"/>
         <activity android:name=".ImageTypesActivity"/>
-        <activity android:name=".FirstAnimActivity" android:theme="@style/TransitionTheme"/>
+        <activity android:name=".FirstAnimGlideActivity" android:theme="@style/TransitionTheme"/>
+        <activity android:name=".FirstAnimFrescoActivity" android:theme="@style/TransitionTheme"/>
         <activity android:name=".SecondAnimActivity" android:theme="@style/TransitionTheme"/>
     </application>
 
