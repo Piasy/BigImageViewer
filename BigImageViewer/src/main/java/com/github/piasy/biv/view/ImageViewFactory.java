@@ -80,8 +80,9 @@ public class ImageViewFactory {
     }
 
     public View createThumbnailView(final Context context, final ImageView.ScaleType scaleType,
-            final boolean willLoadFromNetwork) {
+            final boolean adjustViewBounds, final boolean willLoadFromNetwork) {
         final ImageView thumbnailView = new ImageView(context);
+        thumbnailView.setAdjustViewBounds(adjustViewBounds);
         if (scaleType != null) {
             thumbnailView.setScaleType(scaleType);
         }

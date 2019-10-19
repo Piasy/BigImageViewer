@@ -114,6 +114,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private ProgressIndicator mProgressIndicator;
     private DisplayOptimizeListener mDisplayOptimizeListener;
     private int mInitScaleType;
+    private boolean mThumbnailAdjustViewBounds;
     private ImageView.ScaleType mThumbnailScaleType;
     private ImageView.ScaleType mFailureImageScaleType;
     private boolean mOptimizeDisplay;
@@ -166,6 +167,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         mOptimizeDisplay = array.getBoolean(R.styleable.BigImageView_optimizeDisplay, true);
         mTapToRetry = array.getBoolean(R.styleable.BigImageView_tapToRetry, true);
+
+        mThumbnailAdjustViewBounds = array.getBoolean(R.styleable.BigImageView_thumbnailAdjustViewBounds, false);
 
         array.recycle();
 
@@ -413,7 +416,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         // why show thumbnail in onStart? because we may not need download it from internet
         if (mThumbnail != Uri.EMPTY) {
             mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType,
-                    true);
+                    mThumbnailAdjustViewBounds, true);
             mViewFactory.loadThumbnailContent(mThumbnailView, mThumbnail);
             if (mThumbnailView != null) {
                 addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -537,7 +540,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             }
 
             mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType,
-                    false);
+                    mThumbnailAdjustViewBounds,false);
             if (mThumbnailView != null) {
                 addView(mThumbnailView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
@@ -545,6 +548,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 mThumbnailView.setOnLongClickListener(mOnLongClickListener);
 
                 if (mThumbnailView instanceof ImageView) {
+                    ((ImageView) mThumbnailView).setAdjustViewBounds(true);
+                    ((ImageView) mThumbnailView).setScaleType(ImageView.ScaleType.FIT_START);
+
                     mViewFactory.loadThumbnailContent(mThumbnailView, image);
 
                     if (mImageShownCallback != null) {

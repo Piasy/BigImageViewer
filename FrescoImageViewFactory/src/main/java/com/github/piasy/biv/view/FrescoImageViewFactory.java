@@ -59,17 +59,18 @@ public class FrescoImageViewFactory extends ImageViewFactory {
     }
 
     @Override
-    public final View createThumbnailView(final Context context,
-            final ImageView.ScaleType scaleType, final boolean willLoadFromNetwork) {
+    public final View createThumbnailView(final Context context, final ImageView.ScaleType scaleType,
+                                          final boolean adjustViewBounds, final boolean willLoadFromNetwork) {
         if (willLoadFromNetwork) {
             final SimpleDraweeView thumbnailView = new SimpleDraweeView(context);
             if (scaleType != null) {
                 thumbnailView.getHierarchy().setActualImageScaleType(scaleType(scaleType));
+                thumbnailView.setAdjustViewBounds(adjustViewBounds);
             }
 
             return thumbnailView;
         } else {
-            return super.createThumbnailView(context, scaleType, false);
+            return super.createThumbnailView(context, scaleType, adjustViewBounds, false);
         }
     }
 

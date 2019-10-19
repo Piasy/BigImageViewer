@@ -53,7 +53,7 @@ class SecondAnimActivity : AppCompatActivity() {
 
             if (Build.VERSION.SDK_INT >= 16) {
 
-                if (Build.VERSION.SDK_INT >= 21) {
+                if (useFresco && Build.VERSION.SDK_INT >= 21) {
                     activity.setExitSharedElementCallback(object : SharedElementCallback() {
 
                         override fun onSharedElementEnd(
@@ -89,7 +89,9 @@ class SecondAnimActivity : AppCompatActivity() {
     private val biv by lazy { findViewById<BigImageView>(R.id.sourceView) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Fresco.initialize(this)
+        if (useFresco) {
+            Fresco.initialize(this)
+        }
 
         super.onCreate(savedInstanceState)
 
