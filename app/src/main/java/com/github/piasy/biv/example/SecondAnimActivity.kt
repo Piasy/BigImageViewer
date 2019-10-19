@@ -107,22 +107,24 @@ class SecondAnimActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= 21) {
 
-            setEnterSharedElementCallback(object : SharedElementCallback() {
+            if (useFresco) {
+                setEnterSharedElementCallback(object : SharedElementCallback() {
 
-                override fun onSharedElementEnd(
-                        names: MutableList<String>?,
-                        elements: MutableList<View>?,
-                        snapshots: MutableList<View>?
-                ) {
-                    super.onSharedElementEnd(names, elements, snapshots)
+                    override fun onSharedElementEnd(
+                            names: MutableList<String>?,
+                            elements: MutableList<View>?,
+                            snapshots: MutableList<View>?
+                    ) {
+                        super.onSharedElementEnd(names, elements, snapshots)
 
-                    elements?.forEach {
-                        if (it is SimpleDraweeView) {
-                            it.post { it.setVisibility(View.VISIBLE) }
+                        elements?.forEach {
+                            if (it is SimpleDraweeView) {
+                                it.post { it.setVisibility(View.VISIBLE) }
+                            }
                         }
                     }
-                }
-            })
+                })
+            }
 
             window.sharedElementEnterTransition.addListener(object : Transition.TransitionListener {
 

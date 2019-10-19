@@ -27,6 +27,7 @@
         android:transitionName="@string/transition_name"
         android:contentDescription="@string/content_desc_source"
         app:thumbnailScaleType="fitStart"
+        app:thumbnailAdjustViewBounds="true"
         />
 
 </LinearLayout>
