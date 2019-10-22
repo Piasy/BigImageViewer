@@ -19,6 +19,40 @@
         android:text="@string/header_second_activity"
         />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/min_scale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:text="@string/bttn_min_scale"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/max_scale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:text="@string/bttn_max_scale"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/half_scale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:text="@string/bttn_half_scale"
+            />
+
+    </LinearLayout>
+
     <com.github.piasy.biv.view.BigImageView
         android:id="@+id/sourceView"
         android:layout_width="match_parent"

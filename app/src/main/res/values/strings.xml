@@ -33,6 +33,10 @@
     <string name="scan_qr_code">recognize qr code</string>
     <string name="save_image">save to gallery</string>
 
+    <string name="bttn_min_scale">Min Scale</string>
+    <string name="bttn_max_scale">Max Scale</string>
+    <string name="bttn_half_scale">Half Scale</string>
+
     <string name="scale_center_crop">centerCrop</string>
     <string name="scale_center_inside">centerInside</string>
     <string name="scale_custom">custom</string>

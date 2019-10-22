@@ -55,6 +55,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.EASE_OUT_QUAD;
+
 /**
  * Created by Piasy{github.com/Piasy} on 06/11/2016.
  * <p>
@@ -388,6 +390,81 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
     public SubsamplingScaleImageView getSSIV() {
         return mSSIV;
+    }
+
+    public boolean isZoomEnabled() {
+        if (mSSIV != null) {
+            return mSSIV.isZoomEnabled();
+        } else {
+            return false;
+        }
+    }
+
+    public float getCurrentScale() {
+        if(mSSIV != null) {
+            return mSSIV.getScale();
+        } else {
+            return 0;
+        }
+    }
+
+    public void animateMinScale(final int duration) {
+        animateMinScale(duration, null);
+    }
+
+    public void animateMinScale(final int duration,
+                                final SubsamplingScaleImageView.OnAnimationEventListener listener) {
+
+        if (mSSIV != null && mSSIV.isReady()) {
+            animateToScale(mSSIV.getMinScale(), duration, listener);
+        }
+    }
+
+    public void animateMaxScale(final int duration) {
+        animateMaxScale(duration, null);
+    }
+
+    public void animateMaxScale(final int duration,
+                                final SubsamplingScaleImageView.OnAnimationEventListener listener) {
+
+        if (mSSIV != null && mSSIV.isReady()) {
+            animateToScale(mSSIV.getMaxScale(), duration, listener);
+        }
+    }
+
+    public void animateToScale(final float scale, final int duration) {
+        animateToScale(scale, duration, null);
+    }
+
+    public void animateToScale(final float scale, final int duration,
+                               final SubsamplingScaleImageView.OnAnimationEventListener listener) {
+
+        if (mSSIV != null && mSSIV.isReady()) {
+            final SubsamplingScaleImageView.AnimationBuilder builder = mSSIV.animateScale(scale);
+            if (builder != null) {
+                builder.withDuration(duration)
+                        .withEasing(EASE_OUT_QUAD)
+                        .withInterruptible(false)
+                        .withOnAnimationEventListener(listener)
+                        .start();
+            }
+        }
+    }
+
+    public float getMinScale() {
+        if (mSSIV != null) {
+            return mSSIV.getMinScale();
+        } else {
+            return 0;
+        }
+    }
+
+    public float getMaxScale() {
+        if (mSSIV != null) {
+            return mSSIV.getMaxScale();
+        } else {
+            return 0;
+        }
     }
 
     @Override
