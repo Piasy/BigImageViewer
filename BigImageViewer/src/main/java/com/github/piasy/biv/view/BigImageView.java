@@ -125,8 +125,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             // Retry loading when failure image is clicked
             if (mTapToRetry) {
                 showImage(mThumbnail, mUri);
-            }
-            if (mOnClickListener != null) {
+            } else if (mOnClickListener != null) {
                 mOnClickListener.onClick(v);
             }
         }

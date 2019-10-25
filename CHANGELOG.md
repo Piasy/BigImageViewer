@@ -1,5 +1,7 @@
 # Change log
 
++ v1.6.1
+  - Update click handling, fix #180;
 + v1.6.0
   - Experimental support for shared element transition;
 + v1.5.7

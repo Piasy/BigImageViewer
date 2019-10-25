@@ -77,7 +77,7 @@ ext {
             'Image View, Fresco, Glide, and Picasso.'
     artifactLabels = ['big', 'image', 'viewer', 'Fresco', 'Glide', 'Picasso']
     releaseVersionCode = 35
-    releaseVersionName = '1.6.0'
+    releaseVersionName = '1.6.1'
 
     androidCompileSdkVersion = 29
     androidBuildToolsVersion = '29.0.2'
