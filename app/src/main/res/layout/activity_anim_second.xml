@@ -56,12 +56,11 @@
     <com.github.piasy.biv.view.BigImageView
         android:id="@+id/sourceView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="16dp"
         android:transitionName="@string/transition_name"
         android:contentDescription="@string/content_desc_source"
-        app:thumbnailScaleType="fitStart"
-        app:thumbnailAdjustViewBounds="true"
+        app:thumbnailScaleType="fitCenter"
         />
 
 </LinearLayout>

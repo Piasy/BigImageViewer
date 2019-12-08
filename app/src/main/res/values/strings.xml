@@ -18,6 +18,7 @@
     <string name="radio_use_fresco">Use Fresco</string>
 
     <string name="check_use_view_factory">Use view factory</string>
+    <string name="check_use_tall_image">Use tall image</string>
 
     <string name="header_image_loader">Image Loader:</string>
     <string name="header_image_type">Image Type:</string>

@@ -67,7 +67,7 @@ class FirstAnimFrescoActivity : AppCompatActivity() {
 
         thumb.setOnClickListener {
             SecondAnimActivity.start(this, thumb, THUMB_URL, SOURCE_URL,
-                false, true, useViewFactory.isChecked)
+                useGlide = false, useFresco = true, useViewFactory = useViewFactory.isChecked)
         }
 
         thumb.setLegacyVisibilityHandlingEnabled(true)
