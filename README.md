@@ -335,6 +335,25 @@ it should clear the loaded image or reload the image,
 so you need manually notify it in some way,
 see [issue 107](https://github.com/Piasy/BigImageViewer/issues/107),
 and [issue 177](https://github.com/Piasy/BigImageViewer/issues/177).
++ Crash on Android 4.x device? You could force gradle to use a specific version of OkHttp (some version earlier than 3.13.0), by adding this block to your module's build.gradle, please note that it should be added at the top level, not inside any other block:
+
+    ```gradle
+
+    configurations {
+      all {
+        resolutionStrategy {
+          eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'com.squareup.okhttp3' &&
+                details.requested.name ==
+                'okhttp') {
+              // OkHttp drops support before 5.0 since 3.13.0
+              details.useVersion '3.12.6'
+            }
+          }
+        }
+      }
+    }
+    ```
 
 ## Why another big image viewer?
 
