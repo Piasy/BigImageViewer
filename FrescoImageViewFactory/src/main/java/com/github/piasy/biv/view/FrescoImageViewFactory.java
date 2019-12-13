@@ -84,6 +84,16 @@ public class FrescoImageViewFactory extends ImageViewFactory {
         }
     }
 
+    @Override
+    public void loadThumbnailContent(View view, File thumbnail) {
+        if (view instanceof SimpleDraweeView) {
+            final DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setUri(Uri.parse("file://" + thumbnail.getAbsolutePath()))
+                    .build();
+            ((SimpleDraweeView) view).setController(controller);
+        }
+    }
+
     private ScalingUtils.ScaleType scaleType(int value) {
         switch (value) {
             case BigImageView.INIT_SCALE_TYPE_CENTER:
