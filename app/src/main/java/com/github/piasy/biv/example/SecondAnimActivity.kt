@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.net.toUri
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.view.SimpleDraweeView
 import com.github.piasy.biv.BigImageViewer
@@ -23,6 +24,7 @@ import com.github.piasy.biv.view.BigImageView
 import com.github.piasy.biv.view.FrescoImageViewFactory
 import com.github.piasy.biv.view.GlideImageViewFactory
 import com.github.piasy.biv.view.ImageShownCallback
+import com.google.android.material.button.MaterialButton
 
 class SecondAnimActivity : AppCompatActivity() {
 
@@ -34,6 +36,9 @@ class SecondAnimActivity : AppCompatActivity() {
         private const val FLAG_USEGLIDE = "intent_param_flag_use_glide"
         private const val FLAG_USEFRESCO = "intent_param_flag_use_fresco"
         private const val FLAG_USEVIEWFACTORY = "intent_param_flag_use_view_factory"
+
+        private const val ANIM_DURATION = 500
+        private const val ANIM_QUICK_DURATION = 200
 
         fun start(activity: Activity, imageView: ImageView,
                   thumbUrl: String, sourceUrl: String,
@@ -53,7 +58,7 @@ class SecondAnimActivity : AppCompatActivity() {
 
             if (Build.VERSION.SDK_INT >= 16) {
 
-                if (Build.VERSION.SDK_INT >= 21) {
+                if (useFresco && Build.VERSION.SDK_INT >= 21) {
                     activity.setExitSharedElementCallback(object : SharedElementCallback() {
 
                         override fun onSharedElementEnd(
@@ -88,8 +93,14 @@ class SecondAnimActivity : AppCompatActivity() {
 
     private val biv by lazy { findViewById<BigImageView>(R.id.sourceView) }
 
+    private val minScale by lazy { findViewById<MaterialButton>(R.id.min_scale) }
+    private val maxScale by lazy { findViewById<MaterialButton>(R.id.max_scale) }
+    private val halfScale by lazy { findViewById<MaterialButton>(R.id.half_scale) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        Fresco.initialize(this)
+        if (useFresco) {
+            Fresco.initialize(this)
+        }
 
         super.onCreate(savedInstanceState)
 
@@ -105,22 +116,24 @@ class SecondAnimActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= 21) {
 
-            setEnterSharedElementCallback(object : SharedElementCallback() {
+            if (useFresco) {
+                setEnterSharedElementCallback(object : SharedElementCallback() {
 
-                override fun onSharedElementEnd(
-                        names: MutableList<String>?,
-                        elements: MutableList<View>?,
-                        snapshots: MutableList<View>?
-                ) {
-                    super.onSharedElementEnd(names, elements, snapshots)
+                    override fun onSharedElementEnd(
+                            names: MutableList<String>?,
+                            elements: MutableList<View>?,
+                            snapshots: MutableList<View>?
+                    ) {
+                        super.onSharedElementEnd(names, elements, snapshots)
 
-                    elements?.forEach {
-                        if (it is SimpleDraweeView) {
-                            it.post { it.setVisibility(View.VISIBLE) }
+                        elements?.forEach {
+                            if (it is SimpleDraweeView) {
+                                it.post { it.setVisibility(View.VISIBLE) }
+                            }
                         }
                     }
-                }
-            })
+                })
+            }
 
             window.sharedElementEnterTransition.addListener(object : Transition.TransitionListener {
 
@@ -142,6 +155,25 @@ class SecondAnimActivity : AppCompatActivity() {
 
         if (useFresco && useViewFactory) {
             biv.setImageViewFactory(FrescoImageViewFactory())
+        }
+
+        minScale.setOnClickListener {
+            if (biv.isZoomEnabled) {
+                biv.animateMinScale(ANIM_DURATION)
+            }
+        }
+
+        maxScale.setOnClickListener {
+            if (biv.isZoomEnabled) {
+                biv.animateMaxScale(ANIM_DURATION)
+            }
+        }
+
+        halfScale.setOnClickListener {
+            if (biv.isZoomEnabled) {
+                val halfScale = ((biv.maxScale - biv.minScale) / 2) + biv.minScale
+                biv.animateToScale(halfScale, ANIM_DURATION)
+            }
         }
 
         biv.setImageShownCallback(object : ImageShownCallback {
@@ -168,6 +200,41 @@ class SecondAnimActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        setResultAndFinish()
+    }
+
+    override fun onNavigateUp(): Boolean {
+        setResultAndFinish()
+        return true
+    }
+
+    private fun setResultAndFinish() {
+        if (Build.VERSION.SDK_INT >= 21) {
+
+            if (biv.currentScale == biv.minScale) {
+
+                finishAfterTransition()
+            } else {
+
+                biv.animateMinScale(ANIM_QUICK_DURATION, object : SubsamplingScaleImageView.OnAnimationEventListener {
+
+                    override fun onComplete() {
+                        finishAfterTransition()
+                    }
+
+                    override fun onInterruptedByUser() {
+                        finishAfterTransition()
+                    }
+
+                    override fun onInterruptedByNewAnim() {
+                        finishAfterTransition()
+                    }
+                })
+            }
+        }
     }
 
     private fun showToast(text: String) {

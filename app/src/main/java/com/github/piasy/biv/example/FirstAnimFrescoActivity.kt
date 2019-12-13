@@ -27,7 +27,6 @@ package com.github.piasy.biv.example
 import android.os.Bundle
 import android.view.View
 import android.widget.CheckBox
-import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.SharedElementCallback
@@ -64,16 +63,11 @@ class FirstAnimFrescoActivity : AppCompatActivity() {
             }
         })
 
-        val useGlide = findViewById<RadioButton>(R.id.use_glide)
-        val useFresco = findViewById<RadioButton>(R.id.use_fresco)
         val useViewFactory = findViewById<CheckBox>(R.id.check_use_view_factory)
 
         thumb.setOnClickListener {
-            SecondAnimActivity.start(
-                this, thumb,
-                THUMB_URL, SOURCE_URL,
-                useGlide.isChecked, useFresco.isChecked, useViewFactory.isChecked
-            )
+            SecondAnimActivity.start(this, thumb, THUMB_URL, SOURCE_URL,
+                useGlide = false, useFresco = true, useViewFactory = useViewFactory.isChecked)
         }
 
         thumb.setLegacyVisibilityHandlingEnabled(true)

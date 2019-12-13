@@ -55,6 +55,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView.EASE_OUT_QUAD;
+
 /**
  * Created by Piasy{github.com/Piasy} on 06/11/2016.
  * <p>
@@ -114,6 +116,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     private ProgressIndicator mProgressIndicator;
     private DisplayOptimizeListener mDisplayOptimizeListener;
     private int mInitScaleType;
+    private boolean mThumbnailAdjustViewBounds;
     private ImageView.ScaleType mThumbnailScaleType;
     private ImageView.ScaleType mFailureImageScaleType;
     private boolean mOptimizeDisplay;
@@ -165,6 +168,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
         mOptimizeDisplay = array.getBoolean(R.styleable.BigImageView_optimizeDisplay, true);
         mTapToRetry = array.getBoolean(R.styleable.BigImageView_tapToRetry, true);
+
+        mThumbnailAdjustViewBounds = array.getBoolean(R.styleable.BigImageView_thumbnailAdjustViewBounds, false);
 
         array.recycle();
 
@@ -386,6 +391,81 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         return mSSIV;
     }
 
+    public boolean isZoomEnabled() {
+        if (mSSIV != null) {
+            return mSSIV.isZoomEnabled();
+        } else {
+            return false;
+        }
+    }
+
+    public float getCurrentScale() {
+        if(mSSIV != null) {
+            return mSSIV.getScale();
+        } else {
+            return 0;
+        }
+    }
+
+    public void animateMinScale(final int duration) {
+        animateMinScale(duration, null);
+    }
+
+    public void animateMinScale(final int duration,
+                                final SubsamplingScaleImageView.OnAnimationEventListener listener) {
+
+        if (mSSIV != null && mSSIV.isReady()) {
+            animateToScale(mSSIV.getMinScale(), duration, listener);
+        }
+    }
+
+    public void animateMaxScale(final int duration) {
+        animateMaxScale(duration, null);
+    }
+
+    public void animateMaxScale(final int duration,
+                                final SubsamplingScaleImageView.OnAnimationEventListener listener) {
+
+        if (mSSIV != null && mSSIV.isReady()) {
+            animateToScale(mSSIV.getMaxScale(), duration, listener);
+        }
+    }
+
+    public void animateToScale(final float scale, final int duration) {
+        animateToScale(scale, duration, null);
+    }
+
+    public void animateToScale(final float scale, final int duration,
+                               final SubsamplingScaleImageView.OnAnimationEventListener listener) {
+
+        if (mSSIV != null && mSSIV.isReady()) {
+            final SubsamplingScaleImageView.AnimationBuilder builder = mSSIV.animateScale(scale);
+            if (builder != null) {
+                builder.withDuration(duration)
+                        .withEasing(EASE_OUT_QUAD)
+                        .withInterruptible(false)
+                        .withOnAnimationEventListener(listener)
+                        .start();
+            }
+        }
+    }
+
+    public float getMinScale() {
+        if (mSSIV != null) {
+            return mSSIV.getMinScale();
+        } else {
+            return 0;
+        }
+    }
+
+    public float getMaxScale() {
+        if (mSSIV != null) {
+            return mSSIV.getMaxScale();
+        } else {
+            return 0;
+        }
+    }
+
     @Override
     public void onCacheHit(final int imageType, final File image) {
         mCurrentImageFile = image;
@@ -412,7 +492,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         // why show thumbnail in onStart? because we may not need download it from internet
         if (mThumbnail != Uri.EMPTY) {
             mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType,
-                    true);
+                    mThumbnailAdjustViewBounds, true);
             mViewFactory.loadThumbnailContent(mThumbnailView, mThumbnail);
             if (mThumbnailView != null) {
                 addView(mThumbnailView, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -536,7 +616,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             }
 
             mThumbnailView = mViewFactory.createThumbnailView(getContext(), mThumbnailScaleType,
-                    false);
+                    mThumbnailAdjustViewBounds,false);
             if (mThumbnailView != null) {
                 addView(mThumbnailView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
@@ -544,6 +624,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 mThumbnailView.setOnLongClickListener(mOnLongClickListener);
 
                 if (mThumbnailView instanceof ImageView) {
+
                     mViewFactory.loadThumbnailContent(mThumbnailView, image);
 
                     if (mImageShownCallback != null) {

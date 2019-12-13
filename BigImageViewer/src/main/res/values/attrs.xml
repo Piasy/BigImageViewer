@@ -58,5 +58,6 @@
             <enum name="fitStart" value="5" />
             <enum name="fitXY" value="6" />
         </attr>
+        <attr name="thumbnailAdjustViewBounds" format="boolean"/>
     </declare-styleable>
 </resources>

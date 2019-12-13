@@ -18,46 +18,37 @@
         android:text="@string/header_first_activity"
         />
 
-    <RadioGroup
-        android:orientation="horizontal"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RadioButton
-            android:id="@+id/use_glide"
-            android:layout_width="wrap_content"
+        <CheckBox
+            android:id="@+id/check_use_view_factory"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_margin="8dp"
-            android:text="@string/radio_use_glide"
-            android:checked="true"
+            android:text="@string/check_use_view_factory"
             />
 
-        <RadioButton
-            android:id="@+id/use_fresco"
-            android:layout_width="wrap_content"
+        <CheckBox
+            android:id="@+id/check_use_tall_image"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_margin="8dp"
-            android:text="@string/radio_use_fresco"
+            android:text="@string/check_use_tall_image"
             />
 
-    </RadioGroup>
-
-    <CheckBox
-        android:id="@+id/check_use_view_factory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/check_use_view_factory"
-        />
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/thumbView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_margin="16dp"
         android:transitionName="@string/transition_name"
-        android:adjustViewBounds="true"
-        android:scaleType="fitStart"
+        android:scaleType="fitCenter"
         android:contentDescription="@string/content_desc_thumb" />
 
 </LinearLayout>

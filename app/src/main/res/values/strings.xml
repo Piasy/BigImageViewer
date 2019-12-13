@@ -18,6 +18,7 @@
     <string name="radio_use_fresco">Use Fresco</string>
 
     <string name="check_use_view_factory">Use view factory</string>
+    <string name="check_use_tall_image">Use tall image</string>
 
     <string name="header_image_loader">Image Loader:</string>
     <string name="header_image_type">Image Type:</string>
@@ -32,6 +33,10 @@
     <string name="long_click_actions">Actions:</string>
     <string name="scan_qr_code">recognize qr code</string>
     <string name="save_image">save to gallery</string>
+
+    <string name="bttn_min_scale">Min Scale</string>
+    <string name="bttn_max_scale">Max Scale</string>
+    <string name="bttn_half_scale">Half Scale</string>
 
     <string name="scale_center_crop">centerCrop</string>
     <string name="scale_center_inside">centerInside</string>
