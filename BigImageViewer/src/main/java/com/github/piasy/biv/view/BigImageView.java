@@ -25,10 +25,16 @@
 package com.github.piasy.biv.view;
 
 import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -52,6 +58,8 @@ import com.github.piasy.biv.utils.DisplayOptimizeListener;
 import com.github.piasy.biv.utils.ThreadedCallbacks;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -317,19 +325,57 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         }
 
         try {
-            String result = MediaStore.Images.Media.insertImage(getContext().getContentResolver(),
-                    mCurrentImageFile.getAbsolutePath(), mCurrentImageFile.getName(), "");
-            if (mImageSaveCallback != null) {
-                if (!TextUtils.isEmpty(result)) {
-                    mImageSaveCallback.onSuccess(result);
-                } else {
-                    mImageSaveCallback.onFail(new RuntimeException("saveImageIntoGallery fail"));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ContentResolver resolver = getContext().getContentResolver();
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, mCurrentImageFile.getName() + ".jpg");
+                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
+                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+                Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+
+                if (imageUri != null) {
+                    OutputStream outputStream = resolver.openOutputStream(imageUri);
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                    Bitmap bitmap = BitmapFactory.decodeFile(mCurrentImageFile.getAbsolutePath(), options);
+
+                    boolean saved = bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                    if (mImageSaveCallback != null) {
+                        if (saved) {
+                            mImageSaveCallback.onSuccess(imageUri.toString());
+                        } else {
+                            mImageSaveCallback.onFail(new RuntimeException("saveImageIntoGallery fail"));
+                        }
+                    }
+
+                    if (outputStream != null) {
+                        outputStream.flush();
+                        outputStream.close();
+                    }
+                }
+            } else {
+                String result =
+                        MediaStore.Images.Media.insertImage(
+                                getContext().getContentResolver(),
+                                mCurrentImageFile.getAbsolutePath(),
+                                mCurrentImageFile.getName(),
+                                ""
+                        );
+
+                if (mImageSaveCallback != null) {
+                    if (!TextUtils.isEmpty(result)) {
+                        mImageSaveCallback.onSuccess(result);
+                    } else {
+                        mImageSaveCallback.onFail(new RuntimeException("saveImageIntoGallery fail"));
+                    }
                 }
             }
         } catch (FileNotFoundException e) {
             if (mImageSaveCallback != null) {
                 mImageSaveCallback.onFail(e);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
