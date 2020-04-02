@@ -340,17 +340,18 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                     Bitmap bitmap = BitmapFactory.decodeFile(mCurrentImageFile.getAbsolutePath(), options);
 
                     boolean saved = bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+
+                    if (outputStream != null) {
+                        outputStream.flush();
+                        outputStream.close();
+                    }
+
                     if (mImageSaveCallback != null) {
                         if (saved) {
                             mImageSaveCallback.onSuccess(imageUri.toString());
                         } else {
                             mImageSaveCallback.onFail(new RuntimeException("saveImageIntoGallery fail"));
                         }
-                    }
-
-                    if (outputStream != null) {
-                        outputStream.flush();
-                        outputStream.close();
                     }
                 } else {
                     if (mImageSaveCallback != null) {
