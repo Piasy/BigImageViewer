@@ -34,22 +34,22 @@ allprojects {
     }
 }
 
-implementation 'com.github.piasy:BigImageViewer:1.6.2'
+implementation 'com.github.piasy:BigImageViewer:1.6.3'
 
 // load with fresco
-implementation 'com.github.piasy:FrescoImageLoader:1.6.2'
+implementation 'com.github.piasy:FrescoImageLoader:1.6.3'
 
 // load with glide
-implementation 'com.github.piasy:GlideImageLoader:1.6.2'
+implementation 'com.github.piasy:GlideImageLoader:1.6.3'
 
 // progress pie indicator
-implementation 'com.github.piasy:ProgressPieIndicator:1.6.2'
+implementation 'com.github.piasy:ProgressPieIndicator:1.6.3'
 
 // support thumbnail, gif and webp with Fresco
-implementation 'com.github.piasy:FrescoImageViewFactory:1.6.2'
+implementation 'com.github.piasy:FrescoImageViewFactory:1.6.3'
 
 // support thumbnail and gif with Glide
-implementation 'com.github.piasy:GlideImageViewFactory:1.6.2'
+implementation 'com.github.piasy:GlideImageViewFactory:1.6.3'
 ```
 
 ### Initialize

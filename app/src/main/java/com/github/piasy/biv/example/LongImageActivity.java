@@ -155,6 +155,7 @@ public class LongImageActivity extends AppCompatActivity {
         disposePermissionRequest();
         mPermissionRequest = new RxPermissions(this)
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .observeOn(Schedulers.io())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean granted) throws Exception {
@@ -184,6 +185,7 @@ public class LongImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 decodeQrCode();
+                dialog.dismiss();
             }
         });
 
@@ -191,6 +193,7 @@ public class LongImageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveImage();
+                dialog.dismiss();
             }
         });
 

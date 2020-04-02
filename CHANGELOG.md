@@ -1,5 +1,7 @@
 # Change log
 
++ v1.6.3
+  - Fix Android 10 issue for Scoped Storage, #193
 + v1.6.2
   - Update dependencies, fix #184
 + v1.6.1

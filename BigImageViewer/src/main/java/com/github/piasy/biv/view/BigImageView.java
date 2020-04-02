@@ -35,6 +35,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -98,6 +100,8 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     // GlideImageLoader won't fire onCacheMiss, so don't worry about glide.
     private final List<File> mTempImagesForFrescoCacheMiss;
     private final ImageLoader.Callback mInternalCallback;
+
+    private final Handler mUiHandler = new Handler(Looper.getMainLooper());
 
     private ImageViewFactory mViewFactory;
 
@@ -317,10 +321,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void saveImageIntoGallery() {
         if (mCurrentImageFile == null) {
-            if (mImageSaveCallback != null) {
-                mImageSaveCallback.onFail(new IllegalStateException("image not downloaded yet"));
-            }
-
+            fireSaveImageCallback(null, new IllegalStateException("image not downloaded yet"));
             return;
         }
 
@@ -346,17 +347,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                         outputStream.close();
                     }
 
-                    if (mImageSaveCallback != null) {
-                        if (saved) {
-                            mImageSaveCallback.onSuccess(imageUri.toString());
-                        } else {
-                            mImageSaveCallback.onFail(new RuntimeException("saveImageIntoGallery fail"));
-                        }
-                    }
+                    fireSaveImageCallback(saved ? imageUri.toString() : null,
+                        saved ? null : new RuntimeException("saveImageIntoGallery fail"));
                 } else {
-                    if (mImageSaveCallback != null) {
-                        mImageSaveCallback.onFail(new RuntimeException("saveImageIntoGallery fail"));
-                    }
+                    fireSaveImageCallback(null, new RuntimeException("saveImageIntoGallery fail"));
                 }
             } else {
                 String result =
@@ -367,20 +361,27 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                                 ""
                         );
 
-                if (mImageSaveCallback != null) {
-                    if (!TextUtils.isEmpty(result)) {
-                        mImageSaveCallback.onSuccess(result);
-                    } else {
-                        mImageSaveCallback.onFail(new RuntimeException("saveImageIntoGallery fail"));
-                    }
-                }
-            }
-        } catch (FileNotFoundException e) {
-            if (mImageSaveCallback != null) {
-                mImageSaveCallback.onFail(e);
+                boolean saved = !TextUtils.isEmpty(result);
+                fireSaveImageCallback(saved ? result : null,
+                    saved ? null : new RuntimeException("saveImageIntoGallery fail"));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            fireSaveImageCallback(null, e);
+        }
+    }
+
+    private void fireSaveImageCallback(final String uri, final Throwable error) {
+        final ImageSaveCallback imageSaveCallback = mImageSaveCallback;
+        if (imageSaveCallback != null) {
+            mUiHandler.post(new Runnable() {
+                @Override public void run() {
+                    if (error != null) {
+                        imageSaveCallback.onFail(error);
+                    } else {
+                        imageSaveCallback.onSuccess(uri);
+                    }
+                }
+            });
         }
     }
 
