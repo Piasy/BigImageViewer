@@ -336,11 +336,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
 
                 if (imageUri != null) {
                     OutputStream outputStream = resolver.openOutputStream(imageUri);
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                    Bitmap bitmap = BitmapFactory.decodeFile(mCurrentImageFile.getAbsolutePath(), options);
+                    Bitmap bitmap = BitmapFactory.decodeFile(mCurrentImageFile.getAbsolutePath());
 
-                    boolean saved = bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                    boolean saved = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
 
                     if (outputStream != null) {
                         outputStream.flush();
