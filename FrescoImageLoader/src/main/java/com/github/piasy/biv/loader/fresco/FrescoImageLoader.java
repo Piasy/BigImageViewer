@@ -44,7 +44,10 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.metadata.ImageInfoExtractor;
 import java.io.File;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Piasy{github.com/Piasy} on 08/11/2016.
@@ -55,8 +58,11 @@ public final class FrescoImageLoader implements ImageLoader {
     private final Context mAppContext;
     private final DefaultExecutorSupplier mExecutorSupplier;
 
-    private final ConcurrentHashMap<Integer, DataSource> mRequestSourceMap
-            = new ConcurrentHashMap<>();
+    private final Map<Integer, DataSource> mFlyingRequestSources = new HashMap<>(3);
+    // we create a temp image file on cache miss to make it work,
+    // so we need delete this temp image file when we are detached from window
+    // (BigImageView will call cancel).
+    private final Map<Integer, File> mCacheMissTempFiles = new HashMap<>(3);
 
     private FrescoImageLoader(Context appContext) {
         mAppContext = appContext;
@@ -80,7 +86,7 @@ public final class FrescoImageLoader implements ImageLoader {
 
     @SuppressLint("WrongThread")
     @Override
-    public void loadImage(int requestId, Uri uri, final Callback callback) {
+    public void loadImage(final int requestId, Uri uri, final Callback callback) {
         ImageRequest request = ImageRequest.fromUri(uri);
 
         final File localCache = getCacheFile(request);
@@ -107,6 +113,7 @@ public final class FrescoImageLoader implements ImageLoader {
 
                 @Override
                 protected void onSuccess(final File image) {
+                    rememberTempFile(requestId, image);
                     callback.onFinish();
                     callback.onCacheMiss(ImageInfoExtractor.getImageType(image), image);
                     callback.onSuccess(image);
@@ -119,8 +126,8 @@ public final class FrescoImageLoader implements ImageLoader {
                 }
             }, mExecutorSupplier.forBackgroundTasks());
 
-            closeSource(requestId);
-            saveSource(requestId, source);
+            cancel(requestId);
+            rememberSource(requestId, source);
         }
     }
 
@@ -132,25 +139,43 @@ public final class FrescoImageLoader implements ImageLoader {
     }
 
     @Override
-    public void cancel(int requestId) {
-        closeSource(requestId);
+    public synchronized void cancel(int requestId) {
+        closeSource(mFlyingRequestSources.remove(requestId));
+        deleteTempFile(mCacheMissTempFiles.remove(requestId));
     }
 
     @Override
-    public void cancelAll() {
-        for (Integer key : mRequestSourceMap.keySet()) {
-            cancel(key);
+    public synchronized void cancelAll() {
+        List<DataSource> sources = new ArrayList<>(mFlyingRequestSources.values());
+        mFlyingRequestSources.clear();
+        for (DataSource source : sources) {
+            closeSource(source);
+        }
+
+        List<File> tempFiles = new ArrayList<>(mCacheMissTempFiles.values());
+        mCacheMissTempFiles.clear();
+        for (File tempFile : tempFiles) {
+            deleteTempFile(tempFile);
         }
     }
 
-    private void saveSource(int requestId, DataSource target) {
-        mRequestSourceMap.put(requestId, target);
+    private synchronized void rememberSource(int requestId, DataSource source) {
+        mFlyingRequestSources.put(requestId, source);
     }
 
-    private void closeSource(int requestId) {
-        DataSource source = mRequestSourceMap.remove(requestId);
+    private void closeSource(DataSource source) {
         if (source != null) {
             source.close();
+        }
+    }
+
+    private synchronized void rememberTempFile(int requestId, File tempFile) {
+        mCacheMissTempFiles.put(requestId, tempFile);
+    }
+
+    private void deleteTempFile(File tempFile) {
+        if (tempFile != null) {
+            tempFile.delete();
         }
     }
 

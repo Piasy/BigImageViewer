@@ -27,6 +27,7 @@ package com.github.piasy.biv.loader.glide;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -35,7 +36,10 @@ import com.bumptech.glide.request.transition.Transition;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.metadata.ImageInfoExtractor;
 import java.io.File;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import okhttp3.OkHttpClient;
 
 /**
@@ -45,8 +49,7 @@ import okhttp3.OkHttpClient;
 public class GlideImageLoader implements ImageLoader {
     protected final RequestManager mRequestManager;
 
-    private final ConcurrentHashMap<Integer, ImageDownloadTarget> mRequestTargetMap
-            = new ConcurrentHashMap<>();
+    private final Map<Integer, ImageDownloadTarget> mFlyingRequestTargets = new HashMap<>(3);
 
     protected GlideImageLoader(Context context, OkHttpClient okHttpClient) {
         GlideProgressSupport.init(Glide.get(context), okHttpClient);
@@ -63,13 +66,17 @@ public class GlideImageLoader implements ImageLoader {
 
     @Override
     public void loadImage(final int requestId, final Uri uri, final Callback callback) {
+        final boolean[] cacheMissed = new boolean[1];
         ImageDownloadTarget target = new ImageDownloadTarget(uri.toString()) {
             @Override
             public void onResourceReady(@NonNull File resource,
                     Transition<? super File> transition) {
                 super.onResourceReady(resource, transition);
-                // we don't need delete this image file, so it behaves like cache hit
-                callback.onCacheHit(ImageInfoExtractor.getImageType(resource), resource);
+                if (cacheMissed[0]) {
+                    callback.onCacheMiss(ImageInfoExtractor.getImageType(resource), resource);
+                } else {
+                    callback.onCacheHit(ImageInfoExtractor.getImageType(resource), resource);
+                }
                 callback.onSuccess(resource);
             }
 
@@ -81,6 +88,7 @@ public class GlideImageLoader implements ImageLoader {
 
             @Override
             public void onDownloadStart() {
+                cacheMissed[0] = true;
                 callback.onStart();
             }
 
@@ -94,8 +102,8 @@ public class GlideImageLoader implements ImageLoader {
                 callback.onFinish();
             }
         };
-        clearTarget(requestId);
-        saveTarget(requestId, target);
+        cancel(requestId);
+        rememberTarget(requestId, target);
 
         downloadImageInto(uri, target);
     }
@@ -106,14 +114,15 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void cancel(int requestId) {
-        clearTarget(requestId);
+    public synchronized void cancel(int requestId) {
+        clearTarget(mFlyingRequestTargets.remove(requestId));
     }
 
     @Override
-    public void cancelAll() {
-        for (Integer key : mRequestTargetMap.keySet()) {
-            cancel(key);
+    public synchronized void cancelAll() {
+        List<ImageDownloadTarget> targets = new ArrayList<>(mFlyingRequestTargets.values());
+        for (ImageDownloadTarget target : targets) {
+            clearTarget(target);
         }
     }
 
@@ -124,12 +133,11 @@ public class GlideImageLoader implements ImageLoader {
                 .into(target);
     }
 
-    private void saveTarget(int requestId, ImageDownloadTarget target) {
-        mRequestTargetMap.put(requestId, target);
+    private synchronized void rememberTarget(int requestId, ImageDownloadTarget target) {
+        mFlyingRequestTargets.put(requestId, target);
     }
 
-    private void clearTarget(int requestId) {
-        ImageDownloadTarget target = mRequestTargetMap.remove(requestId);
+    private void clearTarget(ImageDownloadTarget target) {
         if (target != null) {
             mRequestManager.clear(target);
         }

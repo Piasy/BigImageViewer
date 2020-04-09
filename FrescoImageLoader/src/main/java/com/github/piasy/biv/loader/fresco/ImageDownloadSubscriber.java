@@ -42,12 +42,21 @@ import java.io.IOException;
 
 public abstract class ImageDownloadSubscriber
         extends BaseDataSubscriber<CloseableReference<PooledByteBuffer>> {
+    private static int sCounter = 0;
+
     private final File mTempFile;
 
     private volatile boolean mFinished;
 
     public ImageDownloadSubscriber(Context context) {
-        mTempFile = new File(context.getCacheDir(), "" + System.currentTimeMillis() + ".png");
+        // no need for any file extension, use a counter to avoid conflict.
+        mTempFile =
+            new File(context.getCacheDir(), System.currentTimeMillis() + "_" + nextCounter());
+    }
+
+    private static synchronized int nextCounter() {
+        sCounter++;
+        return sCounter;
     }
 
     @Override

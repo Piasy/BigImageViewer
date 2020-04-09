@@ -61,8 +61,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Piasy{github.com/Piasy} on 06/11/2016.
@@ -94,10 +92,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     };
 
     private final ImageLoader mImageLoader;
-    // With FrescoImageLoader, we create a temp image file on cache miss to make it work,
-    // so we need delete this temp image file when we are detached from window.
-    // GlideImageLoader won't fire onCacheMiss, so don't worry about glide.
-    private final List<File> mTempImagesForFrescoCacheMiss;
     private final ImageLoader.Callback mInternalCallback;
 
     private final Handler mUiHandler = new Handler(Looper.getMainLooper());
@@ -187,8 +181,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         mInternalCallback = ThreadedCallbacks.create(ImageLoader.Callback.class, this);
 
         mViewFactory = new ImageViewFactory();
-
-        mTempImagesForFrescoCacheMiss = new ArrayList<>();
     }
 
     public static ImageView.ScaleType scaleType(int value) {
@@ -397,12 +389,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        mImageLoader.cancel(hashCode());
-
-        for (int i = 0, size = mTempImagesForFrescoCacheMiss.size(); i < size; i++) {
-            mTempImagesForFrescoCacheMiss.get(i).delete();
-        }
-        mTempImagesForFrescoCacheMiss.clear();
+        cancel();
     }
 
     public void showImage(Uri uri) {
@@ -459,7 +446,6 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     @Override
     public void onCacheMiss(final int imageType, final File image) {
         mCurrentImageFile = image;
-        mTempImagesForFrescoCacheMiss.add(image);
         doShowImage(imageType, image, mDelayMainImageForTransition);
 
         if (mUserCallback != null) {
