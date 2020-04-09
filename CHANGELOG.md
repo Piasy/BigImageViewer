@@ -1,5 +1,7 @@
 # Change log
 
++ v1.6.4
+  - Minor opt;
 + v1.6.3
   - Fix Android 10 issue for Scoped Storage, #193
 + v1.6.2
