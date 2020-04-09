@@ -174,6 +174,7 @@ bigImageView.setImageSaveCallback(new ImageSaveCallback() {
     }
 });
 
+// should be called on worker/IO thread
 bigImageView.saveImageIntoGallery();
 ```
 
