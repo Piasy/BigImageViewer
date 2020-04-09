@@ -29,8 +29,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -38,7 +36,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +47,7 @@ import android.widget.ImageView;
 import androidx.annotation.Keep;
 import androidx.annotation.RequiresPermission;
 import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.R;
@@ -57,9 +55,10 @@ import com.github.piasy.biv.indicator.ProgressIndicator;
 import com.github.piasy.biv.loader.ImageLoader;
 import com.github.piasy.biv.metadata.ImageInfoExtractor;
 import com.github.piasy.biv.utils.DisplayOptimizeListener;
+import com.github.piasy.biv.utils.IOUtils;
 import com.github.piasy.biv.utils.ThreadedCallbacks;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -318,6 +317,7 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
         return mCurrentImageFile;
     }
 
+    @WorkerThread
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void saveImageIntoGallery() {
         if (mCurrentImageFile == null) {
@@ -325,51 +325,59 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
             return;
         }
 
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            OutputStream outputStream = null;
+            FileInputStream inputStream = null;
+            Uri imageUri = null;
+            boolean saved = false;
+            try {
                 ContentResolver resolver = getContext().getContentResolver();
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, mCurrentImageFile.getName() + ".jpg");
+                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME,
+                    mCurrentImageFile.getName());
+                // this mime type doesn't really matter, so we just use jpg.
                 contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
-                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
-                Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+                contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH,
+                    Environment.DIRECTORY_PICTURES);
+                imageUri =
+                    resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
 
                 if (imageUri != null) {
-                    OutputStream outputStream = resolver.openOutputStream(imageUri);
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                    Bitmap bitmap = BitmapFactory.decodeFile(mCurrentImageFile.getAbsolutePath(), options);
-
-                    boolean saved = bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-
-                    if (outputStream != null) {
-                        outputStream.flush();
-                        outputStream.close();
-                    }
-
-                    fireSaveImageCallback(saved ? imageUri.toString() : null,
-                        saved ? null : new RuntimeException("saveImageIntoGallery fail"));
+                    outputStream = resolver.openOutputStream(imageUri);
+                    inputStream = new FileInputStream(mCurrentImageFile);
+                    // a simple file copy is enough.
+                    IOUtils.copy(inputStream, outputStream);
+                    saved = true;
                 } else {
-                    fireSaveImageCallback(null, new RuntimeException("saveImageIntoGallery fail"));
+                    fireSaveImageCallback(null, new RuntimeException(
+                        "saveImageIntoGallery fail: insert to MediaStore error"));
                 }
-            } else {
-                String result =
-                        MediaStore.Images.Media.insertImage(
-                                getContext().getContentResolver(),
-                                mCurrentImageFile.getAbsolutePath(),
-                                mCurrentImageFile.getName(),
-                                ""
-                        );
-
-                boolean saved = !TextUtils.isEmpty(result);
-                fireSaveImageCallback(saved ? result : null,
-                    saved ? null : new RuntimeException("saveImageIntoGallery fail"));
+            } catch (IOException e) {
+                fireSaveImageCallback(null, e);
+            } finally {
+                IOUtils.closeQuietly(inputStream);
+                IOUtils.closeQuietly(outputStream);
             }
-        } catch (IOException e) {
-            fireSaveImageCallback(null, e);
+            if (saved) {
+                fireSaveImageCallback(imageUri.toString(), null);
+            }
+        } else {
+            try {
+                String result =
+                    MediaStore.Images.Media.insertImage(
+                        getContext().getContentResolver(),
+                        mCurrentImageFile.getAbsolutePath(),
+                        mCurrentImageFile.getName(),
+                        ""
+                    );
+                fireSaveImageCallback(result, null);
+            } catch (IOException e) {
+                fireSaveImageCallback(null, e);
+            }
         }
     }
 
+    @WorkerThread
     private void fireSaveImageCallback(final String uri, final Throwable error) {
         final ImageSaveCallback imageSaveCallback = mImageSaveCallback;
         if (imageSaveCallback != null) {
