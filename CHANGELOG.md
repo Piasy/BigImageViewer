@@ -1,5 +1,7 @@
 # Change log
 
++ v1.6.5
+  - Fix the CloseableReference not closed problem, #196;
 + v1.6.4
   - Minor opt;
 + v1.6.3
