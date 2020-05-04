@@ -68,24 +68,28 @@ public abstract class ImageDownloadSubscriber
 
     @Override
     protected void onNewResultImpl(DataSource<CloseableReference<PooledByteBuffer>> dataSource) {
-        if (!dataSource.isFinished() || dataSource.getResult() == null) {
+        if (!dataSource.isFinished()) {
             return;
         }
 
+        CloseableReference<PooledByteBuffer> closeableRef = dataSource.getResult();
         // if we try to retrieve image file by cache key, it will return null
         // so we need to create a temp file, little bit hack :(
         PooledByteBufferInputStream inputStream = null;
         FileOutputStream outputStream = null;
         try {
-            inputStream = new PooledByteBufferInputStream(dataSource.getResult().get());
-            outputStream = new FileOutputStream(mTempFile);
-            IOUtils.copy(inputStream, outputStream);
+            if (closeableRef != null) {
+                inputStream = new PooledByteBufferInputStream(closeableRef.get());
+                outputStream = new FileOutputStream(mTempFile);
+                IOUtils.copy(inputStream, outputStream);
 
-            mFinished = true;
-            onSuccess(mTempFile);
+                mFinished = true;
+                onSuccess(mTempFile);
+            }
         } catch (IOException e) {
             onFail(e);
         } finally {
+            CloseableReference.closeSafely(closeableRef);
             IOUtils.closeQuietly(inputStream);
             IOUtils.closeQuietly(outputStream);
         }
