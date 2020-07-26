@@ -33,8 +33,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50"
+        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.71"
 
 
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
@@ -76,19 +76,19 @@ ext {
             'usage and full featured image loading choices. Powered by Subsampling Scale ' +
             'Image View, Fresco, Glide, and Picasso.'
     artifactLabels = ['big', 'image', 'viewer', 'Fresco', 'Glide', 'Picasso']
-    releaseVersionCode = 39
-    releaseVersionName = '1.6.5'
+    releaseVersionCode = 40
+    releaseVersionName = '1.6.6'
 
     androidCompileSdkVersion = 29
-    androidBuildToolsVersion = '29.0.2'
+    androidBuildToolsVersion = '29.0.3'
     minSdkVersion = 14
     targetSdkVersion = 29
 
-    materialVersion = '1.1.0-beta01'
     annotationVersion = '1.1.0'
 
-    frescoVersion = '2.1.0'
-    glideVersion = '4.10.0'
-    okhttpVersion = '4.2.2'
+    frescoVersion = '2.3.0'
+    glideVersion = '4.11.0'
+    // OkHttp drops support before 5.0 since 3.13.0
+    okhttpVersion = '3.12.6'
     ssivVersion = '3.10.0'
 }
