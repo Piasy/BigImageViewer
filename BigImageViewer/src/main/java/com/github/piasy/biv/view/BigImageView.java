@@ -432,6 +432,10 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
     public SubsamplingScaleImageView getSSIV() {
         return mSSIV;
     }
+    
+    public View getMainView() {
+        return mMainView;
+    }
 
     @Override
     public void onCacheHit(final int imageType, final File image) {
