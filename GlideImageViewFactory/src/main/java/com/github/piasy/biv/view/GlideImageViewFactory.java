@@ -31,7 +31,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.github.piasy.biv.metadata.ImageInfoExtractor;
 import java.io.File;
-import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by Piasy{github.com/Piasy} on 2018/8/12.
@@ -41,11 +40,7 @@ public class GlideImageViewFactory extends ImageViewFactory {
     protected final View createAnimatedImageView(final Context context, final int imageType,
             final int initScaleType) {
         switch (imageType) {
-            case ImageInfoExtractor.TYPE_GIF: {
-                final GifImageView gifImageView = new GifImageView(context);
-                gifImageView.setScaleType(BigImageView.scaleType(initScaleType));
-                return gifImageView;
-            }
+            case ImageInfoExtractor.TYPE_GIF:
             case ImageInfoExtractor.TYPE_ANIMATED_WEBP: {
                 final ImageView imageView = new ImageView(context);
                 imageView.setScaleType(BigImageView.scaleType(initScaleType));
@@ -60,13 +55,7 @@ public class GlideImageViewFactory extends ImageViewFactory {
     public final void loadAnimatedContent(final View view, final int imageType,
             final File imageFile) {
         switch (imageType) {
-            case ImageInfoExtractor.TYPE_GIF: {
-                if (view instanceof GifImageView) {
-                    ((GifImageView) view).setImageURI(
-                            Uri.parse("file://" + imageFile.getAbsolutePath()));
-                }
-                break;
-            }
+            case ImageInfoExtractor.TYPE_GIF:
             case ImageInfoExtractor.TYPE_ANIMATED_WEBP: {
                 if (view instanceof ImageView) {
                     Glide.with(view.getContext())

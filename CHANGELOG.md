@@ -1,5 +1,7 @@
 # Change log
 
++ v1.7.0
+  - Remove android-gif-drawable dependency
 + v1.6.5
   - Fix the CloseableReference not closed problem, #196;
 + v1.6.4

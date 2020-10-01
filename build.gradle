@@ -76,8 +76,8 @@ ext {
             'usage and full featured image loading choices. Powered by Subsampling Scale ' +
             'Image View, Fresco, Glide, and Picasso.'
     artifactLabels = ['big', 'image', 'viewer', 'Fresco', 'Glide', 'Picasso']
-    releaseVersionCode = 41
-    releaseVersionName = '1.6.7'
+    releaseVersionCode = 42
+    releaseVersionName = '1.7.0'
 
     androidCompileSdkVersion = 29
     androidBuildToolsVersion = '29.0.3'

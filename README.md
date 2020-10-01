@@ -34,22 +34,22 @@ allprojects {
     }
 }
 
-implementation 'com.github.piasy:BigImageViewer:1.6.7'
+implementation 'com.github.piasy:BigImageViewer:1.7.0'
 
 // load with fresco
-implementation 'com.github.piasy:FrescoImageLoader:1.6.7'
+implementation 'com.github.piasy:FrescoImageLoader:1.7.0'
 
 // load with glide
-implementation 'com.github.piasy:GlideImageLoader:1.6.7'
+implementation 'com.github.piasy:GlideImageLoader:1.7.0'
 
 // progress pie indicator
-implementation 'com.github.piasy:ProgressPieIndicator:1.6.7'
+implementation 'com.github.piasy:ProgressPieIndicator:1.7.0'
 
 // support thumbnail, gif and webp with Fresco
-implementation 'com.github.piasy:FrescoImageViewFactory:1.6.7'
+implementation 'com.github.piasy:FrescoImageViewFactory:1.7.0'
 
 // support thumbnail and gif with Glide
-implementation 'com.github.piasy:GlideImageViewFactory:1.6.7'
+implementation 'com.github.piasy:GlideImageViewFactory:1.7.0'
 ```
 
 ### Initialize
@@ -105,8 +105,7 @@ you need set a custom `ImageViewFactory` via `biv.setImageViewFactory`:
 // to display animated image, both gif and webp are supported.
 biv.setImageViewFactory(new FrescoImageViewFactory());
 
-// GlideImageViewFactory is another prebuilt factory, which use
-// https://github.com/koral--/android-gif-drawable to display gif,
+// GlideImageViewFactory is another prebuilt factory, which use ImageView to display gif,
 // animated webp is not supported (although it will be displayed with ImageView,
 // but it won't animate).
 biv.setImageViewFactory(new GlideImageViewFactory());
