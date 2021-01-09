@@ -29,7 +29,7 @@ pan and zoom               |  gif support
 allprojects {
     repositories {
         maven {
-            url  "http://dl.bintray.com/piasy/maven"
+            url  "https://dl.bintray.com/piasy/maven"
         }
     }
 }
