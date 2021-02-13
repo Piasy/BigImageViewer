@@ -34,7 +34,7 @@ allprojects {
     }
 }
 
-implementation 'com.github.piasy.BigImageViewer:BigImageViewer:1.7.0'
+implementation 'com.github.piasy:BigImageViewer:1.7.0'
 
 // load with fresco
 implementation 'com.github.piasy.BigImageViewer:FrescoImageLoader:1.7.0'
