@@ -1,5 +1,7 @@
 # Change log
 
++ v1.7.1
+  - Fix webp type check bug;
 + v1.7.0
   - Remove android-gif-drawable dependency
 + v1.6.5
