@@ -1,5 +1,7 @@
 # Change log
 
++ v1.8.0
+  - Migrate to MavenCentral;
 + v1.7.1
   - Fix webp type check bug;
 + v1.7.0

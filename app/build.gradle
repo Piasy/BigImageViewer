@@ -100,6 +100,13 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 
+//    implementation 'com.github.piasy:BigImageViewer:1.8.0'
+//    implementation 'com.github.piasy:FrescoImageLoader:1.8.0'
+//    implementation 'com.github.piasy:GlideImageLoader:1.8.0'
+//    implementation 'com.github.piasy:FrescoImageViewFactory:1.8.0'
+//    implementation 'com.github.piasy:GlideImageViewFactory:1.8.0'
+//    implementation 'com.github.piasy:ProgressPieIndicator:1.8.0'
+
     implementation project(':BigImageViewer')
     implementation project(':FrescoImageLoader')
     implementation project(':GlideImageLoader')
