@@ -24,7 +24,7 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.ben-manes.versions'
-apply from: "$rootProject.rootDir/gradle/bintray.gradle"
+apply from: "$rootProject.rootDir/gradle/publish-maven-central.gradle"
 
 android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion

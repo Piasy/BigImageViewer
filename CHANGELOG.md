@@ -1,5 +1,7 @@
 # Change log
 
++ v1.5.4.1
+  - Migrate to MavenCentral.
 + v1.5.4
   - Add thumbnail scale type attribute.
 + v1.5.3

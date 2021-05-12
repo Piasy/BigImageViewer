@@ -26,30 +26,31 @@
 
 buildscript {
     repositories {
-        jcenter()
         google()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
-
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
+        classpath 'com.android.tools.build:gradle:4.1.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30"
 
         // ./gradlew dependencyUpdates
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.20.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.25.0'
+
+        // ./gradlew publishReleasePublicationToSonatypeRepository
+        // ./gradlew closeAndReleaseRepository
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.4.30'
+        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0'
     }
 }
 
 allprojects {
     repositories {
-        jcenter()
         google()
-        maven {
-            url  "http://dl.bintray.com/piasy/maven"
-        }
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -58,33 +59,30 @@ task clean(type: Delete) {
 }
 
 ext {
-    userName = 'Piasy'
-    developer = [
-            id   : 'piasy',
-            name : 'piasy',
-            email: 'xz4215@gmail.com'
-    ]
-    license = [
-            id  : 'MIT',
-            name: 'The MIT License (MIT)',
-            url : 'http://opensource.org/licenses/MIT'
-    ]
+    projectName = 'BigImageViewer'
     groupName = 'com.github.piasy'
-    artifactName = 'BigImageViewer'
+
     artifactDescription = 'Big image viewer supporting pan and zoom, with very little memory ' +
             'usage and full featured image loading choices. Powered by Subsampling Scale ' +
             'Image View, Fresco, Glide, and Picasso.'
-    artifactLabels = ['big', 'image', 'viewer', 'Fresco', 'Glide', 'Picasso']
-    releaseVersionCode = 31
-    releaseVersionName = '1.5.4'
 
-    androidCompileSdkVersion = 28
-    androidBuildToolsVersion = '28.0.2'
+    releaseVersionCode = 31
+    releaseVersionName = '1.5.4.1'
+
+    PUBLISH_GROUP_ID = groupName
+    PUBLISH_VERSION = releaseVersionName
+
+    androidCompileSdkVersion = 29
+    androidBuildToolsVersion = '29.0.2'
     androidSupportSdkVersion = '28.0.0'
     minSdkVersion = 14
-    targetSdkVersion = 28
+    targetSdkVersion = 29
 
     frescoVersion = '1.10.0'
     glideVersion = '4.8.0'
+    // OkHttp drops support before 5.0 since 3.13.0
+    okhttpVersion = '3.12.6'
     ssivVersion = '3.10.0'
 }
+
+apply plugin: 'io.codearte.nexus-staging'

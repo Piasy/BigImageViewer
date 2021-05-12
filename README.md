@@ -2,8 +2,6 @@
 
 <img src="art/Logotype_primary.png" width="70%" height="70%"/>
 
-[![Download](https://api.bintray.com/packages/piasy/maven/BigImageViewer/images/download.svg)](https://bintray.com/piasy/maven/BigImageViewer/_latestVersion)
-
 Big image viewer supporting pan and zoom, with very little memory usage and full
 featured image loading choices. Powered by [Subsampling Scale Image
 View](https://github.com/davemorrissey/subsampling-scale-image-view),
@@ -29,28 +27,26 @@ pan and zoom               |  gif support
 ``` gradle
 allprojects {
     repositories {
-        maven {
-            url  "http://dl.bintray.com/piasy/maven"
-        }
+        mavenCentral()
     }
 }
 
-compile 'com.github.piasy:BigImageViewer:1.5.4'
+compile 'com.github.piasy:BigImageViewer:1.5.4.1'
 
 // load with fresco
-compile 'com.github.piasy:FrescoImageLoader:1.5.4'
+compile 'com.github.piasy:FrescoImageLoader:1.5.4.1'
 
 // load with glide
-compile 'com.github.piasy:GlideImageLoader:1.5.4'
+compile 'com.github.piasy:GlideImageLoader:1.5.4.1'
 
 // progress pie indicator
-compile 'com.github.piasy:ProgressPieIndicator:1.5.4'
+compile 'com.github.piasy:ProgressPieIndicator:1.5.4.1'
 
 // support thumbnail, gif and webp with Fresco
-compile 'com.github.piasy:FrescoImageViewFactory:1.5.4'
+compile 'com.github.piasy:FrescoImageViewFactory:1.5.4.1'
 
 // support thumbnail and gif with Glide
-compile 'com.github.piasy:GlideImageViewFactory:1.5.4'
+compile 'com.github.piasy:GlideImageViewFactory:1.5.4.1'
 ```
 
 ### Initialize

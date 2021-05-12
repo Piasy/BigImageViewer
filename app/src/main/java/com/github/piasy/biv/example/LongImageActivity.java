@@ -37,8 +37,8 @@ import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
 import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
 import com.github.piasy.biv.view.BigImageView;
 import com.github.piasy.biv.view.ImageSaveCallback;
-import com.github.piasy.rxqrcode.RxQrCode;
-import com.google.zxing.Result;
+//import com.github.piasy.rxqrcode.RxQrCode;
+//import com.google.zxing.Result;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import hu.akarnokd.rxjava.interop.RxJavaInterop;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -131,26 +131,26 @@ public class LongImageActivity extends AppCompatActivity {
             return;
         }
         disposeQrCodeDecode();
-        mQrCodeDecode = RxJavaInterop
-                .toV2Observable(RxQrCode.scanFromPicture(
-                        mBigImageView.getCurrentImageFile().getAbsolutePath()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Result>() {
-                    @Override
-                    public void accept(Result result) throws Exception {
-                        Toast.makeText(LongImageActivity.this,
-                                "Found " + result.getText(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Toast.makeText(LongImageActivity.this,
-                                "Not found",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+        //mQrCodeDecode = RxJavaInterop
+        //        .toV2Observable(RxQrCode.scanFromPicture(
+        //                mBigImageView.getCurrentImageFile().getAbsolutePath()))
+        //        .subscribeOn(Schedulers.io())
+        //        .observeOn(AndroidSchedulers.mainThread())
+        //        .subscribe(new Consumer<Result>() {
+        //            @Override
+        //            public void accept(Result result) throws Exception {
+        //                Toast.makeText(LongImageActivity.this,
+        //                        "Found " + result.getText(),
+        //                        Toast.LENGTH_SHORT).show();
+        //            }
+        //        }, new Consumer<Throwable>() {
+        //            @Override
+        //            public void accept(Throwable throwable) throws Exception {
+        //                Toast.makeText(LongImageActivity.this,
+        //                        "Not found",
+        //                        Toast.LENGTH_SHORT).show();
+        //            }
+        //        });
     }
 
     @SuppressWarnings("MissingPermission")

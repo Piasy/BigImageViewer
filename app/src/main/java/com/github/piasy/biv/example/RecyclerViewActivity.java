@@ -9,7 +9,7 @@ import android.view.Gravity;
 import com.github.piasy.biv.BigImageViewer;
 import com.github.piasy.biv.example.glide.SampleCustomImageSizeModel;
 import com.github.piasy.biv.loader.glide.GlideCustomImageLoader;
-import com.github.rubensousa.gravitysnaphelper.GravityPagerSnapHelper;
+//import com.github.rubensousa.gravitysnaphelper.GravityPagerSnapHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,8 +69,8 @@ public class RecyclerViewActivity extends AppCompatActivity {
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recycler.setAdapter(new RecyclerAdapter(imageUrlsList));
 
-        GravityPagerSnapHelper gravityPagerSnapHelper = new GravityPagerSnapHelper(Gravity.START,
-                true);
-        gravityPagerSnapHelper.attachToRecyclerView(recycler);
+        //GravityPagerSnapHelper gravityPagerSnapHelper = new GravityPagerSnapHelper(Gravity.START,
+        //        true);
+        //gravityPagerSnapHelper.attachToRecyclerView(recycler);
     }
 }
