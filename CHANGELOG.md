@@ -1,5 +1,7 @@
 # Change log
 
++ v1.8.1
+  - Fix mime type when save image to gallery;
 + v1.8.0
   - Migrate to MavenCentral;
 + v1.7.1

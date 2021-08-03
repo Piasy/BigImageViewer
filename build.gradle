@@ -26,7 +26,6 @@
 
 buildscript {
     repositories {
-        jcenter()
         google()
         maven {
             url "https://plugins.gradle.org/m2/"
@@ -49,11 +48,9 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
         google()
         mavenCentral()
-
-        maven { url  "http://dl.bintray.com/piasy/maven" }
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -69,8 +66,8 @@ ext {
             'usage and full featured image loading choices. Powered by Subsampling Scale ' +
             'Image View, Fresco, Glide, and Picasso.'
 
-    releaseVersionCode = 44
-    releaseVersionName = '1.8.0'
+    releaseVersionCode = 45
+    releaseVersionName = '1.8.1'
 
     PUBLISH_GROUP_ID = groupName
     PUBLISH_VERSION = releaseVersionName
@@ -82,7 +79,7 @@ ext {
 
     annotationVersion = '1.1.0'
 
-    frescoVersion = '2.4.0'
+    frescoVersion = '2.5.0'
     glideVersion = '4.12.0'
     // OkHttp drops support before 5.0 since 3.13.0
     okhttpVersion = '3.12.6'
