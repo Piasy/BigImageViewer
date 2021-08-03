@@ -327,8 +327,9 @@ public class BigImageView extends FrameLayout implements ImageLoader.Callback {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME,
                     mCurrentImageFile.getName());
-                // this mime type doesn't really matter, so we just use jpg.
-                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpg");
+                // http://androidxref.com/4.4.4_r1/xref/libcore/luni/src/main/java/libcore/net/MimeUtils.java
+                // Please select the appropriate MIME_TYPE in the webpage
+                contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
                 contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH,
                     Environment.DIRECTORY_PICTURES);
                 imageUri =
