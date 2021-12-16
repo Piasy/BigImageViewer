@@ -82,9 +82,13 @@ public class DisplayOptimizeListener implements SubsamplingScaleImageView.OnImag
             float maxScale = Math.max((float) viewWidth / imageWidth,
                     (float) viewHeight / imageHeight);
             if (maxScale > 1) {
-                // image is smaller than screen, it should be zoomed out to its origin size
-                mImageView.setMinScale(1);
-
+                // image is smaller than screen, it should be zoomed out to its origin size.
+                // image is bigger than screen, it should be scale to the result.
+                if (imageWidth > viewWidth) {
+                    mImageView.setMinScale(result);
+                } else {
+                    mImageView.setMinScale(1.0f);
+                }
                 // and it should be zoomed in to fill the screen
                 float defaultMaxScale = mImageView.getMaxScale();
                 mImageView.setMaxScale(Math.max(defaultMaxScale, maxScale * 1.2F));
@@ -95,8 +99,13 @@ public class DisplayOptimizeListener implements SubsamplingScaleImageView.OnImag
                 mImageView.setMinScale(minScale);
                 // but no need to set max scale
             }
+
             // scale to fit screen, and center
-            mImageView.setScaleAndCenter(maxScale, new PointF(imageWidth / 2, imageHeight / 2));
+            if (mImageView.getMaxScale() < mImageView.getMinScale()){
+                mImageView.setScaleAndCenter(maxScale, new PointF(imageWidth / 2.0f, imageHeight / 2.0f));
+                // reset max scale for the better animation.
+                mImageView.setMaxScale(mImageView.getMinScale() * 1.5f);
+            }
         }
 
         mImageView.setDoubleTapZoomScale(result);
