@@ -28,7 +28,6 @@ apply from: "$rootProject.rootDir/gradle/publish-maven-central.gradle"
 
 android {
     compileSdkVersion rootProject.ext.androidCompileSdkVersion
-    buildToolsVersion rootProject.ext.androidBuildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
