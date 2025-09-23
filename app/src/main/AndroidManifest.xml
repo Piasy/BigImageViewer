@@ -22,8 +22,7 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.piasy.biv.example">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
             android:allowBackup="true"

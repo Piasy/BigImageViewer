@@ -33,15 +33,15 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.21"
+        classpath 'com.android.tools.build:gradle:8.11.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0"
 
         // ./gradlew dependencyUpdates
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.44.0'
 
         // ./gradlew publishReleasePublicationToSonatypeRepository
         // ./gradlew closeAndReleaseRepository
-        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.7.20'
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:2.0.0'
         classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.30.0'
     }
 }
@@ -72,16 +72,16 @@ ext {
     PUBLISH_GROUP_ID = groupName
     PUBLISH_VERSION = releaseVersionName
 
-    androidCompileSdkVersion = 33
-    minSdkVersion = 14
-    targetSdkVersion = 33
+    androidCompileSdkVersion = 36
+    minSdkVersion = 21
+    targetSdkVersion = 35
 
     annotationVersion = '1.5.0'
 
-    frescoVersion = '2.6.0'
-    glideVersion = '4.14.2'
+    frescoVersion = '3.6.0'
+    glideVersion = '5.0.5'
     // OkHttp drops support before 5.0 since 3.13.0
-    okhttpVersion = '3.12.6'
+    okhttpVersion = '5.1.0'
     ssivVersion = '3.10.0'
 }
 
