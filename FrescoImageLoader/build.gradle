@@ -32,10 +32,11 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.releaseVersionCode
-        versionName rootProject.ext.releaseVersionName
 
         consumerProguardFiles 'proguard-rules.pro'
+    }
+    buildFeatures {
+        buildConfig = true
     }
     buildTypes {
         release {
@@ -43,6 +44,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    namespace 'com.github.piasy.biv.loader.fresco'
 }
 
 dependencies {

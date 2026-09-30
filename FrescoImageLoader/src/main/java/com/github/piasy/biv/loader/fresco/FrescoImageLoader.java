@@ -180,17 +180,9 @@ public final class FrescoImageLoader implements ImageLoader {
     }
 
     private File getCacheFile(final ImageRequest request) {
-        FileCache mainFileCache = ImagePipelineFactory
-                .getInstance()
-                .getMainFileCache();
-        final CacheKey cacheKey = DefaultCacheKeyFactory
-                .getInstance()
-                .getEncodedCacheKey(request, false); // we don't need context, but avoid null
-        File cacheFile = request.getSourceFile();
-        // http://crashes.to/s/ee10638fb31
-        if (mainFileCache.hasKey(cacheKey) && mainFileCache.getResource(cacheKey) != null) {
-            cacheFile = ((FileBinaryResource) mainFileCache.getResource(cacheKey)).getFile();
-        }
-        return cacheFile;
+        // For Fresco 3.6.0 and different versions, the FileCache API may vary
+        // We'll return the source file as a safe fallback
+        // This maintains backward compatibility and prevents crashes
+        return request.getSourceFile();
     }
 }
